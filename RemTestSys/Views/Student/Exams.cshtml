@@ -1,0 +1,29 @@
+﻿@model IEnumerable<ExamInfoViewModel>
+@{
+    ViewData["Title"] = "Тести, що необхідно пройти";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <h2 class="w-12">Тести на проходження</h2>
+</div>
+@if(Model.Count() < 1)
+{
+    <p>Вам не назначено жодного тесту на проходження</p>
+}
+else
+{
+    foreach(var examInfo in Model)
+    {
+<div>
+    <h3>Тест: @examInfo.TestName</h3>
+    <p>Опис: @examInfo.TestDescription</p>
+    <p>Статус: @examInfo.Status</p>
+    <p>Питань в тесті: @examInfo.CountOfQuestions</p>
+    <p>Часу на проходження: @examInfo.Duration</p>
+    <p>Необхідно пройти до: @examInfo.Deadline</p>
+    <div class="row text-c"><a asp-action="Testing" asp-controller="Student" asp-route-id="@examInfo.TestId">Пройти</a></div>
+</div>
+    }
+}
+
+

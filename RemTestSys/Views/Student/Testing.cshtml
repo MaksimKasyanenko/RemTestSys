@@ -1,0 +1,29 @@
+﻿@model TestingViewModel;
+@{
+    ViewData["Title"] = "Тестування - "+Model.TestName;
+}
+<input type="hidden" id="scriptData" data-sessionid="@Model.SessionId" data-hrefresult='@Url.Action("ResultOfTest", "Student")' />
+<h3>
+    @Model.TestName
+</h3>
+<div>
+    <header>
+        <div>
+            Питання <span id="questionNum">-</span> з @Model.QuestionsCount
+        </div>
+        <div>
+            <img src="" />
+            <span id="timerDisp">-- : --</span>
+        </div>
+    </header>
+    <div>
+        <div>
+            <div id="placeholder">Будь ласка, зачекайте...</div>
+            <div id="questionText"></div>
+            <div id="questionSubText"></div>
+        </div>
+        <div id="formContainer">
+        </div>
+    </div>
+</div>
+<script src="~/scripts/testing.js"></script>

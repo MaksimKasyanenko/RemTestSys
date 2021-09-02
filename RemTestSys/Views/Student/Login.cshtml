@@ -1,0 +1,21 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Вхід до системи";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="row items-c">
+        <hgroup class="w-6">
+            <h1>Система дистанційного тестування учнів</h1>
+            <h3>Предмет: хімія та біологія</h3>
+        </hgroup>
+        <form class="w-6" asp-action="Login" asp-controller="Student" asp-antiforgery="true" method="post">
+            <h3>Вхід</h3>
+            <div class="row">
+                <input type="text" asp-for="StudentLogId" class="w-9" />
+                <input type="submit" class="w-3" value="Ввійти" />
+            </div>
+            <div asp-validation-summary="ModelOnly"></div>
+        </form>
+    </div>
+
