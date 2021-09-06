@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using RemTestSys.Domain;
 using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
+using RemTestSys.Domain.Interfaces;
 
 namespace RemTestSys.Controllers
 {
@@ -28,10 +28,13 @@ namespace RemTestSys.Controllers
         {
             string logId;
             if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
-            Student student = await _studentService.FindStudent(logId);
-            var exams = await _studentService.GetExamsListForStudent(student.Id);
+            Student student = await _studentService.GetStudent(logId);
+            var exams = await _studentService.GetExamsForStudent(student.Id);
             var vmList=new List<ExamInfoViewModel>();
-            exams.ForEach(ex => vmList.Add(new ExamInfoViewModel(ex)));
+            foreach(var ex in exams)
+            {
+                vmList.Add(new ExamInfoViewModel(ex));
+            }
             return View(vmList);
         }
 
@@ -40,10 +43,10 @@ namespace RemTestSys.Controllers
         {
             string logId;
             if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
-            Student student = await _studentService.FindStudent(logId);
+            Student student = await _studentService.GetStudent(logId);
             Test test = await _studentService.GetTestForStudent(id, student.Id);
 
-            Session session = await _sessionService.StartOrContinueTest(logId, test.Id);
+            Session session = await _sessionService.BeginOrContinue(logId, test.Id);
 
             return View(new TestingViewModel
             {
@@ -65,7 +68,7 @@ namespace RemTestSys.Controllers
         {
             if (ModelState.IsValid)
             {
-                Student student = await _studentService.FindStudent(login.StudentLogId);
+                Student student = await _studentService.GetStudent(login.StudentLogId);
                 if (student != null)
                 {
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RemTestSys.Domain.Exceptions;
+using RemTestSys.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,38 +9,34 @@ namespace RemTestSys.Domain
 {
     public class StudentService : IStudentService
     {
-        public StudentService(IStudentsDbContext studentsDbContext, IExamsDbContext examsDbContext, ITestsDbContext testsDbContext)
+        public StudentService(IStudentsDbContext studentsDbContext, IExamsDbContext examsDbContext)
         {
             _studentsDbContext = studentsDbContext ?? throw new ArgumentNullException(nameof(IStudentsDbContext));
             _examsDbContext = examsDbContext ?? throw new ArgumentNullException(nameof(IExamsDbContext));
-            _testsDbContext = testsDbContext ?? throw new ArgumentNullException(nameof(ITestsDbContext));
         }
 
         private readonly IStudentsDbContext _studentsDbContext;
         private readonly IExamsDbContext _examsDbContext;
-        private readonly ITestsDbContext _testsDbContext;
 
-        public async Task<Student> FindStudent(string studentLogId)
+        public async Task<Student> GetStudent(string studentLogId)
         {
-            return await _studentsDbContext.FindStudent(studentLogId);
+            Student student = await _studentsDbContext.FindStudent(studentLogId);
+            if (student == null) throw new NonExsistException($"Student for specified LogId({studentLogId}) do not exists");
+            return student;
         }
 
-        public async Task<List<Exam>> GetExamsListForStudent(int studentId)
+        public async Task<IEnumerable<Exam>> GetExamsForStudent(int studentId)
         {
-            var queryExams = from exam in await _examsDbContext.GetExamsListForStudent(studentId)
-                             where exam.Status == ExamStatus.NotPassed
-                                   || !exam.IsStrict
-                                   || exam.Deadline > DateTime.Now
-                             select exam;
-            return queryExams.ToList();
+            return (await _examsDbContext.GetExams(ex => ex.AssignedTo.Id == studentId))
+                                        .Where(e => e.Status == ExamStatus.NotPassed || !e.IsStrict)
+                                        .Select(e => e);
         }
 
         public async Task<Test> GetTestForStudent(int testId, int studentId)
         {
-            AccessToTest access = (await _studentsDbContext.GetAccessListToTestsForStudent(studentId)).FirstOrDefault(acc => acc.Test.Id == testId);
-            if (access == null) throw new NullReferenceException(nameof(AccessToTest));
-            Test test = await _testsDbContext.GetTest(testId) ?? throw new NullReferenceException(nameof(Test));
-            return test;
+            AccessToTest access = (await _studentsDbContext.GetAccessesToTests(at => at.Test.Id == testId && at.Student.Id == studentId)).Single();
+            if (access == null) throw new DataAccessException($"Student (id:{studentId}) haven't got access to test (id:{testId})");
+            return access.Test;
         }
     }
 }

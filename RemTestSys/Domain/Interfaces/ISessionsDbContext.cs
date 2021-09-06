@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace RemTestSys.Domain
+namespace RemTestSys.Domain.Interfaces
 {
     public interface ISessionsDbContext
     {
