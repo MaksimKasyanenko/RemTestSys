@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using RemTestSys.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RemTestSys.Domain.Interfaces
 {
     public interface ISessionsDbContext
     {
-        Task<Session> FindSession(int id, int testId);
         Task DeleteSession(Session session);
         Task AddSession(Session session);
         Task UpdateSession(Session session);
-        Task<Session> FindSession(int sessionId);
+        Task<IEnumerable<Session>> GetSessions(Predicate<Session> filter);
     }
 }

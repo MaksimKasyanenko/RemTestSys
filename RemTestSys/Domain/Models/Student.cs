@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RemTestSys.Domain
+namespace RemTestSys.Domain.Models
 {
     public class Student
     {

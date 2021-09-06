@@ -1,4 +1,4 @@
-﻿namespace RemTestSys.Domain
+﻿namespace RemTestSys.Domain.Models
 {
     public class AccessToTest
     {

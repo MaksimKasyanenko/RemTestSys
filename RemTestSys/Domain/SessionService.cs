@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.Models;
+using RemTestSys.Domain.Exceptions;
 
 namespace RemTestSys.Domain
 {
@@ -19,11 +22,11 @@ namespace RemTestSys.Domain
         private readonly ISessionsDbContext _sessionsDbContext;
         private readonly ITestsDbContext _testsDbContext;
         private readonly ISessionBuilder _sessionBuilder;
-        public async Task<Session> StartOrContinueTest(string logId, int testId)
+        public async Task<Session> BeginOrContinue(string logId, int testId)
         {
             Student student = await _studentsDbContext.FindStudent(logId);
-            if (student == null) throw new NullReferenceException(nameof(Student));
-            Session session = await _sessionsDbContext.FindSession(student.Id, testId);
+            if (student == null) throw new NonExistException("The student for specified LogId do not exists");
+            Session session = (await _sessionsDbContext.GetSessions(s => s.Student.LogId == logId)).Where(s => s.Test.Id == testId).SingleOrDefault();
             if (session != null && (session.Finished)){
                 await _sessionsDbContext.DeleteSession(session);
                 session = null;
@@ -31,8 +34,8 @@ namespace RemTestSys.Domain
             if(session == null)
             {
                 Test test = await _testsDbContext.GetTest(testId);
-                List<AccessToTest> accessToTest = await _testsDbContext.GetAccessListToTestsForStudent(student.Id);
-                if (!accessToTest.Exists(acc => acc.Test.Id == test.Id)) throw new Exception($"The student {student.Id} hasn't got access to test {test.Id}");
+                AccessToTest accessToTest = (await _studentsDbContext.GetAccessesToTests(at => at.Test.Id == testId && at.Student.Id == student.Id)).FirstOrDefault();
+                if (accessToTest == null) throw new DataAccessException($"The student {student.Id} hasn't got access to test {test.Id}");
                 session = await _sessionBuilder.Build(test, student);
                 await _sessionsDbContext.AddSession(session);
             }
@@ -41,6 +44,7 @@ namespace RemTestSys.Domain
 
         public async Task<AnswerResult> Answer(string logId, int sessionId, object data)
         {
+            !!!!!!!!!!!!!!!!!
             Session session = await FindSessionFor(logId, sessionId);
             if (session == null) throw new Exception($"Student which is specified isn't owner for session {sessionId} or the session doesn't exist");
             AnswerResult answerResult;
@@ -60,7 +64,7 @@ namespace RemTestSys.Domain
             return answerResult;
         }
 
-        public async Task<Session> FindSessionFor(string logId, int sessionId)
+        public async Task<Session> GetSessionFor(string logId, int sessionId)
         {
             Session session = await _sessionsDbContext.FindSession(sessionId);
             if(session!=null && session.Student.LogId == logId)

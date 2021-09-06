@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using RemTestSys.Domain.Models;
+using System.Threading.Tasks;
 
 namespace RemTestSys.Domain.Interfaces
 {
