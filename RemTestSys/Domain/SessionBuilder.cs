@@ -1,4 +1,5 @@
 ﻿using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,32 +7,39 @@ using System.Threading.Tasks;
 
 namespace RemTestSys.Domain
 {
-    public class SessionBuilder
+    public class SessionBuilder : ISessionBuilder
     {
-        public SessionBuilder(IQuestionsDbContext dbContext)
+        public SessionBuilder(ITestsDbContext dbContext)
         {
-            this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(IQuestionsDbContext));
+            this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(ITestsDbContext));
         }
 
-        private readonly IQuestionsDbContext _dbContext;
+        private readonly ITestsDbContext _dbContext;
 
-        public async Task<Session> Build(Test test, Student student)
+        public Session Build(Test test, Student student)
         {
             Session session = new Session();
             session.Test = test;
             session.Student = student;
-            session.StartTime = DateTime.Now;
             session.QuestionNum = 1;
             session.Finished = false;
-            List<Question> questionsOfTest = await _dbContext.GetQuestionsForTest(test.Id);
-            session.Questions = GetRandomSet(questionsOfTest, test.QuestionsCount);
+            Question[] questionsOfTest = test.Questions.ToArray();
+            questionsOfTest = GetRandomSet(questionsOfTest, test.QuestionsCount);
+            for(int i=1; i<=questionsOfTest.Length;i++)
+            {
+                session.Questions.Add(new QuestionInSession {
+                    Session = session,
+                    Question = questionsOfTest[i-1],
+                    SerialNumber=i
+                });
+            }
             return session;
         }
 
-        private Question[] GetRandomSet(List<Question> src, int size)
+        private Question[] GetRandomSet(Question[] src, int size)
         {
             Question[] resultSet = new Question[size];
-            RandomSequence sequence = new RandomSequence(0, src.Count);
+            RandomSequence sequence = new RandomSequence(0, src.Length);
             for(int i = 0; i < resultSet.Length; i++)
             {
                 resultSet[i] = src[sequence.GetNext()] ;

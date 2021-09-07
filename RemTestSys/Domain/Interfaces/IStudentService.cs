@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RemTestSys.Domain.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RemTestSys.Domain.Interfaces

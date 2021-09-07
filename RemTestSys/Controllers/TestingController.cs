@@ -6,6 +6,7 @@ using RemTestSys.Domain;
 using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.Models;
 
 namespace RemTestSys.Controllers
 {

@@ -1,4 +1,6 @@
-﻿namespace RemTestSys.Domain.Models
+﻿using System.Collections.Generic;
+
+namespace RemTestSys.Domain.Models
 {
     public sealed class Test
     {
@@ -7,5 +9,6 @@
         public string Description { get; set; }
         public int QuestionsCount { get; set; }
         public int Duration { get; set; }
+        public IEnumerable<Question> Questions { get; set; }
     }
 }

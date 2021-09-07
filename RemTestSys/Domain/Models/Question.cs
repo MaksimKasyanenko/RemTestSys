@@ -6,6 +6,6 @@
         public string Text { get; set; }
         public string SubText { get; set; }
         public Answer Answer { get; set; }
-        public Test ContainedIn { get; set; }
+        public int TestId { get; set; }
     }
 }

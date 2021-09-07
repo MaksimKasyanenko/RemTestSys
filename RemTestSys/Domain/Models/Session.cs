@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RemTestSys.Domain.Models
 {
@@ -13,11 +15,11 @@ namespace RemTestSys.Domain.Models
         {
             get 
             {
-                return _finished || TimeLeft < 1 || _questionCursor >= _questions.Length;
+                return _finished || TimeLeft < 1 || _questionCursor >= Test.QuestionsCount;
             }
             set
             {
-                if (value == false && _finished == true) throw new InvalidCastException("Finished session cannot be continued");
+                if (value == false && _finished == true) throw new InvalidCastException($"Finished session cannot be continued. (Session:{Id})");
                 _finished = value;
             }
         }
@@ -25,7 +27,7 @@ namespace RemTestSys.Domain.Models
         {
             get
             {
-                return _questions[_questionCursor];
+                return Questions.First(q => q.SerialNumber == QuestionNum).Question;
             }
         }
         private int _questionCursor = 0;
@@ -37,26 +39,12 @@ namespace RemTestSys.Domain.Models
             }
             set
             {
-                if((_questions != null && value > _questions.Length) || value-1 < 0)
+                if(value-1 < 0)
                     throw new IndexOutOfRangeException("question cursor");
                 _questionCursor = value-1;
             }
         }
-        private Question[] _questions;
-        public Question[] Questions
-        {
-            get
-            {
-                if (_questions == null) throw new NullReferenceException("The Questions property hasn't been setted");
-                return _questions;
-            }
-            set
-            {
-                if (_questions != null) throw new Exception("The Questions property mustn't be overwritten");
-                if (value.Length <= _questionCursor) throw new IndexOutOfRangeException("Length of quesions array is less then cursor");
-                _questions = value;
-            }
-        }
+        public List<QuestionInSession> Questions { get; set; } = new List<QuestionInSession>();
         public int TimeLeft
         {
             get

@@ -1,4 +1,5 @@
 ﻿using RemTestSys.Domain;
+using RemTestSys.Domain.Models;
 using System;
 
 namespace RemTestSys.ViewModel
