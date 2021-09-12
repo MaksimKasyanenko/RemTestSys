@@ -25,7 +25,7 @@ namespace RemTestSys.Domain
         public async Task<Session> BeginOrContinue(string logId, int testId)
         {
             Student student = await _studentsDbContext.FindStudent(logId);
-            if (student == null) throw new NonExistException("The student for specified LogId do not exists");
+            if (student == null) throw new NotExistException("The student for specified LogId do not exists");
             Session session = (await _sessionsDbContext.GetSessions(s => s.Student.LogId == logId && s.Test.Id == testId)).SingleOrDefault();
             if (session != null && (session.Finished)){
                 await _sessionsDbContext.DeleteSession(session);
@@ -46,7 +46,7 @@ namespace RemTestSys.Domain
         public async Task<AnswerResult> Answer(string logId, int sessionId, object data)
         {
             Session session = (await _sessionsDbContext.GetSessions(s => s.Id == sessionId && s.Student.LogId == logId)).SingleOrDefault();
-            if (session == null) throw new NonExistException($"Student which is specified isn't owner for session {sessionId} or the session doesn't exist");
+            if (session == null) throw new NotExistException($"Student which is specified isn't owner for session {sessionId} or the session doesn't exist");
             AnswerResult answerResult;
             if (session.CurrentQuestion.Answer.IsMatch(data))
             {

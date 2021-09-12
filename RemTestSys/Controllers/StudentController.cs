@@ -10,6 +10,7 @@ using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
+using RemTestSys.Domain.Exceptions;
 
 namespace RemTestSys.Controllers
 {
@@ -66,18 +67,18 @@ namespace RemTestSys.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel login)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && login.StudentLogId.Length>0)
             {
-                Student student = await _studentService.GetStudent(login.StudentLogId);
-                if (student != null)
-                {
+                Student student;
+                try {
+                    student = await _studentService.GetStudent(login.StudentLogId);
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                     claimsIdentity.AddClaim(new Claim("StudentLogId", login.StudentLogId));
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
                     return RedirectToAction("Exams");
                 }
-                else
+                catch (NotExistException)
                 {
                     ModelState.AddModelError("", "Учня з вказанним ідентифікатором не знайдено");
                 }
