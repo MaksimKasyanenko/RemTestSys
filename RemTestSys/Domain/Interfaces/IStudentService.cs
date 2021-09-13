@@ -9,5 +9,6 @@ namespace RemTestSys.Domain.Interfaces
         Task<Student> GetStudent(string logId);
         Task<IEnumerable<Exam>> GetExamsForStudent(int id);
         Task<Test> GetTestForStudent(int testId, int studentId);
+        Task<bool> StudentExists(string logId);
     }
 }

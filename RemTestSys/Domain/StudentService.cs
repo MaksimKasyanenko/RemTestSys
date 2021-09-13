@@ -39,5 +39,10 @@ namespace RemTestSys.Domain
             if (access == null) throw new DataAccessException($"Student (id:{studentId}) haven't got access to test (id:{testId})");
             return access.Test;
         }
+
+        public Task<bool> StudentExists(string logId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

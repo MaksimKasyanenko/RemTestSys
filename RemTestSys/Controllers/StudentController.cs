@@ -73,7 +73,7 @@ namespace RemTestSys.Controllers
                 try {
                     student = await _studentService.GetStudent(login.StudentLogId);
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                    claimsIdentity.AddClaim(new Claim("StudentLogId", login.StudentLogId));
+                    claimsIdentity.AddClaim(new Claim("StudentLogId", student.LogId));
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
                     return RedirectToAction("Exams");

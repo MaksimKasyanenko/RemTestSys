@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RemTestSys.Controllers;
 using RemTestSys.Domain.Exceptions;
 using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.Models;
 using RemTestSys.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -40,8 +42,8 @@ namespace RemTestSys.Tests.Controllers
         public void ReturnViewContainingWrongLogIdInLoginFieldAnd1ModelError_WhenPassedWrongLogId()
         {
             var studentServiceMock = new Mock<IStudentService>();
-            studentServiceMock.Setup(ss => ss.GetStudent(It.IsAny<string>()))
-                              .Throws(new NotExistException(""));
+            studentServiceMock.Setup(ss => ss.StudentExists(It.IsAny<string>()).Result)
+                              .Returns(false);
             var controller = new StudentController(studentServiceMock.Object, new Mock<ISessionService>().Object);
             var viewModel = new LoginViewModel { StudentLogId = "logId" };
 
@@ -50,32 +52,18 @@ namespace RemTestSys.Tests.Controllers
             Assert.Equal(viewModel.StudentLogId, ((LoginViewModel)res.Model).StudentLogId);
             Assert.True(controller.ModelState.Count == 1);
         }
-        
-        [Fact]
-        public void ReturnRedirectToActionCalledExams(){
-        	string rightLogId = "RightLogId";
-        	var studentServiceMock = new Mock<IStudentService>();
-            studentServiceMock.Setup(ss => ss.GetStudent(It.Is<string>(li => li == "RightLogId")))
-                              .Return(new Student());
-            Type expectedType = typeof(RedirectToAction);
-            var controller = new StudentController(studentServiceMock.Object, new Mock<ISessionService>().Object);
-            var viewModel = new LoginViewModel { StudentLogId = rightLogId };
-
-            var res = (ViewResult)controller.Login(viewModel).Result;
-            
-            Assert.Equal(expectedType, res);
-            Assert.True(res.ViewName == "Exams");
-        }
     }
     
     public class StudentController_ExamsActionTests{
     	[Fact]
     	public void ReturnsRedirectToActionResultToLoginActionIfRequestDontAuthorized(){
     		var controller = new StudentController(new Mock<IStudentService>().Object, new Mock<ISessionService>().Object);
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
     		
     		var res = (RedirectToActionResult)controller.Exams().Result;
     		
-    		Assert.True(res.ViewName == "Login");
+    		Assert.True(res.ActionName == "Login");
     	}
     }
 }
