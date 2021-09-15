@@ -40,9 +40,17 @@ namespace RemTestSys.Domain
             return access.Test;
         }
 
-        public Task<bool> StudentExists(string logId)
+        public async Task<bool> StudentExists(string logId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Student student = await GetStudent(logId);
+                return true;
+            }
+            catch (NotExistException)
+            {
+                return false;
+            }
         }
     }
 }

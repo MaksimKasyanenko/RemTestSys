@@ -69,16 +69,15 @@ namespace RemTestSys.Controllers
         {
             if (ModelState.IsValid && login.StudentLogId.Length>0)
             {
-                Student student;
-                try {
-                    student = await _studentService.GetStudent(login.StudentLogId);
+                if(await _studentService.StudentExists(login.StudentLogId))
+                {
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                    claimsIdentity.AddClaim(new Claim("StudentLogId", student.LogId));
+                    claimsIdentity.AddClaim(new Claim("StudentLogId", login.StudentLogId));
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
                     return RedirectToAction("Exams");
                 }
-                catch (NotExistException)
+                else
                 {
                     ModelState.AddModelError("", "Учня з вказанним ідентифікатором не знайдено");
                 }

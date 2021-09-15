@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -9,6 +10,7 @@ using RemTestSys.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -51,6 +53,30 @@ namespace RemTestSys.Tests.Controllers
 
             Assert.Equal(viewModel.StudentLogId, ((LoginViewModel)res.Model).StudentLogId);
             Assert.True(controller.ModelState.Count == 1);
+        }
+
+        [Fact]
+        public void WritesLogIdToHttpCookieAndReturnsRedirectViewResultCalledExams_WhenPassedRightLogId()
+        {
+            var studentServiceMock = new Mock<IStudentService>();
+            studentServiceMock.Setup(ss => ss.StudentExists(It.IsAny<string>()).Result)
+                              .Returns(true);
+            var controller = new StudentController(studentServiceMock.Object, new Mock<ISessionService>().Object);
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            var authServiceMock = new Mock<IAuthenticationService>();
+            authServiceMock.Setup(aus => aus.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>())).Returns(Task.CompletedTask);
+            var servProvMock = new Mock<IServiceProvider>();
+            servProvMock.Setup(sp => sp.GetService(It.IsAny<Type>())).Returns(new Mock<IAuthenticationService>().Object);
+            controller.ControllerContext.HttpContext.RequestServices = servProvMock.Object;
+            var viewModel = new LoginViewModel { StudentLogId = "RightLogId" };
+            var expectedType = typeof(RedirectToActionResult);
+
+            var res = (RedirectToActionResult)controller.Login(viewModel).Result;
+
+            Assert.True(controller.HttpContext.User.Identity.IsAuthenticated);
+            Assert.True(viewModel.StudentLogId == controller.User.FindFirstValue("StudentLogId"));
+            Assert.True(res.ActionName == "Exams");
         }
     }
     
