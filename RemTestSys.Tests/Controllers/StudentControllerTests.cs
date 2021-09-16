@@ -29,7 +29,7 @@ namespace RemTestSys.Tests.Controllers
 
             var res = (ViewResult)controller.Login();
 
-            Assert.True(res.ViewName == null);
+            Assert.Null(res.ViewName);
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace RemTestSys.Tests.Controllers
 
             var res = (ViewResult)controller.Login(viewModel).Result;
 
-            Assert.True(((LoginViewModel)res.Model).StudentLogId == "");
+            Assert.Equal("", ((LoginViewModel)res.Model).StudentLogId);
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace RemTestSys.Tests.Controllers
 
             var res = (RedirectToActionResult)controller.Login(viewModel).Result;
 
-            Assert.True(res.ActionName == "Exams", "ActionName == Exams");
+            Assert.Equal("Exams", res.ActionName);
         }
     }
 
@@ -97,7 +97,7 @@ namespace RemTestSys.Tests.Controllers
 
             var res = (RedirectToActionResult)controller.Exams().Result;
 
-            Assert.True(res.ActionName == "Login");
+            Assert.Equal("Login", res.ActionName);
         }
         [Fact]
         public void ReturnsViewResultWithNullNameAndContainingListWith2ExamsViewModel_IfRequestAuthorized()
@@ -121,12 +121,54 @@ namespace RemTestSys.Tests.Controllers
 
             var res = (ViewResult)controller.Exams().Result;
 
-            Assert.True(((IEnumerable<ExamInfoViewModel>)res.Model).ToArray().Length == 2);
+            Assert.Equal(2, ((IEnumerable<ExamInfoViewModel>)res.Model).ToArray().Length);
+            Assert.Null(res.ViewName);
         }
     }
 
     public class StudentController_TestingActionTests
     {
+        [Fact]
+        public void ReturnsRedirectToActionResultToLoginActionIfRequestDontAuthorized()
+        {
+            var controller = new StudentController(new Mock<IStudentService>().Object, new Mock<ISessionService>().Object);
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
 
+            var res = (RedirectToActionResult)controller.Testing(1).Result;
+
+            Assert.Equal("Login", res.ActionName);
+        }
+        [Fact]
+        public void ReturnsViewResultWithNullNameAndContainingSettedSessionId1TestNameABCQuestionCount5_IfRequestAuthorized()
+        {
+            var studentServiceMock = new Mock<IStudentService>();
+            studentServiceMock.Setup(ss => ss.GetStudent(It.IsAny<string>()))
+                              .Returns(Task.FromResult(new Student()));
+            studentServiceMock.Setup(ss => ss.GetTestForStudent(It.IsAny<int>(), It.IsAny<int>()))
+                              .Returns(Task.FromResult(
+                                    new Test {Name="ABC",
+                                    QuestionsCount=5}
+                                  ));
+            var sessionServiceMock = new Mock<ISessionService>();
+            sessionServiceMock.Setup(ss => ss.BeginOrContinue(It.IsAny<string>(), It.IsAny<int>()))
+                              .Returns(Task.FromResult(
+                                    new Session { Id=1}
+                                  ));
+            var controller = new StudentController(studentServiceMock.Object, sessionServiceMock.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            var claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            claimsIdentity.AddClaim(new Claim("StudentLogId", "TestStudent"));
+            controller.HttpContext.User.AddIdentity(claimsIdentity);
+
+            var res = (ViewResult)controller.Testing(0).Result;
+
+            Assert.Equal(1, ((TestingViewModel)res.Model).SessionId);
+            Assert.Equal("ABC", ((TestingViewModel)res.Model).TestName);
+            Assert.Equal(5, ((TestingViewModel)res.Model).QuestionsCount);
+        }
     }
 }
