@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RemTestSys.Controllers;
 using RemTestSys.Domain.Exceptions;
@@ -37,7 +40,7 @@ namespace RemTestSys.Tests.Controllers
 
             var res = (ViewResult)controller.Login(viewModel).Result;
 
-            Assert.True(((LoginViewModel)res.Model).StudentLogId=="");
+            Assert.True(((LoginViewModel)res.Model).StudentLogId == "");
         }
 
         [Fact]
@@ -56,40 +59,74 @@ namespace RemTestSys.Tests.Controllers
         }
 
         [Fact]
-        public void WritesLogIdToHttpCookieAndReturnsRedirectViewResultCalledExams_WhenPassedRightLogId()
+        public void ReturnsRedirectViewResultCalledExams_WhenPassedRightLogId()
         {
             var studentServiceMock = new Mock<IStudentService>();
             studentServiceMock.Setup(ss => ss.StudentExists(It.IsAny<string>()).Result)
                               .Returns(true);
-            var controller = new StudentController(studentServiceMock.Object, new Mock<ISessionService>().Object);
-            controller.ControllerContext = new ControllerContext();
-            controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var authServiceMock = new Mock<IAuthenticationService>();
-            authServiceMock.Setup(aus => aus.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>())).Returns(Task.CompletedTask);
-            var servProvMock = new Mock<IServiceProvider>();
-            servProvMock.Setup(sp => sp.GetService(It.IsAny<Type>())).Returns(new Mock<IAuthenticationService>().Object);
-            controller.ControllerContext.HttpContext.RequestServices = servProvMock.Object;
+            authServiceMock.Setup(aus => aus.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>()))
+                           .Returns(Task.FromResult((object)null));
+            var services = new ServiceCollection();
+            services.AddSingleton(authServiceMock.Object);
+            services.AddSingleton(new Mock<IUrlHelperFactory>().Object);
+            var controller = new StudentController(studentServiceMock.Object, new Mock<ISessionService>().Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    RequestServices = services.BuildServiceProvider()
+                }
+            };
             var viewModel = new LoginViewModel { StudentLogId = "RightLogId" };
-            var expectedType = typeof(RedirectToActionResult);
 
             var res = (RedirectToActionResult)controller.Login(viewModel).Result;
 
-            Assert.True(controller.HttpContext.User.Identity.IsAuthenticated);
-            Assert.True(viewModel.StudentLogId == controller.User.FindFirstValue("StudentLogId"));
-            Assert.True(res.ActionName == "Exams");
+            Assert.True(res.ActionName == "Exams", "ActionName == Exams");
         }
     }
-    
-    public class StudentController_ExamsActionTests{
-    	[Fact]
-    	public void ReturnsRedirectToActionResultToLoginActionIfRequestDontAuthorized(){
-    		var controller = new StudentController(new Mock<IStudentService>().Object, new Mock<ISessionService>().Object);
+
+    public class StudentController_ExamsActionTests
+    {
+        [Fact]
+        public void ReturnsRedirectToActionResultToLoginActionIfRequestDontAuthorized()
+        {
+            var controller = new StudentController(new Mock<IStudentService>().Object, new Mock<ISessionService>().Object);
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
-    		
-    		var res = (RedirectToActionResult)controller.Exams().Result;
-    		
-    		Assert.True(res.ActionName == "Login");
-    	}
+
+            var res = (RedirectToActionResult)controller.Exams().Result;
+
+            Assert.True(res.ActionName == "Login");
+        }
+        [Fact]
+        public void ReturnsViewResultWithNullNameAndContainingListWith2ExamsViewModel_IfRequestAuthorized()
+        {
+            var studentServiceMock = new Mock<IStudentService>();
+            studentServiceMock.Setup(ss => ss.GetStudent(It.IsAny<string>()))
+                              .Returns(Task.FromResult(new Student()));
+            studentServiceMock.Setup(ss => ss.GetExamsForStudent(It.IsAny<int>()))
+                              .Returns(Task.FromResult((IEnumerable<Exam>)new List<Exam> {
+                                    new Exam(),
+                                    new Exam()
+                              }));
+            var controller = new StudentController(studentServiceMock.Object, new Mock<ISessionService>().Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            var claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            claimsIdentity.AddClaim(new Claim("StudentLogId", "TestStudent"));
+            controller.HttpContext.User.AddIdentity(claimsIdentity);
+
+            var res = (ViewResult)controller.Exams().Result;
+
+            Assert.True(((IEnumerable<ExamInfoViewModel>)res.Model).ToArray().Length == 2);
+        }
+    }
+
+    public class StudentController_TestingActionTests
+    {
+
     }
 }
