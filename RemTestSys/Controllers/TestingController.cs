@@ -7,6 +7,7 @@ using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
+using RemTestSys.Domain.Exceptions;
 
 namespace RemTestSys.Controllers
 {
@@ -25,7 +26,8 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> GetState(int sessionId)
         {
             string logId;
-            if (this.TryGetLogIdFromCookie(out logId))
+            if (!this.TryGetLogIdFromCookie(out logId)) return BadRequest("Specified LogId is not valid");
+            try
             {
                 Session session = await _sessionService.GetSessionFor(sessionId, logId);
                 TestingViewModel vm;
@@ -42,7 +44,11 @@ namespace RemTestSys.Controllers
                 };
                 return new ObjectResult(vm);
             }
-            return BadRequest("Specified LogId is not valid");
+            catch (DataAccessException)
+            {
+                return BadRequest($"Specified student haven't got an access to session({sessionId})");
+            }
+            
         }
 
         [Authorize]
