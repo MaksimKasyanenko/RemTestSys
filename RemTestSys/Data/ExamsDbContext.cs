@@ -10,9 +10,14 @@ namespace RemTestSys.Data
 {
     public class ExamsDbContext : IExamsDbContext
     {
-        public Task<IEnumerable<Exam>> GetExams(Predicate<Exam> filter)
+        public ExamsDbContext(AppDbContext appDbContext)
         {
-            throw new NotImplementedException();!!!!!!!
+            this._appDbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
+        }
+        private readonly AppDbContext _appDbContext;
+        public async Task<IEnumerable<Exam>> GetExams(Predicate<Exam> filter)
+        {
+            return await _appDbContext.Exams.Where(e => filter(e)).ToArrayAsync();
         }
     }
 }

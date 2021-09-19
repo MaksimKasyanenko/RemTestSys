@@ -8,8 +8,10 @@ namespace RemTestSys.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){}
 
-        public DbSet<Student> Students { get; set; }
-        public DbSet<AccessToTest> AccessesToTest { get; set; }
-        public DbSet<Test> Tests { get; set; }
+        public DbSet<Student> Students { get; internal set; }
+        public DbSet<AccessToTest> AccessesToTest { get; internal set; }
+        public DbSet<Test> Tests { get; internal set; }
+        public DbSet<Exam> Exams { get; internal set; }
+        public DbSet<Session> Sessions { get; internal set; }
     }
 }
