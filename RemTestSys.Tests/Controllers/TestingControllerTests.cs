@@ -47,9 +47,17 @@ namespace RemTestSys.Tests.Controllers
             public void ReturnsObjectResultWithSomeFilledFields_WhenSessionIsFoundForStudent()
             {
                 var testSession = new Session {
-                    Id = 1,
-                    QuestionNum = 10,
-                    StartTime = new DateTime(2021,12,1,0,0,0)
+                    Id = 10,
+                    QuestionNum = 1,
+                    StartTime = new DateTime(2021,12,1,0,0,0),
+                    Student=new Student(),
+                    Test = new Test(),
+                    Questions = new List<QuestionInSession> {
+                        new QuestionInSession{
+                            SerialNumber = 1,
+                            Question = new Question{Answer = new Answer()}
+                        }
+                    }
                 };
                 var sessionServiceMock = new Mock<ISessionService>();
                 sessionServiceMock.Setup(ss => ss.GetSessionFor(It.IsAny<int>(), It.IsAny<string>()))
@@ -59,8 +67,48 @@ namespace RemTestSys.Tests.Controllers
 
                 var res = (ObjectResult)controller.GetState(1).Result;
 
-                Assert.Equal(1, ((TestingViewModel)res.Value).SessionId);
-                Assert.Equal(10, ((TestingViewModel)res.Value).QuestionNum);
+                Assert.Equal(10, ((TestingViewModel)res.Value).SessionId);
+                Assert.Equal(1, ((TestingViewModel)res.Value).QuestionNum);
+            }
+        }
+
+        public class AnswerActionTests
+        {
+            [Fact]
+            public void ReturnsBadRequestObjectResultAndStatusCode400_IfNotAuthorized()
+            {
+                var controller = CreateTestingControllerWithDefaultContext();
+
+                var res = (BadRequestObjectResult)controller.Answer(new AnswerViewModel()).Result;
+
+                Assert.Equal(400, res.StatusCode);
+            }
+            [Fact]
+            public void ReturnsBadRequestObjectResultAndStatusCode400_IfSessionDoesntExistsForStudentWithSpecifiedLogId()
+            {
+                var sessionServiceMock = new Mock<ISessionService>();
+                sessionServiceMock.Setup(ss => ss.Answer(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<object>()))
+                                  .Throws(new NotExistException(""));
+                var controller = CreateTestingControllerWithDefaultContext(sessionServiceMock.Object);
+                AddClaimsIdentityToController(controller);
+
+                var res = (BadRequestObjectResult)controller.Answer(new AnswerViewModel()).Result;
+
+                Assert.Equal(400, res.StatusCode);
+            }
+            [Fact]
+            public void ReturnsObjectResultWithAnswerResultViewModel()
+            {
+                var sessionServiceMock = new Mock<ISessionService>();
+                sessionServiceMock.Setup(ss => ss.Answer(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<object>()))
+                                  .Returns(Task.FromResult(new Domain.AnswerResult {RightText=null, IsRight=true}));
+                var controller = CreateTestingControllerWithDefaultContext(sessionServiceMock.Object);
+                AddClaimsIdentityToController(controller);
+
+                var res = (ObjectResult)controller.Answer(new AnswerViewModel()).Result;
+
+                Assert.True(((AnswerResultViewModel)res.Value).IsRight);
+                Assert.Null(((AnswerResultViewModel)res.Value).RightText);
             }
         }
 

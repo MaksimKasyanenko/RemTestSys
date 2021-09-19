@@ -58,13 +58,20 @@ namespace RemTestSys.Controllers
             string logId;
             if (this.TryGetLogIdFromCookie(out logId))
             {
-                AnswerResult result = await _sessionService.Answer(logId, answer.SessionId, answer.Data);
-                AnswerResultViewModel ar = new AnswerResultViewModel
+                try
                 {
-                    IsRight = result.IsRight,
-                    RightText = result.RightText
-                };
-                return new ObjectResult(ar);
+                    AnswerResult result = await _sessionService.Answer(logId, answer.SessionId, answer.Data);
+                    AnswerResultViewModel ar = new AnswerResultViewModel
+                    {
+                        IsRight = result.IsRight,
+                        RightText = result.RightText
+                    };
+                    return new ObjectResult(ar);
+                }
+                catch (NotExistException)
+                {
+                    return BadRequest("LogId or SessionId is wrong");
+                }
             }
             else
             {
