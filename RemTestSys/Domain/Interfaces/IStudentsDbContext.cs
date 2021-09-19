@@ -7,7 +7,7 @@ namespace RemTestSys.Domain.Interfaces
 {
     public interface IStudentsDbContext
     {
-        Task<Student> FindStudent(string logId);
+        Task<IEnumerable<Student>> GetStudents(Predicate<Student> filter);
         Task<IEnumerable<AccessToTest>> GetAccessesToTests(Predicate<AccessToTest> filter);
     }
 }

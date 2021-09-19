@@ -21,7 +21,7 @@ namespace RemTestSys.Domain
 
         public async Task<Student> GetStudent(string studentLogId)
         {
-            Student student = await _studentsDbContext.FindStudent(studentLogId);
+            Student student = (await _studentsDbContext.GetStudents(st => st.LogId == studentLogId)).FirstOrDefault();
             if (student == null) throw new NotExistException($"Student for specified LogId({studentLogId}) do not exists");
             return student;
         }

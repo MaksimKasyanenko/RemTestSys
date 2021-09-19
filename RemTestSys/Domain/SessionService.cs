@@ -24,7 +24,7 @@ namespace RemTestSys.Domain
         private readonly ISessionBuilder _sessionBuilder;
         public async Task<Session> BeginOrContinue(string logId, int testId)
         {
-            Student student = await _studentsDbContext.FindStudent(logId);
+            Student student = (await _studentsDbContext.GetStudents(st=>st.LogId == logId)).FirstOrDefault();
             if (student == null) throw new NotExistException("The student for specified LogId do not exists");
             Session session = (await _sessionsDbContext.GetSessions(s => s.Student.LogId == logId && s.Test.Id == testId)).SingleOrDefault();
             if (session != null && (session.Finished)){

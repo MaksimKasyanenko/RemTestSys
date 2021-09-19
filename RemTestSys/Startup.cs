@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RemTestSys.Data;
+using RemTestSys.Domain;
+using RemTestSys.Domain.Interfaces;
 
 namespace RTS
 {
@@ -22,6 +24,11 @@ namespace RTS
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
+            services.AddTransient<AppDbContext>();
+            services.AddTransient<IStudentService, StudentService>();
+            services.AddTransient<ISessionService, SessionService>();
+            services.AddTransient<ISessionBuilder, SessionBuilder>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(
                     options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Student/Login")

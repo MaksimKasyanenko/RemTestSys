@@ -8,6 +8,6 @@ namespace RemTestSys.Domain.Interfaces
 {
     public interface ITestsDbContext
     {
-        Task<Test> GetTest(int testId);
+        Task<IEnumerable<Test>> GetTests(Predicate<Test> filter);
     }
 }
