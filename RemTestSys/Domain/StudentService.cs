@@ -30,6 +30,7 @@ namespace RemTestSys.Domain
             return await _appDbContext.Exams
                                        .Where(ex => ex.AssignedTo.Id == studentId)
                                        .Where(e => e.Status == ExamStatus.NotPassed || !e.IsStrict)
+                                       .Include(e=>e.Test)
                                        .ToArrayAsync();
         }
 

@@ -28,7 +28,29 @@ namespace RemTestSys
         {
             Group group = new Group { Name = "Demo Group" };
             Student student = new Student {FirstName="Demo", LastName="Student", Group=group, LogId="demo"};
-
+            Groups.Add(group);
+            Students.Add(student);
+            Test test = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2 };
+            Tests.Add(test);
+            Question[] questions = new Question[] {
+                new Question{Test = test, Text="Demo Question 1", Answer=new Answer{RightText="demo1"} },
+                new Question{Test = test, Text="Demo Question 2", Answer=new Answer{RightText="demo2"} }
+            };
+            foreach(var q in questions)
+            {
+                Answers.Add(q.Answer);
+                Questions.Add(q);
+            }
+            AccessesToTest.Add(new AccessToTest {Student=student, Test=test});
+            Exam exam = new Exam {
+                AssignedTo = student,
+                Status=Domain.ExamStatus.NotPassed,
+                IsStrict=false,
+                Deadline=new System.DateTime(2024,1,1,0,0,0),
+                Test=test
+            };
+            Exams.Add(exam);
+            SaveChanges();
         }
     }
 }

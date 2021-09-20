@@ -74,7 +74,10 @@ namespace RemTestSys.Domain
 
         public async Task<Session> GetSessionFor(int sessionId, string logId)
         {
-            Session session = await _appDbContext.Sessions.Where(s => s.Id == sessionId && s.Student.LogId == logId).FirstOrDefaultAsync();
+            Session session = await _appDbContext.Sessions
+                                                 .Where(s => s.Id == sessionId && s.Student.LogId == logId)
+                                                 .Include(s=>s.Test)
+                                                 .FirstOrDefaultAsync();
             if (session == null) throw new DataAccessException($"The student for specified LogId havn't got access to session({sessionId}) or the session doesn't exist");
             return session;
         }
