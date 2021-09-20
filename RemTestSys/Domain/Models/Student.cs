@@ -8,5 +8,6 @@ namespace RemTestSys.Domain.Models
         public string LogId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public Group Group { get; set; }
     }
 }

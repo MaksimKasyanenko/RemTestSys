@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RemTestSys.Data;
+using RemTestSys;
 using RemTestSys.Domain;
 using RemTestSys.Domain.Interfaces;
 

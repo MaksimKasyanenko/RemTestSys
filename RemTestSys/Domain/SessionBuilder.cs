@@ -9,12 +9,12 @@ namespace RemTestSys.Domain
 {
     public class SessionBuilder : ISessionBuilder
     {
-        public SessionBuilder(ITestsDbContext dbContext)
+        public SessionBuilder(AppDbContext dbContext)
         {
-            this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(ITestsDbContext));
+            this._dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        private readonly ITestsDbContext _dbContext;
+        private readonly AppDbContext _dbContext;
 
         public Session Build(Test test, Student student)
         {

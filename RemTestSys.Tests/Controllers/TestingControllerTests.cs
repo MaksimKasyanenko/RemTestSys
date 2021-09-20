@@ -101,7 +101,7 @@ namespace RemTestSys.Tests.Controllers
             {
                 var sessionServiceMock = new Mock<ISessionService>();
                 sessionServiceMock.Setup(ss => ss.Answer(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<object>()))
-                                  .Returns(Task.FromResult(new Domain.AnswerResult {RightText=null, IsRight=true}));
+                                  .Returns(Task.FromResult(new AnswerResult {RightText=null, IsRight=true}));
                 var controller = CreateTestingControllerWithDefaultContext(sessionServiceMock.Object);
                 AddClaimsIdentityToController(controller);
 
