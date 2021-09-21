@@ -8,6 +8,8 @@ using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
 using RemTestSys.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace RemTestSys.Controllers
 {
@@ -15,11 +17,11 @@ namespace RemTestSys.Controllers
     [Route("api/[controller]/{sessionId?}")]
     public class TestingController : ControllerBase
     {
-        public TestingController(ISessionService sessionService)
+        public TestingController(AppDbContext appDbContext)
         {
-            _sessionService = sessionService ?? throw new ArgumentNullException(nameof(ISessionService));
+            this.appDbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
         }
-        private readonly ISessionService _sessionService;
+        private readonly AppDbContext appDbContext;
 
         [Authorize]
         [HttpGet]
@@ -27,9 +29,15 @@ namespace RemTestSys.Controllers
         {
             string logId;
             if (!this.TryGetLogIdFromCookie(out logId)) return BadRequest("Specified LogId is not valid");
-            try
+            Session session = await appDbContext.Sessions
+                                                .Where(s => s.Id == sessionId && s.Student.LogId == logId)
+                                                .Include(s=>s.Questions)
+                                                .Include(s=>s.Questions.Select(q=>q.Question))
+                                                .Include(s => s.Questions.Select(q => q.Question.Answer))
+                                                .SingleOrDefaultAsync();
+            if(session != null)
             {
-                Session session = await _sessionService.GetSessionFor(sessionId, logId);
+                
                 TestingViewModel vm;
                 vm = new TestingViewModel
                 {
@@ -44,7 +52,7 @@ namespace RemTestSys.Controllers
                 };
                 return new ObjectResult(vm);
             }
-            catch (DataAccessException)
+            else
             {
                 return BadRequest($"Specified student haven't got an access to session({sessionId})");
             }

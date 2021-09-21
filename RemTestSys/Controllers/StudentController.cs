@@ -11,30 +11,45 @@ using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
 using RemTestSys.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace RemTestSys.Controllers
 {
     public class StudentController : Controller
     {
-        public StudentController(IStudentService studentService, ISessionService sessionService)
+        public StudentController(AppDbContext appDbContext, ISessionBuilder sessionBuilder)
         {
-            this._studentService = studentService ?? throw new ArgumentNullException(nameof(IStudentService));
-            this._sessionService = sessionService ?? throw new ArgumentNullException(nameof(ISessionService));
+            dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
+            this.sessionBuilder = sessionBuilder ?? throw new ArgumentNullException(nameof(sessionBuilder));
         }
-        private readonly IStudentService _studentService;
-        private readonly ISessionService _sessionService;
+        private readonly AppDbContext dbContext;
+        private readonly ISessionBuilder sessionBuilder;
 
         [Authorize]
         public async Task<IActionResult> Exams()
         {
             string logId;
             if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
-            Student student = await _studentService.GetStudent(logId);
-            var exams = await _studentService.GetExamsForStudent(student.Id);
-            var vmList=new List<ExamInfoViewModel>();
-            foreach(var ex in exams)
+            Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
+            if (student == null) return RedirectToAction("Login");
+            var exams = await dbContext.Exams.Where(ex => ex.AssignedTo.Id == student.Id)
+                                             .Include(ex => ex.Test)
+                                             .ToArrayAsync();
+            var vmList = new List<ExamInfoViewModel>();
+            foreach (var ex in exams)
             {
-                vmList.Add(new ExamInfoViewModel(ex));
+                var exInfo = new ExamInfoViewModel
+                {
+                    TestId = ex.Test.Id,
+                    TestName = ex.Test.Name,
+                    TestDescription = ex.Test.Description,
+                    Status = ex.Status,
+                    CountOfQuestions = ex.Test.QuestionsCount,
+                    Duration = ex.Test.Duration,
+                    Deadline = ex.Deadline
+                };
+                vmList.Add(exInfo);
             }
             return View(vmList);
         }
@@ -44,11 +59,26 @@ namespace RemTestSys.Controllers
         {
             string logId;
             if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
-            Student student = await _studentService.GetStudent(logId);
-            Test test = await _studentService.GetTestForStudent(id, student.Id);
+            Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
+            if (student == null) return RedirectToAction("Login");
+            AccessToTest accessToTest = await dbContext.AccessesToTest.FirstOrDefaultAsync(at => at.Student.Id == student.Id && at.Test.Id == id);
+            if (accessToTest == null) return View("Error");
+            Test test = await dbContext.Tests
+                                       .Where(t => t.Id == id)
+                                       .Include(t=>t.Questions)
+                                       .SingleAsync();
 
-            Session session = await _sessionService.BeginOrContinue(logId, test.Id);
-
+            Session session = await dbContext.Sessions.FirstOrDefaultAsync(s => s.Student.Id == student.Id && s.Test.Id == id);
+            if (session != null && session.Finished)
+            {
+                dbContext.Sessions.Remove(session);
+                await dbContext.SaveChangesAsync();
+                session = null;
+            }
+            if(session == null)
+            {
+                session = sessionBuilder.Build(test, student);
+            }
             return View(new TestingViewModel
             {
                 SessionId = session.Id,
@@ -67,9 +97,10 @@ namespace RemTestSys.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel login)
         {
-            if (ModelState.IsValid && login.StudentLogId.Length>0)
+            if (ModelState.IsValid && login.StudentLogId.Length > 0)
             {
-                if(await _studentService.StudentExists(login.StudentLogId))
+                Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == login.StudentLogId);
+                if (student != null)
                 {
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                     claimsIdentity.AddClaim(new Claim("StudentLogId", login.StudentLogId));

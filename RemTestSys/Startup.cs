@@ -24,9 +24,6 @@ namespace RTS
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
-            services.AddTransient<AppDbContext>();
-            services.AddTransient<IStudentService, StudentService>();
-            services.AddTransient<ISessionService, SessionService>();
             services.AddTransient<ISessionBuilder, SessionBuilder>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
