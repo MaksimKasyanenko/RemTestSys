@@ -89,6 +89,13 @@ namespace RemTestSys.Controllers
             });
         }
 
+        [Authorize]
+        public async Task<IActionResult> ResultOfTesting(int resultId)
+        {
+
+            return View();
+        }
+
         [HttpGet]
         public IActionResult Login()
         {

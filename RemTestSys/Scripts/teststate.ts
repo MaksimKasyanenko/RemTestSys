@@ -6,4 +6,5 @@
     timeLeft: number;
     waitedAnswerType: string;
     additive: any;
+    resultId: number;
 }

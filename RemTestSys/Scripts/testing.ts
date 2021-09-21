@@ -32,5 +32,5 @@
         await server.updateState();
         timer.time = server.testState.timeLeft;
     }
-    window.location.href = document.getElementById("scriptData").dataset.hrefresult;
+    window.location.href = `${document.getElementById("scriptData").dataset.hrefresult}/${server.testState.resultId}`;
 });

@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Тестування - "+Model.TestName;
 }
-<input type="hidden" id="scriptData" data-sessionid="@Model.SessionId" data-hrefresult='@Url.Action("ResultOfTest", "Student")' />
+<input type="hidden" id="scriptData" data-sessionid="@Model.SessionId" data-hrefresult='@Url.Action("ResultOfTesting", "Student")' />
 <h3>
     @Model.TestName
 </h3>

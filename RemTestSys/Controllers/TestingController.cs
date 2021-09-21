@@ -30,6 +30,8 @@ namespace RemTestSys.Controllers
             if (!this.TryGetLogIdFromCookie(out logId)) return BadRequest("Specified LogId is not valid");
             Session session = await dbContext.Sessions
                                                 .Where(s => s.Id == sessionId && s.Student.LogId == logId)
+                                                .Include(s=>s.Test)
+                                                .Include(s=>s.Student)
                                                 .Include(s=>s.Questions)
                                                 .ThenInclude(q=>q.Question)
                                                 .ThenInclude(q=>q.Answer)
@@ -37,21 +39,43 @@ namespace RemTestSys.Controllers
             if(session != null)
             {
                 TestingViewModel vm;
-                vm = new TestingViewModel
+                if (session.Finished)
                 {
-                    SessionId = session.Id,
-                    Finished = session.Finished,
-                    QuestionNum = session.QuestionNum,
-                    TimeLeft = session.TimeLeft,
-                    QuestionText = session.CurrentQuestion.Text,
-                    QuestionSubText = session.CurrentQuestion.SubText,
-                    AnswerType = nameof(session.CurrentQuestion.Answer),
-                    Addition = session.CurrentQuestion.Answer.Addition
-                };
+                    ResultOfTesting resultOfTesting = new ResultOfTesting {
+                        Student=session.Student,
+                        Test=session.Test,
+                        Mark = session.Test.ScoresPerRightAnswer*session.RightAnswerCount
+                    };
+                    dbContext.ResultsOfTests.Add(resultOfTesting);
+                    await dbContext.SaveChangesAsync();
+                    vm = new TestingViewModel
+                    {
+                        SessionId = session.Id,
+                        Finished = session.Finished,
+                        QuestionNum = session.QuestionNum,
+                        TimeLeft = session.TimeLeft,
+                        ResultId = resultOfTesting.Id
+                    };
+                }
+                else
+                {
+                    vm = new TestingViewModel
+                    {
+                        SessionId = session.Id,
+                        Finished = session.Finished,
+                        QuestionNum = session.QuestionNum,
+                        TimeLeft = session.TimeLeft,
+                        QuestionText = session.CurrentQuestion.Text,
+                        QuestionSubText = session.CurrentQuestion.SubText,
+                        AnswerType = nameof(session.CurrentQuestion.Answer),
+                        Addition = session.CurrentQuestion.Answer.Addition
+                    };
+                }
                 return new ObjectResult(vm);
             }
             else
             {
+
                 return BadRequest($"Specified student haven't got an access to session({sessionId})");
             }
             
@@ -72,6 +96,10 @@ namespace RemTestSys.Controllers
                 if(session != null)
                 {
                     bool isRight = session.CurrentQuestion.Answer.IsMatch(answer.Data);
+                    if (isRight)
+                    {
+                        session.RightAnswersCount++;
+                    }
                     AnswerResultViewModel ar = new AnswerResultViewModel
                     {
                         IsRight = isRight,
