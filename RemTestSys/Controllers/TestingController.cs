@@ -7,7 +7,6 @@ using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
-using RemTestSys.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -19,9 +18,9 @@ namespace RemTestSys.Controllers
     {
         public TestingController(AppDbContext appDbContext)
         {
-            this.appDbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
+            this.dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
         }
-        private readonly AppDbContext appDbContext;
+        private readonly AppDbContext dbContext;
 
         [Authorize]
         [HttpGet]
@@ -29,15 +28,14 @@ namespace RemTestSys.Controllers
         {
             string logId;
             if (!this.TryGetLogIdFromCookie(out logId)) return BadRequest("Specified LogId is not valid");
-            Session session = await appDbContext.Sessions
+            Session session = await dbContext.Sessions
                                                 .Where(s => s.Id == sessionId && s.Student.LogId == logId)
                                                 .Include(s=>s.Questions)
-                                                .Include(s=>s.Questions.Select(q=>q.Question))
-                                                .Include(s => s.Questions.Select(q => q.Question.Answer))
+                                                .ThenInclude(q=>q.Question)
+                                                .ThenInclude(q=>q.Answer)
                                                 .SingleOrDefaultAsync();
             if(session != null)
             {
-                
                 TestingViewModel vm;
                 vm = new TestingViewModel
                 {
@@ -66,17 +64,24 @@ namespace RemTestSys.Controllers
             string logId;
             if (this.TryGetLogIdFromCookie(out logId))
             {
-                try
+                Session session = await dbContext.Sessions.Where(s => s.Id == answer.SessionId && s.Student.LogId == logId)
+                                                          .Include(s=>s.Questions)
+                                                          .ThenInclude(qs=>qs.Question)
+                                                          .ThenInclude(q=>q.Answer)
+                                                          .SingleOrDefaultAsync();
+                if(session != null)
                 {
-                    AnswerResult result = await _sessionService.Answer(logId, answer.SessionId, answer.Data);
+                    bool isRight = session.CurrentQuestion.Answer.IsMatch(answer.Data);
                     AnswerResultViewModel ar = new AnswerResultViewModel
                     {
-                        IsRight = result.IsRight,
-                        RightText = result.RightText
+                        IsRight = isRight,
+                        RightText = isRight?null:session.CurrentQuestion.Answer.RightText
                     };
+                    session.NextQuestion();
+                    await dbContext.SaveChangesAsync();
                     return new ObjectResult(ar);
                 }
-                catch (NotExistException)
+                else
                 {
                     return BadRequest("LogId or SessionId is wrong");
                 }

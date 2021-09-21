@@ -10,7 +10,6 @@ using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
-using RemTestSys.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -78,6 +77,9 @@ namespace RemTestSys.Controllers
             if(session == null)
             {
                 session = sessionBuilder.Build(test, student);
+                session.StartTime = DateTime.Now;
+                dbContext.Sessions.Add(session);
+                await dbContext.SaveChangesAsync();
             }
             return View(new TestingViewModel
             {
