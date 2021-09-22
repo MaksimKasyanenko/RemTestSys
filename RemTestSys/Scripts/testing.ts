@@ -6,7 +6,7 @@
     );
     let formManager = new FormManager(document.getElementById("formContainer"));
     formManager.register("confirm", new ConfirmForm("Далі"));
-    formManager.register("text", new TextAnswerForm("Підтвердити", "Відповідь..."));
+    formManager.register("Answer", new TextAnswerForm("Підтвердити", "Відповідь..."));
     let confirmForm = formManager.getForm("confirm");
     let timer = new TestingTimer(document.getElementById("timerDisp"));
     let sessionId = document.getElementById("scriptData").dataset.sessionid;
@@ -17,7 +17,7 @@
     while (!timer.finished && !server.testState.finished) {
         display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText);
         formManager.hideForms();
-        let aForm = formManager.getForm(server.testState.waitedAnswerType);
+        let aForm = formManager.getForm(server.testState.answerType);
         aForm.fill(server.testState.additive);
         let answer = await aForm.showAndGetAnswer();
         formManager.hideForms();

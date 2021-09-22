@@ -54,13 +54,16 @@ namespace RemTestSys.Controllers
                     vm = new TestingViewModel
                     {
                         SessionId = session.Id,
+                        TestName = session.Test.Name,
+                        QuestionsCount = session.Test.QuestionsCount,
                         Finished = session.Finished,
                         QuestionNum = session.QuestionNum,
                         TimeLeft = session.TimeLeft,
                         QuestionText = session.CurrentQuestion.Text,
                         QuestionSubText = session.CurrentQuestion.SubText,
                         AnswerType = nameof(session.CurrentQuestion.Answer),
-                        Addition = session.CurrentQuestion.Answer.Addition
+                        Addition = session.CurrentQuestion.Answer.Addition,
+                        ResultId = session.ResultId
                     };
                 }
                 return new ObjectResult(vm);

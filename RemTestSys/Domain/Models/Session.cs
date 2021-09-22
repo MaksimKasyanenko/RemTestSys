@@ -52,7 +52,7 @@ namespace RemTestSys.Domain.Models
         {
             get
             {
-                return (DateTime.Now - StartTime).Seconds;
+                return Test.Duration - (DateTime.Now - StartTime).Seconds;
             }
         }
 

@@ -4,7 +4,7 @@
     questionText: string;
     finished: boolean;
     timeLeft: number;
-    waitedAnswerType: string;
+    answerType: string;
     additive: any;
     resultId: number;
 }

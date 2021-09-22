@@ -15,6 +15,7 @@ class ConfirmForm implements IAnswerForm {
     }
     generateForm(arg:any) {
         this.htmlElement = document.createElement("div");
+        this.htmlElement.classList.add("hidden");
         this.form = document.createElement("form");
         let submitBtn = document.createElement("input");
         submitBtn.type = "submit";
@@ -49,6 +50,7 @@ class TextAnswerForm implements IAnswerForm{
     }
     generateForm(arg: any) {
         this.htmlElement = document.createElement("div");
+        this.htmlElement.classList.add("hidden");
         this.form = document.createElement("form");
         let sbmt = document.createElement("input");
         sbmt.type = "submit";

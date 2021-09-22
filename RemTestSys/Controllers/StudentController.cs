@@ -86,8 +86,8 @@ namespace RemTestSys.Controllers
             return View(new TestingViewModel
             {
                 SessionId = session.Id,
-                TestName = session.Test.Name,
-                QuestionsCount = session.Test.QuestionsCount
+                QuestionsCount = session.Test.QuestionsCount,
+                TestName = session.Test.Name
             });
         }
 
