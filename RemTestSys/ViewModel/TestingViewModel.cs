@@ -17,6 +17,6 @@ namespace RemTestSys.ViewModel
         public object Addition { get; internal set; }
         public bool Finished { get; internal set; }
         public int SessionId { get; internal set; }
-        public int ResultId { get; internal set; }
+        public int? ResultId { get; internal set; }
     }
 }

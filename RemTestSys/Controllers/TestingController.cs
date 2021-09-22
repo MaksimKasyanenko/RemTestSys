@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using RemTestSys.Domain;
 using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
@@ -41,20 +40,13 @@ namespace RemTestSys.Controllers
                 TestingViewModel vm;
                 if (session.Finished)
                 {
-                    ResultOfTesting resultOfTesting = new ResultOfTesting {
-                        Student=session.Student,
-                        Test=session.Test,
-                        Mark = session.Test.ScoresPerRightAnswer*session.RightAnswerCount
-                    };
-                    dbContext.ResultsOfTests.Add(resultOfTesting);
-                    await dbContext.SaveChangesAsync();
                     vm = new TestingViewModel
                     {
                         SessionId = session.Id,
                         Finished = session.Finished,
-                        QuestionNum = session.QuestionNum,
-                        TimeLeft = session.TimeLeft,
-                        ResultId = resultOfTesting.Id
+                        QuestionNum = 0,
+                        TimeLeft = 0,
+                        ResultId = session.ResultId
                     };
                 }
                 else
@@ -92,8 +84,10 @@ namespace RemTestSys.Controllers
                                                           .Include(s=>s.Questions)
                                                           .ThenInclude(qs=>qs.Question)
                                                           .ThenInclude(q=>q.Answer)
+                                                          .Include(s=>s.Student)
+                                                          .Include(s=>s.Test)
                                                           .SingleOrDefaultAsync();
-                if(session != null)
+                if (session != null)
                 {
                     bool isRight = session.CurrentQuestion.Answer.IsMatch(answer.Data);
                     if (isRight)
@@ -103,9 +97,19 @@ namespace RemTestSys.Controllers
                     AnswerResultViewModel ar = new AnswerResultViewModel
                     {
                         IsRight = isRight,
-                        RightText = isRight?null:session.CurrentQuestion.Answer.RightText
+                        RightText = isRight ? null : session.CurrentQuestion.Answer.RightText
                     };
-                    session.NextQuestion();
+                    if (!session.NextQuestion())
+                    {
+                        ResultOfTesting resultOfTesting = new ResultOfTesting
+                        {
+                            Student = session.Student,
+                            Test = session.Test,
+                            Mark = (int)(session.Test.ScoresPerRightAnswer * session.RightAnswersCount)
+                        };
+                        dbContext.ResultsOfTesting.Add(resultOfTesting);
+                        session.ResultId = resultOfTesting.Id;
+                    }
                     await dbContext.SaveChangesAsync();
                     return new ObjectResult(ar);
                 }

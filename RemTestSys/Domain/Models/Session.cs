@@ -10,6 +10,9 @@ namespace RemTestSys.Domain.Models
         public Student Student { get; set; }
         public Test Test { get; set; }
         public DateTime StartTime { get; set; }
+        public int RightAnswersCount { get; internal set; }
+        public int? ResultId { get; internal set; }
+
         private bool _finished = false;
         public bool Finished
         {
@@ -52,6 +55,7 @@ namespace RemTestSys.Domain.Models
                 return (DateTime.Now - StartTime).Seconds;
             }
         }
+
         public bool NextQuestion()
         {
             if (!Finished) _questionCursor++;

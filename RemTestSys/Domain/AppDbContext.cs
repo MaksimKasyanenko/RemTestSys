@@ -23,6 +23,7 @@ namespace RemTestSys
         public DbSet<Answer> Answers { get; internal set; }
         public DbSet<QuestionInSession> QuestionsInSessions { get; internal set; }
         public DbSet<Group> Groups { get; internal set; }
+        public DbSet<ResultOfTesting> ResultsOfTesting { get; internal set; }
 
         private void Fill()
         {
