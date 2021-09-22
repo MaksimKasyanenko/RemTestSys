@@ -61,5 +61,10 @@ namespace RemTestSys.Domain.Models
             if (!Finished) _questionCursor++;
             return !Finished;
         }
+        public int GetMark()
+        {
+            if (!Finished) throw new InvalidOperationException("You cannot find out the mark before the session ends");
+            return (int)Test.ScoresPerRightAnswer * RightAnswersCount;
+        }
     }
 }

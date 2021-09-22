@@ -44,8 +44,8 @@ namespace RemTestSys.Controllers
                     {
                         SessionId = session.Id,
                         Finished = session.Finished,
-                        QuestionNum = 0,
-                        TimeLeft = 0,
+                        QuestionNum = session.QuestionNum,
+                        TimeLeft = session.TimeLeft,
                         ResultId = session.ResultId
                     };
                 }
@@ -101,11 +101,12 @@ namespace RemTestSys.Controllers
                     };
                     if (!session.NextQuestion())
                     {
+                        session.Finished = true;
                         ResultOfTesting resultOfTesting = new ResultOfTesting
                         {
                             Student = session.Student,
                             Test = session.Test,
-                            Mark = (int)(session.Test.ScoresPerRightAnswer * session.RightAnswersCount)
+                            Mark = session.GetMark()
                         };
                         dbContext.ResultsOfTesting.Add(resultOfTesting);
                         session.ResultId = resultOfTesting.Id;

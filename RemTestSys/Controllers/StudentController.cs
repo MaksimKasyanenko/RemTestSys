@@ -62,12 +62,10 @@ namespace RemTestSys.Controllers
             if (student == null) return RedirectToAction("Login");
             AccessToTest accessToTest = await dbContext.AccessesToTest.FirstOrDefaultAsync(at => at.Student.Id == student.Id && at.Test.Id == id);
             if (accessToTest == null) return View("Error");
-            Test test = await dbContext.Tests
-                                       .Where(t => t.Id == id)
-                                       .Include(t=>t.Questions)
-                                       .SingleAsync();
-
-            Session session = await dbContext.Sessions.FirstOrDefaultAsync(s => s.Student.Id == student.Id && s.Test.Id == id);
+            Session session = await dbContext.Sessions
+                                             .Include(s=>s.Test)
+                                             .ThenInclude(t=>t.Questions)
+                                             .SingleOrDefaultAsync(s => s.Student.Id == student.Id && s.Test.Id == id);
             if (session != null && session.Finished)
             {
                 dbContext.Sessions.Remove(session);
@@ -76,6 +74,10 @@ namespace RemTestSys.Controllers
             }
             if(session == null)
             {
+                Test test = await dbContext.Tests
+                                       .Where(t => t.Id == id)
+                                       .Include(t => t.Questions)
+                                       .SingleAsync();
                 session = sessionBuilder.Build(test, student);
                 session.StartTime = DateTime.Now;
                 dbContext.Sessions.Add(session);
@@ -84,16 +86,31 @@ namespace RemTestSys.Controllers
             return View(new TestingViewModel
             {
                 SessionId = session.Id,
-                TestName = test.Name,
-                QuestionsCount = test.QuestionsCount
+                TestName = session.Test.Name,
+                QuestionsCount = session.Test.QuestionsCount
             });
         }
 
         [Authorize]
         public async Task<IActionResult> ResultOfTesting(int resultId)
         {
-
-            return View();
+            string logId;
+            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
+            Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
+            if (student == null) return RedirectToAction("Login");
+            ResultOfTesting result = await dbContext.ResultsOfTesting.SingleOrDefaultAsync(r=>r.Id==resultId && r.Student.Id == student.Id);
+            if (result != null)
+            {
+                ResultOfTestingViewModel vm = new ResultOfTestingViewModel {
+                    TestName = result.Test.Name,
+                    Mark = result.Mark.ToString()
+                };
+                return View(vm);
+            }
+            else
+            {
+                return RedirectToAction("Exams");
+            }
         }
 
         [HttpGet]
