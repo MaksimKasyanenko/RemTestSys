@@ -69,7 +69,7 @@ class TextAnswerForm implements IAnswerForm{
         return new Promise<Answer>((resolve, reject) => {
             this.form.onsubmit = e => {
                 e.preventDefault();
-                answer.data = this.input.value;
+                answer.data = [this.input.value];
                 resolve(answer);
             };
         });
