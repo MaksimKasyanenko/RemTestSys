@@ -18,7 +18,7 @@
         display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText);
         formManager.hideForms();
         let aForm = formManager.getForm(server.testState.answerType);
-        aForm.fill(server.testState.additive);
+        aForm.fill(server.testState.addition);
         let answer = await aForm.showAndGetAnswer();
         formManager.hideForms();
         let answerResult = await server.answer(answer);

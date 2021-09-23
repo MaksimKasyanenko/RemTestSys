@@ -1,19 +1,8 @@
-﻿interface IAnswerForm {
-    htmlElement: HTMLElement;
-    form: HTMLFormElement;
-    showAndGetAnswer(): Promise<Answer>;
-    fill(additive: any);
-    hide();
-    generateForm(arg:any);
-}
-
-class ConfirmForm implements IAnswerForm {
-    htmlElement: HTMLElement;
-    form: HTMLFormElement;
-    constructor(textOfBtn: string) {
+class ConfirmForm {
+    constructor(textOfBtn) {
         this.generateForm(textOfBtn);
     }
-    generateForm(arg:any) {
+    generateForm(arg) {
         this.htmlElement = document.createElement("div");
         this.htmlElement.classList.add("hidden");
         this.form = document.createElement("form");
@@ -23,32 +12,26 @@ class ConfirmForm implements IAnswerForm {
         this.form.append(submitBtn);
         this.htmlElement.append(this.form);
     }
-    showAndGetAnswer(): Promise<Answer> {
+    showAndGetAnswer() {
         let answer = new Answer();
         this.htmlElement.classList.remove("hidden");
-        return new Promise<Answer>(
-            (resolve, reject) => {
-                this.form.onsubmit = e => {
-                    e.preventDefault();
-                    resolve(answer);
-                }
-            }
-        );
+        return new Promise((resolve, reject) => {
+            this.form.onsubmit = e => {
+                e.preventDefault();
+                resolve(answer);
+            };
+        });
     }
-    fill(additive: any) {}
+    fill(additive) { }
     hide() {
         this.htmlElement.classList.add("hidden");
     }
 }
-
-class TextAnswerForm implements IAnswerForm{
-    htmlElement: HTMLElement;
-    form: HTMLFormElement;
-    input: HTMLInputElement;
-    constructor(textOfBtn: string, placeholder: string) {
+class TextAnswerForm {
+    constructor(textOfBtn, placeholder) {
         this.generateForm({ textOfBtn, placeholder });
     }
-    generateForm(arg: any) {
+    generateForm(arg) {
         this.htmlElement = document.createElement("div");
         this.htmlElement.classList.add("hidden");
         this.form = document.createElement("form");
@@ -63,10 +46,10 @@ class TextAnswerForm implements IAnswerForm{
         row.append(this.form);
         this.htmlElement.append(row);
     }
-    showAndGetAnswer(): Promise<Answer> {
+    showAndGetAnswer() {
         let answer = new Answer();
         this.htmlElement.classList.remove("hidden");
-        return new Promise<Answer>((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             this.form.onsubmit = e => {
                 e.preventDefault();
                 answer.data = this.input.value;
@@ -74,7 +57,7 @@ class TextAnswerForm implements IAnswerForm{
             };
         });
     }
-    fill(additive: any) {}
+    fill(additive) { }
     hide() {
         this.htmlElement.classList.add("hidden");
     }

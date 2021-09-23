@@ -78,12 +78,12 @@ namespace RemTestSys.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Answer(AnswerViewModel answer)
+        public async Task<IActionResult> Answer(int sessionId, AnswerViewModel answer)
         {
             string logId;
             if (this.TryGetLogIdFromCookie(out logId))
             {
-                Session session = await dbContext.Sessions.Where(s => s.Id == answer.SessionId && s.Student.LogId == logId)
+                Session session = await dbContext.Sessions.Where(s => s.Id == sessionId && s.Student.LogId == logId)
                                                           .Include(s=>s.Questions)
                                                           .ThenInclude(qs=>qs.Question)
                                                           .ThenInclude(q=>q.Answer)

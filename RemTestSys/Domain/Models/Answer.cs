@@ -11,6 +11,7 @@ namespace RemTestSys.Domain.Models
 
         public bool IsMatch(object data)
         {
+            !!!!!!!null comes
             if (data.GetType() == typeof(string)) return false;
             string text = ((string)data).Trim();
             return (text == RightText.Trim()) || (!CaseMatters && text.Trim().ToLower() == RightText.Trim().ToLower());

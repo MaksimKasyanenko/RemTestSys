@@ -5,6 +5,6 @@
     finished: boolean;
     timeLeft: number;
     answerType: string;
-    additive: any;
+    addition: any;
     resultId: number;
 }
