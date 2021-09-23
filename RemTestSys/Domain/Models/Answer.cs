@@ -9,12 +9,10 @@ namespace RemTestSys.Domain.Models
         public bool CaseMatters { get; set; }
         public object Addition => null;
 
-        public bool IsMatch(object data)
+        public bool IsMatch(string[] data)
         {
-            !!!!!!!null comes
-            if (data.GetType() == typeof(string)) return false;
-            string text = ((string)data).Trim();
-            return (text == RightText.Trim()) || (!CaseMatters && text.Trim().ToLower() == RightText.Trim().ToLower());
+            if (data.Length != 1) return false;
+            return (data[0].Trim() == RightText.Trim()) || (!CaseMatters && data[0].Trim().ToLower() == RightText.Trim().ToLower());
         }
     }
 }
