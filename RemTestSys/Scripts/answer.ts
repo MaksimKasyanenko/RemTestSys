@@ -1,3 +1,3 @@
 ﻿class Answer {
-    data: any;
+    data: string[];
 }
