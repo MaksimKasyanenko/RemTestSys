@@ -2,6 +2,6 @@
 {
     public class AnswerViewModel
     {
-        public object Data { get; internal set; }
+        public string[] Data { get; internal set; }
     }
 }
