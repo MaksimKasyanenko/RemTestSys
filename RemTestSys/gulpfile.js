@@ -15,6 +15,7 @@ gulp.task("clean_webroot", function () {
 gulp.task("clean_source", function () {
     return del(["Scripts/**/*.js"]);
 });
+gulp.task("clean", gulp.series(["clean_webroot", "clean_source"]));
 
 gulp.task(
     "production", function (done) {

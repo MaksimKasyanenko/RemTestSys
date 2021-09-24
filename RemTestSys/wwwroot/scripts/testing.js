@@ -55,7 +55,7 @@ class TextAnswerForm {
         return new Promise((resolve, reject) => {
             this.form.onsubmit = e => {
                 e.preventDefault();
-                answer.data = this.input.value;
+                answer.data = [this.input.value];
                 resolve(answer);
             };
         });

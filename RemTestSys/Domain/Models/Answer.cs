@@ -7,7 +7,7 @@ namespace RemTestSys.Domain.Models
         public int Id { get; set; }
         public string RightText { get; set; }
         public bool CaseMatters { get; set; }
-        public object Addition => null;
+        public string[] Addition => null;
 
         public bool IsMatch(string[] data)
         {

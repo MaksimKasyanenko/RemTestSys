@@ -1,13 +1,12 @@
 ﻿using System;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
-using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RemTestSys.Controllers
 {
@@ -78,7 +77,7 @@ namespace RemTestSys.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Answer(int sessionId, AnswerViewModel answer)
+        public async Task<IActionResult> Answer([FromRoute]int sessionId, [FromBody]AnswerViewModel answer)
         {
             string logId;
             if (this.TryGetLogIdFromCookie(out logId))

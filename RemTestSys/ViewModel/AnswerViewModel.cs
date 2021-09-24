@@ -2,6 +2,7 @@
 {
     public class AnswerViewModel
     {
-        public string[] Data { get; internal set; }
+        public int SessionId { get; set; }
+        public string[] Data { get; set; }
     }
 }
