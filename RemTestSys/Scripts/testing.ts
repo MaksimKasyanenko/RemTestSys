@@ -7,6 +7,7 @@
     let formManager = new FormManager(document.getElementById("formContainer"));
     formManager.register("confirm", new ConfirmForm("Далі"));
     formManager.register("Answer", new TextAnswerForm("Підтвердити", "Відповідь..."));
+    formManager.hideForms();
     let confirmForm = formManager.getForm("confirm");
     let timer = new TestingTimer(document.getElementById("timerDisp"));
     let sessionId = document.getElementById("scriptData").dataset.sessionid;

@@ -4,7 +4,6 @@ class ConfirmForm {
     }
     generateForm(arg) {
         this.htmlElement = document.createElement("div");
-        this.htmlElement.classList.add("hidden");
         this.form = document.createElement("form");
         let submitBtn = document.createElement("input");
         submitBtn.type = "submit";
@@ -33,7 +32,6 @@ class TextAnswerForm {
     }
     generateForm(arg) {
         this.htmlElement = document.createElement("div");
-        this.htmlElement.classList.add("hidden");
         this.form = document.createElement("form");
         let sbmt = document.createElement("input");
         sbmt.type = "submit";
@@ -53,6 +51,7 @@ class TextAnswerForm {
             this.form.onsubmit = e => {
                 e.preventDefault();
                 answer.data = [this.input.value];
+                this.input.value = "";
                 resolve(answer);
             };
         });
