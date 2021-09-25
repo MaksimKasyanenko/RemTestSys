@@ -10,15 +10,15 @@ namespace RemTestSys.Domain.Models
         public Student Student { get; set; }
         public Test Test { get; set; }
         public DateTime StartTime { get; set; }
-        public int RightAnswersCount { get; internal set; }
-        public int? ResultId { get; internal set; }
+        public int RightAnswersCount { get; set; }
+        public ResultOfTesting Result { get; set; }
 
         private bool _finished = false;
         public bool Finished
         {
             get 
             {
-                return _finished || TimeLeft < 1 || _questionCursor >= Test.QuestionsCount;
+                return _finished || _questionCursor >= Test.QuestionsCount || TimeLeft < 1;
             }
             set
             {

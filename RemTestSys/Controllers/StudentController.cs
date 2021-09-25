@@ -92,13 +92,16 @@ namespace RemTestSys.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ResultOfTesting(int resultId)
+        public async Task<IActionResult> ResultOfTesting(int id)
         {
             string logId;
             if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
             Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
             if (student == null) return RedirectToAction("Login");
-            ResultOfTesting result = await dbContext.ResultsOfTesting.SingleOrDefaultAsync(r=>r.Id==resultId && r.Student.Id == student.Id);
+            ResultOfTesting result = await dbContext.ResultsOfTesting
+                                                    .Where(r => r.Id == id && r.Student.Id == student.Id)
+                                                    .Include(r=>r.Test)
+                                                    .SingleOrDefaultAsync();
             if (result != null)
             {
                 ResultOfTestingViewModel vm = new ResultOfTestingViewModel {

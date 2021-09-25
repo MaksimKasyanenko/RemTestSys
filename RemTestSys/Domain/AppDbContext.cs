@@ -31,7 +31,7 @@ namespace RemTestSys
             Student student = new Student {FirstName="Demo", LastName="Student", Group=group, LogId="demo"};
             Groups.Add(group);
             Students.Add(student);
-            Test test = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2 };
+            Test test = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2, ScoresPerRightAnswer=6 };
             Tests.Add(test);
             Question[] questions = new Question[] {
                 new Question{Test = test, Text="Demo Question 1", Answer=new Answer{RightText="demo1"} },

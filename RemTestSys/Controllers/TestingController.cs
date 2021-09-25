@@ -33,6 +33,7 @@ namespace RemTestSys.Controllers
                                                 .Include(s=>s.Questions)
                                                 .ThenInclude(q=>q.Question)
                                                 .ThenInclude(q=>q.Answer)
+                                                .Include(s=>s.Result)
                                                 .SingleOrDefaultAsync();
             if(session != null)
             {
@@ -45,7 +46,7 @@ namespace RemTestSys.Controllers
                         Finished = session.Finished,
                         QuestionNum = session.QuestionNum,
                         TimeLeft = session.TimeLeft,
-                        ResultId = session.ResultId
+                        ResultId = session.Result.Id
                     };
                 }
                 else
@@ -61,8 +62,7 @@ namespace RemTestSys.Controllers
                         QuestionText = session.CurrentQuestion.Text,
                         QuestionSubText = session.CurrentQuestion.SubText,
                         AnswerType = nameof(session.CurrentQuestion.Answer),
-                        Addition = session.CurrentQuestion.Answer.Addition,
-                        ResultId = session.ResultId
+                        Addition = session.CurrentQuestion.Answer.Addition
                     };
                 }
                 return new ObjectResult(vm);
@@ -111,7 +111,7 @@ namespace RemTestSys.Controllers
                             Mark = session.GetMark()
                         };
                         dbContext.ResultsOfTesting.Add(resultOfTesting);
-                        session.ResultId = resultOfTesting.Id;
+                        session.Result = resultOfTesting;
                     }
                     await dbContext.SaveChangesAsync();
                     return new ObjectResult(ar);

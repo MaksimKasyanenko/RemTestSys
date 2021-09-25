@@ -7,9 +7,9 @@ namespace RemTestSys.Domain.Models
 {
     public class ResultOfTesting
     {
-        public int Id { get; internal set; }
-        public Student Student { get; internal set; }
-        public Test Test { get; internal set; }
-        public int Mark { get; internal set; }
+        public int Id { get; set; }
+        public Student Student { get; set; }
+        public Test Test { get; set; }
+        public int Mark { get; set; }
     }
 }
