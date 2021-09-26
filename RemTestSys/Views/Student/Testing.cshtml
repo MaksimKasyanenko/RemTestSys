@@ -22,7 +22,9 @@
             <div id="questionText"></div>
             <div id="questionSubText"></div>
         </div>
-        <div id="formContainer">
+        <div>
+            @await Html.PartialAsync("~/Views/AnswerForms/ConfirmForm.cshtml")
+            @await Html.PartialAsync("~/Views/AnswerForms/TextAnswerForm.cshtml")
         </div>
     </div>
 </div>

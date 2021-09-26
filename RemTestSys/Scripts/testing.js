@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 window.addEventListener("load", function () {
     return __awaiter(this, void 0, void 0, function* () {
         let display = new TestingDisplay(document.getElementById("questionNum"), document.getElementById("questionText"), document.getElementById("questionSubText"));
-        let formManager = new FormManager(document.getElementById("formContainer"));
-        formManager.register("confirm", new ConfirmForm("Далі"));
-        formManager.register("Answer", new TextAnswerForm("Підтвердити", "Відповідь..."));
+        let formManager = new FormManager();
+        formManager.register("confirm", new ConfirmForm());
+        formManager.register("Answer", new TextAnswerForm());
         formManager.hideForms();
         let confirmForm = formManager.getForm("confirm");
         let timer = new TestingTimer(document.getElementById("timerDisp"));
@@ -23,11 +23,10 @@ window.addEventListener("load", function () {
         timer.start();
         while (!timer.finished && !server.testState.finished) {
             display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText);
-            formManager.hideForms();
             let aForm = formManager.getForm(server.testState.answerType);
             aForm.fill(server.testState.addition);
             let answer = yield aForm.showAndGetAnswer();
-            formManager.hideForms();
+            aForm.hide();
             let answerResult = yield server.answer(answer);
             if (answerResult.isRight) {
                 display.showMessage("Правильно!", "");
@@ -36,6 +35,7 @@ window.addEventListener("load", function () {
                 display.showMessage("Неправильно!", `Правильна відповідь: ${answerResult.rightText}`);
             }
             yield confirmForm.showAndGetAnswer();
+            confirmForm.hide();
             display.clear();
             yield server.updateState();
             timer.time = server.testState.timeLeft;

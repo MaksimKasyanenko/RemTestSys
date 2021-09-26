@@ -4,9 +4,9 @@
         document.getElementById("questionText"),
         document.getElementById("questionSubText")
     );
-    let formManager = new FormManager(document.getElementById("formContainer"));
-    formManager.register("confirm", new ConfirmForm("Далі"));
-    formManager.register("Answer", new TextAnswerForm("Підтвердити", "Відповідь..."));
+    let formManager = new FormManager();
+    formManager.register("confirm", new ConfirmForm());
+    formManager.register("Answer", new TextAnswerForm());
     formManager.hideForms();
     let confirmForm = formManager.getForm("confirm");
     let timer = new TestingTimer(document.getElementById("timerDisp"));
@@ -17,11 +17,10 @@
     timer.start();
     while (!timer.finished && !server.testState.finished) {
         display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText);
-        formManager.hideForms();
         let aForm = formManager.getForm(server.testState.answerType);
         aForm.fill(server.testState.addition);
         let answer = await aForm.showAndGetAnswer();
-        formManager.hideForms();
+        aForm.hide();
         let answerResult = await server.answer(answer);
         if (answerResult.isRight) {
             display.showMessage("Правильно!","");
@@ -29,6 +28,7 @@
             display.showMessage("Неправильно!", `Правильна відповідь: ${answerResult.rightText}`);
         }
         await confirmForm.showAndGetAnswer();
+        confirmForm.hide();
         display.clear();
         await server.updateState();
         timer.time = server.testState.timeLeft;

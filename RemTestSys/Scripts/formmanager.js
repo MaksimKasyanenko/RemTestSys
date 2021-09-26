@@ -1,12 +1,10 @@
 class FormManager {
-    constructor(formContainer) {
-        this.formContainer = formContainer;
+    constructor() {
         this.forms = new Map();
     }
     register(formType, form) {
         this.forms.set(formType, form);
         form.hide();
-        this.formContainer.append(form.htmlElement);
     }
     hideForms() {
         for (let item of this.forms) {

@@ -4,23 +4,17 @@
     showAndGetAnswer(): Promise<Answer>;
     fill(additive: any);
     hide();
-    generateForm(arg:any);
 }
 
 class ConfirmForm implements IAnswerForm {
     htmlElement: HTMLElement;
     form: HTMLFormElement;
-    constructor(textOfBtn: string) {
-        this.generateForm(textOfBtn);
-    }
-    generateForm(arg:any) {
-        this.htmlElement = document.createElement("div");
-        this.form = document.createElement("form");
-        let submitBtn = document.createElement("input");
-        submitBtn.type = "submit";
-        submitBtn.value = arg;
-        this.form.append(submitBtn);
-        this.htmlElement.append(this.form);
+    constructor() {
+        this.htmlElement = document.getElementById("confirmFormWrp");
+        this.form = document.querySelector("#confirmFormWrp form");
+        if (!this.htmlElement || !this.form) {
+            throw new ReferenceError("confirmForm can't be built, not all of required elements was found");
+        }
     }
     showAndGetAnswer(): Promise<Answer> {
         let answer = new Answer();
@@ -44,22 +38,14 @@ class TextAnswerForm implements IAnswerForm{
     htmlElement: HTMLElement;
     form: HTMLFormElement;
     input: HTMLInputElement;
-    constructor(textOfBtn: string, placeholder: string) {
-        this.generateForm({ textOfBtn, placeholder });
-    }
-    generateForm(arg: any) {
-        this.htmlElement = document.createElement("div");
-        this.form = document.createElement("form");
-        let sbmt = document.createElement("input");
-        sbmt.type = "submit";
-        sbmt.value = arg.textOfBtn;
-        this.input = document.createElement("input");
-        this.input.placeholder = arg.placeholder;
-        this.form.append(this.input);
-        this.form.append(sbmt);
-        let row = document.createElement("div");
-        row.append(this.form);
-        this.htmlElement.append(row);
+    constructor() {
+        this.htmlElement = document.getElementById("textAnswerFormWrp");
+        this.form = document.querySelector("#textAnswerFormWrp form");
+        this.input = document.querySelector("#textAnswerFormWrp form input[type='text']");
+        if (!this.htmlElement || !this.form || !this.input) {
+            alert(!!this.form +" "+!!this.input);
+            throw new ReferenceError("textForm can't be built, not all of required elements was found");
+        }
     }
     showAndGetAnswer(): Promise<Answer> {
         let answer = new Answer();
