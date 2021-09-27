@@ -27,9 +27,9 @@ class TextAnswerForm {
         this.form = document.querySelector("#textAnswerFormWrp form");
         this.input = document.querySelector("#textAnswerFormWrp form input[type='text']");
         if (!this.htmlElement || !this.form || !this.input) {
-            alert(!!this.form + " " + !!this.input);
             throw new ReferenceError("textForm can't be built, not all of required elements was found");
         }
+        registerSpecialSymbolsPanel(this.input);
     }
     showAndGetAnswer() {
         let answer = new Answer();
