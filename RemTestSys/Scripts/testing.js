@@ -23,7 +23,7 @@ window.addEventListener("load", function () {
         yield server.updateState();
         timer.time = server.testState.timeLeft;
         timer.start();
-        while (!timer.finished && !server.testState.finished) {
+        while (!server.testState.finished) {
             display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText);
             let aForm = formManager.getForm(server.testState.answerType);
             aForm.fill(server.testState.addition);

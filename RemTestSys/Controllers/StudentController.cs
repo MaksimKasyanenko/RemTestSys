@@ -29,9 +29,9 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> Exams()
         {
             string logId;
-            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
+            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login", "Account");
             Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
-            if (student == null) return RedirectToAction("Login");
+            if (student == null) return RedirectToAction("Login", "Account");
             var exams = await dbContext.Exams.Where(ex => ex.AssignedTo.Id == student.Id)
                                              .Include(ex => ex.Test)
                                              .ToArrayAsync();
@@ -57,9 +57,9 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> Testing(int id)
         {
             string logId;
-            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
+            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login", "Account");
             Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
-            if (student == null) return RedirectToAction("Login");
+            if (student == null) return RedirectToAction("Login", "Account");
             AccessToTest accessToTest = await dbContext.AccessesToTest.FirstOrDefaultAsync(at => at.Student.Id == student.Id && at.Test.Id == id);
             if (accessToTest == null) return View("Error");
             Session session = await dbContext.Sessions
@@ -95,9 +95,9 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> ResultOfTesting(int id)
         {
             string logId;
-            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login");
+            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login", "Account");
             Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
-            if (student == null) return RedirectToAction("Login");
+            if (student == null) return RedirectToAction("Login", "Account");
             ResultOfTesting result = await dbContext.ResultsOfTesting
                                                     .Where(r => r.Id == id && r.Student.Id == student.Id)
                                                     .Include(r=>r.Test)
@@ -114,40 +114,6 @@ namespace RemTestSys.Controllers
             {
                 return RedirectToAction("Exams");
             }
-        }
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel login)
-        {
-            if (ModelState.IsValid && login.StudentLogId.Length > 0)
-            {
-                Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == login.StudentLogId);
-                if (student != null)
-                {
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                    claimsIdentity.AddClaim(new Claim("StudentLogId", login.StudentLogId));
-                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-                    return RedirectToAction("Exams");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Учня з вказанним ідентифікатором не знайдено");
-                }
-            }
-            return View(login);
-        }
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Student");
         }
     }
 }

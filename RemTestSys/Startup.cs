@@ -28,7 +28,7 @@ namespace RTS
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(
-                    options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Student/Login")
+                    options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login")
                 );
             services.AddControllersWithViews();
         }

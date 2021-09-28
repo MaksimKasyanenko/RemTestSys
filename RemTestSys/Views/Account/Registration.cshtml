@@ -1,0 +1,21 @@
+﻿@model StudentViewModel
+@{
+    ViewData["Title"] = "Регістрація";
+}
+
+<div>
+    <h2>Реєстрація учня</h2>
+    <form asp-action="Registration" asp-controller="Account" method="post">
+        <input type="text" asp-for="FirstName" />
+        <input type="text" asp-for="LastName" />
+        <select asp-for="Group">
+            @foreach(var g in Model.GroupList)
+            {
+                <option>@g</option>
+            }
+        </select>
+        <div asp-validation-summary="ModelOnly"></div>
+        <input type="submit" value="Зареєструватися" />
+    </form>
+</div>
+

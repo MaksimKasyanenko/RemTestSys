@@ -27,9 +27,11 @@ namespace RemTestSys
 
         private void Fill()
         {
-            Group group = new Group { Name = "Demo Group" };
-            Student student = new Student {FirstName="Demo", LastName="Student", Group=group, LogId="demo"};
-            Groups.Add(group);
+            Group group1 = new Group { Name = "Demo Group 1" };
+            Group group2 = new Group { Name = "Demo Group 2" };
+            Student student = new Student {FirstName="Demo", LastName="Student", Group=group1, LogId="demo"};
+            Groups.Add(group1);
+            Groups.Add(group2);
             Students.Add(student);
             Test test = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2, ScoresPerRightAnswer=6 };
             Tests.Add(test);

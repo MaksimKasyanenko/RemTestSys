@@ -1,24 +1,5 @@
 ﻿<div id="textAnswerFormWrp">
-    <div id="specialSymbolsPanel">
-        <div>
-            <button data-symbol="↑">&#8593;</button>
-            <button data-symbol="↓">&#8595;</button>
-            <button data-symbol="→">&#8594;</button>
-            <button data-symbol="+">+</button>
-        </div>
-        <div>
-            <button data-symbol="₁">X<sub>1</sub></button>
-            <button data-symbol="₂">X<sub>2</sub></button>
-            <button data-symbol="₃">X<sub>3</sub></button>
-            <button data-symbol="₄">X<sub>4</sub></button>
-            <button data-symbol="₅">X<sub>5</sub></button>
-            <button data-symbol="₆">X<sub>6</sub></button>
-            <button data-symbol="₇">X<sub>7</sub></button>
-            <button data-symbol="₈">X<sub>8</sub></button>
-            <button data-symbol="₉">X<sub>9</sub></button>
-            <button data-symbol="₀">X<sub>0</sub></button>
-        </div>
-    </div>
+    @await Html.PartialAsync("~/Views/AnswerForms/SpecialSymbolsPanel.cshtml")
     <form>
         <div>
             <input type="text" placeholder="Ваша відповідь" />
