@@ -29,7 +29,6 @@ class TextAnswerForm {
         if (!this.htmlElement || !this.form || !this.input) {
             throw new ReferenceError("textForm can't be built, not all of required elements was found");
         }
-        registerSpecialSymbolsPanel(this.input);
     }
     showAndGetAnswer() {
         let answer = new Answer();

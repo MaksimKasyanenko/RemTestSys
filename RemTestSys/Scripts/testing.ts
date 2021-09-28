@@ -6,7 +6,9 @@
     );
     let formManager = new FormManager();
     formManager.register("confirm", new ConfirmForm());
-    formManager.register("Answer", new TextAnswerForm());
+    let textAnswerForm = new TextAnswerForm();
+    registerSpecialSymbolsPanel(textAnswerForm.input);
+    formManager.register("Answer", textAnswerForm);
     formManager.hideForms();
     let confirmForm = formManager.getForm("confirm");
     let timer = new TestingTimer(document.getElementById("timerDisp"));

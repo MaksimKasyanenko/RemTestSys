@@ -32,7 +32,6 @@ class TextAnswerForm {
         if (!this.htmlElement || !this.form || !this.input) {
             throw new ReferenceError("textForm can't be built, not all of required elements was found");
         }
-        registerSpecialSymbolsPanel(this.input);
     }
     showAndGetAnswer() {
         let answer = new Answer();
@@ -137,7 +136,9 @@ window.addEventListener("load", function () {
         let display = new TestingDisplay(document.getElementById("questionNum"), document.getElementById("questionText"), document.getElementById("questionSubText"));
         let formManager = new FormManager();
         formManager.register("confirm", new ConfirmForm());
-        formManager.register("Answer", new TextAnswerForm());
+        let textAnswerForm = new TextAnswerForm();
+        registerSpecialSymbolsPanel(textAnswerForm.input);
+        formManager.register("Answer", textAnswerForm);
         formManager.hideForms();
         let confirmForm = formManager.getForm("confirm");
         let timer = new TestingTimer(document.getElementById("timerDisp"));
