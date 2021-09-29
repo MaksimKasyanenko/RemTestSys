@@ -50,9 +50,18 @@ namespace RemTestSys.Controllers
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 claimsIdentity.AddClaim(new Claim("StudentLogId", student.LogId));
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true
+                };
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
                 return RedirectToAction("AvailableTests", "Student");
             }
+            else
+            {
+                ModelState.AddModelError("", "Необхідно вказати ім'я та прізвище");
+            }
+            regData.GroupNameList = await dbContext.Groups.Select(g => g.Name).ToArrayAsync();
             return View(regData);
         }
 
@@ -62,16 +71,16 @@ namespace RemTestSys.Controllers
             StringBuilder sb = new StringBuilder();
             Random rnd = new Random();
             int counter = 0;
-            while(await dbContext.Students.AnyAsync(s => s.LogId == sb.ToString()))
+            do
             {
                 counter++;
                 if (counter > 50) throw new InvalidOperationException("LogId cannot be generated");
                 sb.Clear();
                 for (int i = 0; i < 8; i++)
                 {
-                    sb.Append(rnd.Next('a', 'z'));
+                    sb.Append(rnd.Next(0, 10));
                 }
-            }
+            } while (await dbContext.Students.AnyAsync(s => s.LogId == sb.ToString()));
             return sb.ToString();
         }
     }

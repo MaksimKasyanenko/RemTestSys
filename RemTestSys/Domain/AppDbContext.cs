@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace RemTestSys
 {
@@ -17,7 +15,6 @@ namespace RemTestSys
         public DbSet<Student> Students { get; internal set; }
         public DbSet<AccessToTest> AccessesToTest { get; internal set; }
         public DbSet<Test> Tests { get; internal set; }
-        public DbSet<Exam> Exams { get; internal set; }
         public DbSet<Session> Sessions { get; internal set; }
         public DbSet<Question> Questions { get; internal set; }
         public DbSet<Answer> Answers { get; internal set; }
@@ -29,30 +26,35 @@ namespace RemTestSys
         {
             Group group1 = new Group { Name = "Demo Group 1" };
             Group group2 = new Group { Name = "Demo Group 2" };
-            Student student = new Student {FirstName="Demo", LastName="Student", Group=group1, LogId="demo"};
             Groups.Add(group1);
             Groups.Add(group2);
-            Students.Add(student);
-            Test test = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2, ScoresPerRightAnswer=6 };
-            Tests.Add(test);
+
+            Test test1 = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2, ScoresPerRightAnswer=6 };
+            Tests.Add(test1);
             Question[] questions = new Question[] {
-                new Question{Test = test, Text="Demo Question 1", Answer=new Answer{RightText="demo1"} },
-                new Question{Test = test, Text="Demo Question 2", Answer=new Answer{RightText="demo2"} }
+                new Question{Test = test1, Text="Demo Question 1", Answer=new Answer{RightText="demo1"} },
+                new Question{Test = test1, Text="Demo Question 2", Answer=new Answer{RightText="demo2"} }
             };
             foreach(var q in questions)
             {
                 Answers.Add(q.Answer);
                 Questions.Add(q);
             }
-            AccessesToTest.Add(new AccessToTest {Student=student, Test=test});
-            Exam exam = new Exam {
-                AssignedTo = student,
-                Status=Domain.ExamStatus.NotPassed,
-                IsStrict=false,
-                Deadline=new System.DateTime(2024,1,1,0,0,0),
-                Test=test
+
+            Test test2 = new Test { Name = "Demo Test 2", Description = "This is demo test 2", Duration = 100, QuestionsCount = 4, ScoresPerRightAnswer = 3 };
+            Tests.Add(test2);
+            questions = new Question[] {
+                new Question{Test = test2, Text="Demo Question 3", Answer=new Answer{RightText="demo3"} },
+                new Question{Test = test2, Text="Demo Question 4", Answer=new Answer{RightText="demo4"} }
             };
-            Exams.Add(exam);
+            foreach (var q in questions)
+            {
+                Answers.Add(q.Answer);
+                Questions.Add(q);
+            }
+
+            AccessesToTest.Add(new AccessToTest {Group=group1, Test=test1});
+            AccessesToTest.Add(new AccessToTest { Group = group2, Test = test2 });
             SaveChanges();
         }
     }

@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
@@ -31,11 +28,11 @@ namespace RemTestSys.Controllers
             string logId;
             Student student=null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
+                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s=>s.Group).SingleOrDefaultAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
 
             var tests = await dbContext.AccessesToTest
-                                       .Where(at => at.Student.Id == student.Id)
+                                       .Where(at => at.EveryBody || at.Group.Id == student.Group.Id || at.Student.Id == student.Id)
                                        .Select(at => at.Test)
                                        .ToArrayAsync();
             var vmList = new List<TestInfoViewModel>();
@@ -60,10 +57,10 @@ namespace RemTestSys.Controllers
             string logId;
             Student student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
+                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s=>s.Group).SingleOrDefaultAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
 
-            AccessToTest accessToTest = await dbContext.AccessesToTest.FirstOrDefaultAsync(at => at.Student.Id == student.Id && at.Test.Id == id);
+            AccessToTest accessToTest = await dbContext.AccessesToTest.FirstOrDefaultAsync(at => at.Test.Id == id && (at.EveryBody || at.Group.Id == student.Group.Id || at.Student.Id == student.Id));
             if (accessToTest == null) return View("Error");
             Session session = await dbContext.Sessions
                                              .Include(s=>s.Test)
@@ -98,9 +95,11 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> ResultOfTesting(int id)
         {
             string logId;
-            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login", "Account");
-            Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
-            if (student == null) return RedirectToAction("Login", "Account");
+            Student student = null;
+            if (this.TryGetLogIdFromCookie(out logId))
+                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
+            if (student == null) return RedirectToAction("Registration", "Account");
+
             ResultOfTesting result = await dbContext.ResultsOfTesting
                                                     .Where(r => r.Id == id && r.Student.Id == student.Id)
                                                     .Include(r=>r.Test)
@@ -115,7 +114,7 @@ namespace RemTestSys.Controllers
             }
             else
             {
-                return RedirectToAction("Exams");
+                return RedirectToAction("AvailableTests");
             }
         }
     }
