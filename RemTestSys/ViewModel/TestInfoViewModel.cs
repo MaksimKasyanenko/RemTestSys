@@ -4,7 +4,7 @@ using System;
 
 namespace RemTestSys.ViewModel
 {
-    public class ExamInfoViewModel
+    public class TestInfoViewModel
     {
         public int TestId { get; set; }
         public string TestName { get; set; }

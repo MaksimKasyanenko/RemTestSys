@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,7 +29,11 @@ namespace RTS
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(
-                    options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login")
+                    options => {
+                        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Registration");
+                        options.ExpireTimeSpan = TimeSpan.FromDays(90);
+                        options.SlidingExpiration = true;
+                        }
                 );
             services.AddControllersWithViews();
         }
@@ -59,7 +64,7 @@ namespace RTS
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Student}/{action=Exams}/{id?}");
+                    pattern: "{controller=Student}/{action=AvailableTests}/{id?}");
             });
         }
     }

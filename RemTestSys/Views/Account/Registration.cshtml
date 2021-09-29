@@ -1,15 +1,19 @@
-﻿@model StudentViewModel
+﻿@model RegistrationViewModel
 @{
-    ViewData["Title"] = "Регістрація";
+    ViewData["Title"] = "Вхід до системи";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div>
-    <h2>Реєстрація учня</h2>
-    <form asp-action="Registration" asp-controller="Account" method="post">
+    <hgroup>
+        <h1>Система дистанційного тестування учнів</h1>
+        <h3>Предмет: хімія та біологія</h3>
+    </hgroup>
+    <form asp-action="Registration" asp-controller="Account" asp-antiforgery="true" method="post">
         <input type="text" asp-for="FirstName" />
         <input type="text" asp-for="LastName" />
-        <select asp-for="Group">
-            @foreach(var g in Model.GroupList)
+        <select asp-for="GroupName">
+            @foreach (var g in Model.GroupNameList)
             {
                 <option>@g</option>
             }

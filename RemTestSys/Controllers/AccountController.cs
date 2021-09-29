@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RemTestSys.Controllers
@@ -21,51 +22,57 @@ namespace RemTestSys.Controllers
         }
         private readonly AppDbContext dbContext;
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Registration()
         {
-            return View();
+            var groupList = await dbContext.Groups.Select(g => g.Name).ToArrayAsync();
+            var regData = new RegistrationViewModel{
+                GroupNameList=groupList
+            };
+            return View(regData);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel login)
+        public async Task<IActionResult> Registration(RegistrationViewModel regData)
         {
-            if (ModelState.IsValid && login.StudentLogId.Length > 0)
+            if (ModelState.IsValid)
             {
-                Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == login.StudentLogId);
-                if (student != null)
+                Student student = new Student {
+                    FirstName = regData.FirstName,
+                    LastName = regData.LastName
+                };
+                Group group = await dbContext.Groups.FirstOrDefaultAsync(g=>g.Name == regData.GroupName);
+                student.Group = group;
+                student.LogId = await RandomLogId();
+                dbContext.Students.Add(student);
+                await dbContext.SaveChangesAsync();
+
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                claimsIdentity.AddClaim(new Claim("StudentLogId", student.LogId));
+                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+                return RedirectToAction("AvailableTests", "Student");
+            }
+            return View(regData);
+        }
+
+
+        private async Task<string> RandomLogId()
+        {
+            StringBuilder sb = new StringBuilder();
+            Random rnd = new Random();
+            int counter = 0;
+            while(await dbContext.Students.AnyAsync(s => s.LogId == sb.ToString()))
+            {
+                counter++;
+                if (counter > 50) throw new InvalidOperationException("LogId cannot be generated");
+                sb.Clear();
+                for (int i = 0; i < 8; i++)
                 {
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                    claimsIdentity.AddClaim(new Claim("StudentLogId", login.StudentLogId));
-                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-                    return RedirectToAction("Exams", "Student");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Учня з вказанним ідентифікатором не знайдено");
+                    sb.Append(rnd.Next('a', 'z'));
                 }
             }
-            return View(login);
-        }
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
-        }
-        [HttpGet]
-        public async Task<IActionResult> Registration()
-        {
-            StudentViewModel st = new StudentViewModel();
-            st.GroupList = await dbContext.Groups.Select(g => g.Name).ToArrayAsync();
-            return View(st);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Registration(StudentViewModel newStudent)
-        {
-            StudentViewModel st = new StudentViewModel();
-            st.GroupList = await dbContext.Groups.Select(g => g.Name).ToArrayAsync();
-            return View(st);
+            return sb.ToString();
         }
     }
 }

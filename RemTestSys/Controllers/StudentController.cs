@@ -26,29 +26,30 @@ namespace RemTestSys.Controllers
         private readonly ISessionBuilder sessionBuilder;
 
         [Authorize]
-        public async Task<IActionResult> Exams()
+        public async Task<IActionResult> AvailableTests()
         {
             string logId;
-            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login", "Account");
-            Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
-            if (student == null) return RedirectToAction("Login", "Account");
-            var exams = await dbContext.Exams.Where(ex => ex.AssignedTo.Id == student.Id)
-                                             .Include(ex => ex.Test)
-                                             .ToArrayAsync();
-            var vmList = new List<ExamInfoViewModel>();
-            foreach (var ex in exams)
+            Student student=null;
+            if (this.TryGetLogIdFromCookie(out logId))
+                student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
+            if (student == null) return RedirectToAction("Registration", "Account");
+
+            var tests = await dbContext.AccessesToTest
+                                       .Where(at => at.Student.Id == student.Id)
+                                       .Select(at => at.Test)
+                                       .ToArrayAsync();
+            var vmList = new List<TestInfoViewModel>();
+            foreach (var tst in tests)
             {
-                var exInfo = new ExamInfoViewModel
+                var tstInfo = new TestInfoViewModel
                 {
-                    TestId = ex.Test.Id,
-                    TestName = ex.Test.Name,
-                    TestDescription = ex.Test.Description,
-                    Status = ex.Status,
-                    CountOfQuestions = ex.Test.QuestionsCount,
-                    Duration = ex.Test.Duration,
-                    Deadline = ex.Deadline
+                    TestId = tst.Id,
+                    TestName = tst.Name,
+                    TestDescription = tst.Description,
+                    CountOfQuestions = tst.QuestionsCount,
+                    Duration = tst.Duration
                 };
-                vmList.Add(exInfo);
+                vmList.Add(tstInfo);
             }
             return View(vmList);
         }
@@ -57,9 +58,11 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> Testing(int id)
         {
             string logId;
-            if (!this.TryGetLogIdFromCookie(out logId)) return RedirectToAction("Login", "Account");
-            Student student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
-            if (student == null) return RedirectToAction("Login", "Account");
+            Student student = null;
+            if (this.TryGetLogIdFromCookie(out logId))
+                student = await dbContext.Students.SingleOrDefaultAsync(s => s.LogId == logId);
+            if (student == null) return RedirectToAction("Registration", "Account");
+
             AccessToTest accessToTest = await dbContext.AccessesToTest.FirstOrDefaultAsync(at => at.Student.Id == student.Id && at.Test.Id == id);
             if (accessToTest == null) return View("Error");
             Session session = await dbContext.Sessions
