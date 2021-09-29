@@ -5,16 +5,45 @@ namespace RemTestSys.Domain.Models
     public class Answer
     {
         public int Id { get; set; }
+        public Types Type
+        {
+            get
+            {
+                if (answerMatcher == null || additionLinker == null) throw new InvalidOperationException("Property 'Type' mustn't be read before it have been set");
+                return type;
+            }
+            set
+            {
+                answerMatcher = AnswerMatcher.Create(value);
+                additionLinker = AdditionLinker.Create(value);
+                type = value;
+            }
+        }
+        private AnswerMatcher answerMatcher;
+        private AdditionLinker additionLinker;
+        private Types type;
         public string RightText { get; set; }
         public bool CaseMatters { get; set; }
         public string[] GetAddition()
         {
-            return null;
+            return additionLinker.Link(this);
         }
         public bool IsMatch(string[] data)
         {
-            if (data.Length != 1) return false;
-            return (data[0].Trim() == RightText.Trim()) || (!CaseMatters && data[0].Trim().ToLower() == RightText.Trim().ToLower());
+            return answerMatcher.Match(data);
+        }
+
+
+
+        public enum Types { Text, OneVariant, MultipleVariant, Chain, Conformity }
+
+
+
+
+
+        private abstract class AnswerMatcher
+        {
+
         }
     }
 }
