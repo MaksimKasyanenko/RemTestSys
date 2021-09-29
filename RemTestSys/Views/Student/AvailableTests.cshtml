@@ -12,16 +12,15 @@
 }
 else
 {
-    foreach(var examInfo in Model)
+    foreach(var testInfo in Model)
     {
 <div>
-    <h3>Тест: @examInfo.TestName</h3>
-    <p>Опис: @examInfo.TestDescription</p>
-    <p>Статус: @examInfo.Status</p>
-    <p>Питань в тесті: @examInfo.CountOfQuestions</p>
-    <p>Часу на проходження: @examInfo.Duration</p>
-    <p>Необхідно пройти до: @examInfo.Deadline</p>
-    <div class="row text-c"><a asp-action="Testing" asp-controller="Student" asp-route-id="@examInfo.TestId">Пройти</a></div>
+    <h3>Тест: @testInfo.TestName</h3>
+    <p>Опис: @testInfo.TestDescription</p>
+    <p>Питань в тесті: @testInfo.CountOfQuestions</p>
+    <p>Часу на проходження: @testInfo.Duration</p>
+    <p>Необхідно пройти до: @testInfo.Deadline</p>
+    <div class="row text-c"><a asp-action="Testing" asp-controller="Student" asp-route-id="@testInfo.TestId">Пройти</a></div>
 </div>
     }
 }
