@@ -12,15 +12,16 @@ namespace RemTestSys
             }
         }
 
-        public DbSet<Student> Students { get; internal set; }
-        public DbSet<AccessToTest> AccessesToTest { get; internal set; }
-        public DbSet<Test> Tests { get; internal set; }
-        public DbSet<Session> Sessions { get; internal set; }
-        public DbSet<Question> Questions { get; internal set; }
-        public DbSet<TextAnswer> TextAnswers { get; internal set; }
-        public DbSet<QuestionInSession> QuestionsInSessions { get; internal set; }
-        public DbSet<Group> Groups { get; internal set; }
-        public DbSet<ResultOfTesting> ResultsOfTesting { get; internal set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<AccessToTest> AccessesToTest { get; set; }
+        public DbSet<Test> Tests { get; set; }
+        public DbSet<Session> Sessions { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<TextAnswer> TextAnswers { get; set; }
+        public DbSet<OneVariantAnswer> OneVariantAnswers { get; set; }
+        public DbSet<QuestionInSession> QuestionsInSessions { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<ResultOfTesting> ResultsOfTesting { get; set; }
 
         private void Fill()
         {
@@ -33,13 +34,12 @@ namespace RemTestSys
             Tests.Add(test1);
             Question[] questions = new Question[] {
                 new Question{Test = test1, Text="Demo Question 1", Answer=new TextAnswer{RightText="demo1"} },
-                new Question{Test = test1, Text="Demo Question 2", Answer=new TextAnswer{RightText="demo2"} }
+                new Question{Test = test1, Text="Demo Question 2", Answer=new OneVariantAnswer{RightText="demo2"} }
             };
-            foreach(var q in questions)
-            {
-                TextAnswers.Add((TextAnswer)q.Answer);
-                Questions.Add(q);
-            }
+            TextAnswers.Add((TextAnswer)questions[0].Answer);
+            Questions.Add(questions[0]);
+            OneVariantAnswers.Add((OneVariantAnswer)questions[1].Answer);
+            Questions.Add(questions[1]);
 
             Test test2 = new Test { Name = "Demo Test 2", Description = "This is demo test 2", Duration = 100, QuestionsCount = 4, ScoresPerRightAnswer = 3 };
             Tests.Add(test2);

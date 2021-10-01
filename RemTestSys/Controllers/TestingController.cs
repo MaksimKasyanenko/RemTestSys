@@ -61,7 +61,7 @@ namespace RemTestSys.Controllers
                         TimeLeft = session.TimeLeft,
                         QuestionText = session.CurrentQuestion.Text,
                         QuestionSubText = session.CurrentQuestion.SubText,
-                        AnswerType = nameof(session.CurrentQuestion.Answer),
+                        AnswerType = session.CurrentQuestion.Answer.GetType().Name,
                         Addition = session.CurrentQuestion.Answer.GetAddition()
                     };
                 }

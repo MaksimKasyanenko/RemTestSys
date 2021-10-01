@@ -31,13 +31,13 @@ namespace RemTestSys.Domain.Models
         private bool EqualChars(char a, char b)
         {
             if (a == b) return true;
-            if (Array.IndexOf(correspTableEng, a) < 0 || Array.IndexOf(correspTableUkr, a) < 0) return false;//in order to prevent -1 == -1 bellow...
+            if (Array.IndexOf(correspTableEng, a) < 0 && Array.IndexOf(correspTableUkr, a) < 0) return false;//in order to prevent -1 == -1 bellow...
             if (Array.IndexOf(correspTableEng, a) == Array.IndexOf(correspTableUkr, b)) return true;
             if (Array.IndexOf(correspTableEng, b) == Array.IndexOf(correspTableUkr, a)) return true;
             return false;
         }
 
-        private char[] correspTableEng = {'a','b','c','e','h','i','g','k','l','m','n','o','p','t','x','y'};
-        private char[] correspTableUkr = {'а','в','с','е','н','і','д','к','і','т','п','о','р','т','х','у'};
+        private char[] correspTableEng = {'a','c','e','i','l','o','p','x','y','A','B','C','E','H','I','K','M','O','P','T','X'};
+        private char[] correspTableUkr = {'а','с','е','і','і','о','р','х','у','А','В','С','Е','Н','І','К','М','О','Р','Т','Х'};
     }
 }
