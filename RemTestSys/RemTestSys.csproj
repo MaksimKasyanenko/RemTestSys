@@ -18,8 +18,4 @@
     <PackageReference Include="Moq" Version="4.16.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\Models\AnswerMatchers\" />
-  </ItemGroup>
-
 </Project>

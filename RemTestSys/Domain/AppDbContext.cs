@@ -17,7 +17,7 @@ namespace RemTestSys
         public DbSet<Test> Tests { get; internal set; }
         public DbSet<Session> Sessions { get; internal set; }
         public DbSet<Question> Questions { get; internal set; }
-        public DbSet<Answer> Answers { get; internal set; }
+        public DbSet<TextAnswer> TextAnswers { get; internal set; }
         public DbSet<QuestionInSession> QuestionsInSessions { get; internal set; }
         public DbSet<Group> Groups { get; internal set; }
         public DbSet<ResultOfTesting> ResultsOfTesting { get; internal set; }
@@ -32,24 +32,24 @@ namespace RemTestSys
             Test test1 = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2, ScoresPerRightAnswer=6 };
             Tests.Add(test1);
             Question[] questions = new Question[] {
-                new Question{Test = test1, Text="Demo Question 1", Answer=new Answer{RightText="demo1"} },
-                new Question{Test = test1, Text="Demo Question 2", Answer=new Answer{RightText="demo2"} }
+                new Question{Test = test1, Text="Demo Question 1", Answer=new TextAnswer{RightText="demo1"} },
+                new Question{Test = test1, Text="Demo Question 2", Answer=new TextAnswer{RightText="demo2"} }
             };
             foreach(var q in questions)
             {
-                Answers.Add(q.Answer);
+                TextAnswers.Add((TextAnswer)q.Answer);
                 Questions.Add(q);
             }
 
             Test test2 = new Test { Name = "Demo Test 2", Description = "This is demo test 2", Duration = 100, QuestionsCount = 4, ScoresPerRightAnswer = 3 };
             Tests.Add(test2);
             questions = new Question[] {
-                new Question{Test = test2, Text="Demo Question 3", Answer=new Answer{RightText="demo3"} },
-                new Question{Test = test2, Text="Demo Question 4", Answer=new Answer{RightText="demo4"} }
+                new Question{Test = test2, Text="Demo Question 3", Answer=new TextAnswer{RightText="demo3"} },
+                new Question{Test = test2, Text="Demo Question 4", Answer=new TextAnswer{RightText="demo4"} }
             };
             foreach (var q in questions)
             {
-                Answers.Add(q.Answer);
+                TextAnswers.Add((TextAnswer)q.Answer);
                 Questions.Add(q);
             }
 
