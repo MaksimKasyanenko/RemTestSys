@@ -63,3 +63,18 @@ class TextAnswerForm implements IAnswerForm{
         this.htmlElement.classList.add("hidden");
     }
 }
+
+class OneVariantAnswerForm implements IAnswerForm {
+    htmlElement: HTMLElement;
+    form: HTMLFormElement;
+    showAndGetAnswer(): Promise<Answer> {
+        throw new Error("Method not implemented.");
+    }
+    fill(additive: any) {
+        throw new Error("Method not implemented.");
+    }
+    hide() {
+        throw new Error("Method not implemented.");
+    }
+
+}

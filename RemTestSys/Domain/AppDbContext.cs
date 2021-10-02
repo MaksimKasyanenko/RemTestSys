@@ -26,35 +26,20 @@ namespace RemTestSys
         private void Fill()
         {
             Group group1 = new Group { Name = "Demo Group 1" };
-            Group group2 = new Group { Name = "Demo Group 2" };
             Groups.Add(group1);
-            Groups.Add(group2);
 
             Test test1 = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2, ScoresPerRightAnswer=6 };
             Tests.Add(test1);
             Question[] questions = new Question[] {
                 new Question{Test = test1, Text="Demo Question 1", Answer=new TextAnswer{RightText="demo1"} },
-                new Question{Test = test1, Text="Demo Question 2", Answer=new OneVariantAnswer{RightText="demo2"} }
+                new Question{Test = test1, Text="Demo Question 2", Answer=new OneVariantAnswer{RightText="notfake",SerializedFakes="[\"fake1\",\"fake2\",\"fake3\"]"} }
             };
             TextAnswers.Add((TextAnswer)questions[0].Answer);
             Questions.Add(questions[0]);
             OneVariantAnswers.Add((OneVariantAnswer)questions[1].Answer);
             Questions.Add(questions[1]);
 
-            Test test2 = new Test { Name = "Demo Test 2", Description = "This is demo test 2", Duration = 100, QuestionsCount = 4, ScoresPerRightAnswer = 3 };
-            Tests.Add(test2);
-            questions = new Question[] {
-                new Question{Test = test2, Text="Demo Question 3", Answer=new TextAnswer{RightText="demo3"} },
-                new Question{Test = test2, Text="Demo Question 4", Answer=new TextAnswer{RightText="demo4"} }
-            };
-            foreach (var q in questions)
-            {
-                TextAnswers.Add((TextAnswer)q.Answer);
-                Questions.Add(q);
-            }
-
             AccessesToTest.Add(new AccessToTest {Group=group1, Test=test1});
-            AccessesToTest.Add(new AccessToTest { Group = group2, Test = test2 });
             SaveChanges();
         }
     }
