@@ -11,7 +11,7 @@ namespace RemTestSys.Domain.Models
 
         public override bool IsMatch(string[] data)
         {
-            if (data == null) throw new InvalidOperationException("Answer don't support matching with NULL");
+            if (data == null) return false;
             if (data.Length != 1) return false;
             string inpt = data[0].Trim().Replace(" ", "");
             string exp = RightText.Trim().Replace(" ", "");

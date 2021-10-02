@@ -11,11 +11,13 @@ namespace UnitTests
     public class MatchingTextAnswerTests
     {
         [Fact]
-        public void ThrowsException_WhenPassedNull()
+        public void ReturnsFalse_WhenPassedNull()
         {
             var answer = new TextAnswer();
 
-            Assert.Throws<InvalidOperationException>(()=>answer.IsMatch(null));
+            var res = answer.IsMatch(null);
+
+            Assert.False(res);
         }
         [Fact]
         public void ReturnsFalse_WhenPassedStringsMoreThen1()
