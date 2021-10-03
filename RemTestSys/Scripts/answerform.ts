@@ -64,7 +64,7 @@ class TextAnswerForm implements IAnswerForm{
     }
 }
 
-class OneVariantAnswerForm implements IAnswerForm {
+class OneOfFourVariantsAnswerForm implements IAnswerForm {
     htmlElement: HTMLElement;
     form: HTMLFormElement;
     showAndGetAnswer(): Promise<Answer> {
