@@ -3,11 +3,12 @@ using System.Text.Json;
 
 namespace RemTestSys.Domain.Models
 {
-    public class OneVariantAnswer : AnswerBase
+    public class OneOfFourVariantsAnswer : AnswerBase
     {
         public string SerializedFakes { get; set; }
-        public void SetFakes(params string[] fakes)
+        public void SetFakes(string f1, string f2, string f3)
         {
+            string[] fakes = {f1,f2,f3};
             SerializedFakes = JsonSerializer.Serialize(fakes);
         }
         public override string[] GetAddition()

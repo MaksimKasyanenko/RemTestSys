@@ -50,6 +50,17 @@ class TextAnswerForm {
         this.htmlElement.classList.add("hidden");
     }
 }
+class OneVariantAnswerForm {
+    showAndGetAnswer() {
+        throw new Error("Method not implemented.");
+    }
+    fill(additive) {
+        throw new Error("Method not implemented.");
+    }
+    hide() {
+        throw new Error("Method not implemented.");
+    }
+}
 
 class FormManager {
     constructor() {
