@@ -15,6 +15,7 @@ window.addEventListener("load", function () {
         let textAnswerForm = new TextAnswerForm();
         registerSpecialSymbolsPanel(textAnswerForm.input);
         formManager.register("TextAnswer", textAnswerForm);
+        formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
         formManager.hideForms();
         let confirmForm = formManager.getForm("confirm");
         let timer = new TestingTimer(document.getElementById("timerDisp"));

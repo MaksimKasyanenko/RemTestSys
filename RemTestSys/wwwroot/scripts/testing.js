@@ -45,20 +45,59 @@ class TextAnswerForm {
             };
         });
     }
-    fill(additive) { }
+    fill(additive) {
+        this.input.value = "";
+    }
     hide() {
         this.htmlElement.classList.add("hidden");
     }
 }
-class OneVariantAnswerForm {
+class OneOfFourVariantsAnswerForm {
+    constructor() {
+        this.htmlElement = document.getElementById("OneVariantAnswerFormWrp");
+        this.form = document.querySelector("#OneVariantAnswerFormWrp form");
+        this.input = document.querySelector("#OneVariantAnswerFormWrp input[type='hidden']");
+        let btns = document.querySelectorAll("#OneVariantAnswerFormWrp button");
+        this.buttons = Array.from(btns);
+        if (!this.htmlElement || !this.form || !this.input || !this.buttons) {
+            throw new ReferenceError("oneVariantForm can't be built, not all of required elements was found");
+        }
+        this.initButtons();
+    }
     showAndGetAnswer() {
-        throw new Error("Method not implemented.");
+        let answer = new Answer();
+        this.htmlElement.classList.remove("hidden");
+        return new Promise((resolve, reject) => {
+            this.form.onsubmit = e => {
+                e.preventDefault();
+                answer.data = [this.input.value];
+                this.input.value = "";
+                resolve(answer);
+            };
+        });
     }
     fill(additive) {
-        throw new Error("Method not implemented.");
+        for (let i = 0; i < this.buttons.length; i++) {
+            this.buttons[i].classList.remove("choosed");
+            this.buttons[i].textContent = additive[i];
+        }
     }
     hide() {
-        throw new Error("Method not implemented.");
+        this.htmlElement.classList.add("hidden");
+    }
+    initButtons() {
+        let clearChoosed = () => {
+            for (let btn of this.buttons) {
+                btn.classList.remove("choosed");
+            }
+        };
+        for (let btn of this.buttons) {
+            btn.onclick = e => {
+                clearChoosed();
+                this.input.value = btn.textContent;
+                btn.classList.add("choosed");
+            };
+        }
     }
 }
 
@@ -150,6 +189,7 @@ window.addEventListener("load", function () {
         let textAnswerForm = new TextAnswerForm();
         registerSpecialSymbolsPanel(textAnswerForm.input);
         formManager.register("TextAnswer", textAnswerForm);
+        formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
         formManager.hideForms();
         let confirmForm = formManager.getForm("confirm");
         let timer = new TestingTimer(document.getElementById("timerDisp"));
