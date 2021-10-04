@@ -7,7 +7,7 @@ namespace UnitTests
 {
     public class OneVariantAnswerTests
     {
-        public class GettingAndSettingAdditiveDataTests
+        public class GetAdditiveDataTests
         {
             [Fact]
             public void ReturnsStringArrayWith4Variants_WhenSpecified3FakeVariants()
@@ -23,7 +23,25 @@ namespace UnitTests
                 Assert.IsType<string[]>(res);
                 Assert.Equal(4, res.Length);
             }
+            [Fact]
+            public void ResultContainsAllOfFakesAndRightText()
+            {
+                var answer = new OneOfFourVariantsAnswer
+                {
+                    RightText = "rightVariant",
+                    SerializedFakes = JsonSerializer.Serialize(new string[] { "fake1", "fake2", "fake3" })
+                };
 
+                var res = answer.GetAddition();
+
+                Assert.Contains("rightVariant", res);
+                Assert.Contains("fake1", res);
+                Assert.Contains("fake2", res);
+                Assert.Contains("fake3", res);
+            }
+        }
+        public class SettingAdditiveDataTests
+        {
             [Theory]
             [InlineData("fake1",null,null)]
             [InlineData("fake1","fake2",null)]
@@ -43,23 +61,6 @@ namespace UnitTests
                 var answer = new OneOfFourVariantsAnswer();
 
                 Assert.Throws<InvalidOperationException>(() => answer.SerializedFakes = JsonSerializer.Serialize(fakes));
-            }
-
-            [Fact]
-            public void ResultContainsAllOfFakesAndRightText()
-            {
-                var answer = new OneOfFourVariantsAnswer
-                {
-                    RightText = "rightVariant",
-                    SerializedFakes = JsonSerializer.Serialize(new string[] { "fake1", "fake2", "fake3" })
-                };
-
-                var res = answer.GetAddition();
-
-                Assert.Contains("rightVariant", res);
-                Assert.Contains("fake1", res);
-                Assert.Contains("fake2", res);
-                Assert.Contains("fake3", res);
             }
 
             [Fact]

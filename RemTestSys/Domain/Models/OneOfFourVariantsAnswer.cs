@@ -5,11 +5,22 @@ namespace RemTestSys.Domain.Models
 {
     public class OneOfFourVariantsAnswer : AnswerBase
     {
-        public string SerializedFakes { get; set; }
+        public string SerializedFakes
+        {
+            get { return _seriazedFakes; }
+            set
+            {
+                string[] temp = JsonSerializer.Deserialize<string[]>(value);
+                if (temp.Length != 3) throw new InvalidOperationException("Json string is wrong");   
+                SetFakes(temp[0], temp[1], temp[2]);
+            }
+        }
+        private string _seriazedFakes;
         public void SetFakes(string f1, string f2, string f3)
         {
-            string[] fakes = {f1,f2,f3};
-            SerializedFakes = JsonSerializer.Serialize(fakes);
+            if (f1 == null || f2 == null || f3 == null) throw new InvalidOperationException($"Some of parameters equals null");
+            string[] fakes = { f1, f2, f3 };
+            _seriazedFakes = JsonSerializer.Serialize(fakes);
         }
         public override string[] GetAddition()
         {
@@ -24,7 +35,7 @@ namespace RemTestSys.Domain.Models
         {
             var rnd = new RandomSequence(0, arr.Length);
             string[] mixed = new string[arr.Length];
-            for(int i=0; i<mixed.Length; i++)
+            for (int i = 0; i < mixed.Length; i++)
             {
                 mixed[i] = arr[rnd.GetNext()];
             }

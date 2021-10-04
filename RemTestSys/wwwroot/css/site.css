@@ -1,3 +1,6 @@
 ﻿.hidden{
     display: none;
 }
+button.choosed{
+    background-color: red;
+}
