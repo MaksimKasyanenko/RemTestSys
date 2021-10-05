@@ -19,6 +19,7 @@ namespace RemTestSys
         public DbSet<Question> Questions { get; set; }
         public DbSet<TextAnswer> TextAnswers { get; set; }
         public DbSet<OneOfFourVariantsAnswer> OneVariantAnswers { get; set; }
+        public DbSet<SomeVariantsAnswer> SomeVariantsAnswers { get; set; }
         public DbSet<QuestionInSession> QuestionsInSessions { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<ResultOfTesting> ResultsOfTesting { get; set; }
@@ -32,12 +33,15 @@ namespace RemTestSys
             Tests.Add(test1);
             Question[] questions = new Question[] {
                 new Question{Test = test1, Text="Demo Question 1", Answer=new TextAnswer{RightText="demo1"} },
-                new Question{Test = test1, Text="Demo Question 2", Answer=new OneOfFourVariantsAnswer{RightText="notfake",SerializedFakes="[\"fake1\",\"fake2\",\"fake3\"]"} }
+                new Question{Test = test1, Text="Demo Question 2", Answer=new OneOfFourVariantsAnswer{RightText="notfake",SerializedFakes="[\"fake1\",\"fake2\",\"fake3\"]"} },
+                new Question{Test=test1,Text="Demo Question 3",Answer = new SomeVariantsAnswer{SerializedRightAnswers="[\"right1\",\"right2\"]", SerializedFakes="\"fake1\",\"fake2\""} }
             };
             TextAnswers.Add((TextAnswer)questions[0].Answer);
             Questions.Add(questions[0]);
             OneVariantAnswers.Add((OneOfFourVariantsAnswer)questions[1].Answer);
             Questions.Add(questions[1]);
+            SomeVariantsAnswers.Add((SomeVariantsAnswer)questions[2].Answer);
+            Questions.Add(questions[2]);
 
             AccessesToTest.Add(new AccessToTest {Group=group1, Test=test1});
             SaveChanges();

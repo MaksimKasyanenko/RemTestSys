@@ -51,7 +51,7 @@ namespace UnitTests
         {
             [Theory]
             [InlineData("[]", new string[] { })]
-            [InlineData("[\"null\"]", new string[] {"data",null})]
+            [InlineData("[null,\"gh\"]", new string[] {"data",null})]
             [InlineData(null, null)]
             public void ThrowsExceptions_WhenPassedNoRightAnswer(string serializedData, string[] arr)
             {
@@ -105,6 +105,36 @@ namespace UnitTests
                 var res = answer.IsMatch(answerData);
 
                 Assert.True(res);
+            }
+        }
+        public class GettingRightText
+        {
+            [Theory]
+            [InlineData(new string[] { "rightText1", "rightText2" }, new string[] { "fake1", "fake2" })]
+            [InlineData(new string[] { "rightText1", "rightText2","rightText3" }, new string[] { "fake1", "fake2","fake3" })]
+            public void RightTextPropertyGetsStringContainsAllRightAnswersAndNoFakes_WhenDataSetedOverSettersAndProperty(string[] rightAnswers, string[] fakes)
+            {
+                var answer1 = new SomeVariantsAnswer();
+                answer1.SetRightAnswers(rightAnswers);
+                answer1.SetFakes(fakes);
+                var answer2 = new SomeVariantsAnswer {
+                    SerializedRightAnswers = JsonSerializer.Serialize(rightAnswers),
+                    SerializedFakes = JsonSerializer.Serialize(fakes)
+                };
+
+                string rightText1 = answer1.RightText;
+                string rightText2 = answer2.RightText;
+
+                foreach(var text in rightAnswers)
+                {
+                    Assert.Contains(text, rightText1);
+                    Assert.Contains(text, rightText2);
+                }
+                foreach (var text in fakes)
+                {
+                    Assert.DoesNotContain(text, rightText1);
+                    Assert.DoesNotContain(text, rightText2);
+                }
             }
         }
     }
