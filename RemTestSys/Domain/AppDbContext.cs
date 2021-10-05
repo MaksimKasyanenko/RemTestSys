@@ -29,12 +29,12 @@ namespace RemTestSys
             Group group1 = new Group { Name = "Demo Group 1" };
             Groups.Add(group1);
 
-            Test test1 = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 2, ScoresPerRightAnswer=6 };
+            Test test1 = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 3, ScoresPerRightAnswer=4 };
             Tests.Add(test1);
             Question[] questions = new Question[] {
                 new Question{Test = test1, Text="Demo Question 1", Answer=new TextAnswer{RightText="demo1"} },
                 new Question{Test = test1, Text="Demo Question 2", Answer=new OneOfFourVariantsAnswer{RightText="notfake",SerializedFakes="[\"fake1\",\"fake2\",\"fake3\"]"} },
-                new Question{Test=test1,Text="Demo Question 3",Answer = new SomeVariantsAnswer{SerializedRightAnswers="[\"right1\",\"right2\"]", SerializedFakes="\"fake1\",\"fake2\""} }
+                new Question{Test=test1,Text="Demo Question 3",Answer = new SomeVariantsAnswer{SerializedRightAnswers="[\"right1\",\"right2\"]", SerializedFakes="[\"fake1\",\"fake2\"]"} }
             };
             TextAnswers.Add((TextAnswer)questions[0].Answer);
             Questions.Add(questions[0]);

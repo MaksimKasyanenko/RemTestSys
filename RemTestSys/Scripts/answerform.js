@@ -97,3 +97,46 @@ class OneOfFourVariantsAnswerForm {
         }
     }
 }
+class SomeVariantsAnswerForm {
+    constructor() {
+        this.htmlElement = document.getElementById("someVariantAnswerFormWrp");
+        this.form = document.querySelector("#someVariantAnswerFormWrp form");
+        this.list = document.querySelector("#someVariantAnswerFormWrp ul");
+        if (!this.htmlElement || !this.form || !this.list) {
+            throw new ReferenceError("someVariantForm can't be built, not all of required elements was found");
+        }
+    }
+    showAndGetAnswer() {
+        let answer = new Answer();
+        answer.data = [];
+        this.htmlElement.classList.remove("hidden");
+        return new Promise((resolve, reject) => {
+            this.form.onsubmit = e => {
+                e.preventDefault();
+                for (let ch of document.querySelectorAll("#someVariantAnswerFormWrp ul li [type='checkbox']")) {
+                    if (ch.checked) {
+                        answer.data.push(ch.parentNode.textContent);
+                    }
+                }
+                this.list.innerHTML = "";
+                resolve(answer);
+            };
+        });
+    }
+    fill(additive) {
+        for (let text of additive) {
+            let li = document.createElement('li');
+            let label = document.createElement('label');
+            let check = document.createElement('input');
+            check.type = "checkbox";
+            check.checked = false;
+            label.textContent = text;
+            label.appendChild(check);
+            li.appendChild(label);
+            this.list.appendChild(li);
+        }
+    }
+    hide() {
+        this.htmlElement.classList.add("hidden");
+    }
+}
