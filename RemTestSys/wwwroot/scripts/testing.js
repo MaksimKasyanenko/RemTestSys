@@ -143,6 +143,57 @@ class SomeVariantsAnswerForm {
         this.htmlElement.classList.add("hidden");
     }
 }
+class SequenceAnswerForm {
+    constructor() {
+        this.htmlElement = document.getElementById("sequenceAnswerFormWrp");
+        this.form = document.querySelector("#sequenceAnswerFormWrp form");
+        this.display = document.querySelector("#sequenceAnswerFormWrp div");
+        this.list = document.querySelector("#sequenceAnswerFormWrp ul");
+        if (!this.htmlElement || !this.form || !this.list || !this.display) {
+            throw new ReferenceError("sequenceAnswerForm can't be built, not all of required elements was found");
+        }
+        this.answerArray = [];
+        let cancelBtn = document.querySelector("#sequenceAnswerFormWrp button.cancel");
+        cancelBtn.onclick = () => {
+            this.display.textContent = "";
+            this.answerArray = [];
+            document.querySelectorAll("#sequenceAnswerFormWrp ul button").forEach(b => b.disabled = false);
+        };
+    }
+    showAndGetAnswer() {
+        let answer = new Answer();
+        this.htmlElement.classList.remove("hidden");
+        return new Promise((resolve, reject) => {
+            this.form.onsubmit = e => {
+                e.preventDefault();
+                answer.data = this.answerArray;
+                this.answerArray = [];
+                this.display.textContent = "";
+                this.list.innerHTML = "";
+                resolve(answer);
+            };
+        });
+    }
+    fill(additive) {
+        for (let text of additive) {
+            let btn = document.createElement("button");
+            btn.textContent = text;
+            btn.onclick = ev => {
+                ev.target.disabled = true;
+                this.answerArray.push(text);
+                if (this.display.textContent.length > 0)
+                    this.display.textContent += ", ";
+                this.display.textContent += text;
+            };
+            let li = document.createElement("li");
+            li.appendChild(btn);
+            this.list.appendChild(li);
+        }
+    }
+    hide() {
+        this.htmlElement.classList.add("hidden");
+    }
+}
 
 class FormManager {
     constructor() {
@@ -234,6 +285,7 @@ window.addEventListener("load", function () {
         formManager.register("TextAnswer", textAnswerForm);
         formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
         formManager.register("SomeVariantsAnswer", new SomeVariantsAnswerForm());
+        formManager.register("SequenceAnswer", new SequenceAnswerForm());
         formManager.hideForms();
         let confirmForm = formManager.getForm("confirm");
         let timer = new TestingTimer(document.getElementById("timerDisp"));

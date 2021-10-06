@@ -30,7 +30,7 @@ namespace RemTestSys
             Group group1 = new Group { Name = "Demo Group 1" };
             Groups.Add(group1);
 
-            Test test1 = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 3, ScoresPerRightAnswer=4 };
+            Test test1 = new Test { Name = "Demo Test", Description = "This is demo test", Duration = 1000, QuestionsCount = 8, ScoresPerRightAnswer=1.5 };
             Tests.Add(test1);
             Question[] questions = new Question[] {
                 new Question{Test = test1, Text="Demo Question 1", Answer=new TextAnswer{RightText="demo1"} },

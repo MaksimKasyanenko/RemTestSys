@@ -170,14 +170,57 @@ class SomeVariantsAnswerForm implements IAnswerForm {
 class SequenceAnswerForm implements IAnswerForm {
     htmlElement: HTMLElement;
     form: HTMLFormElement;
+    display: HTMLDivElement;
+    list: HTMLUListElement;
+    answerArray: string[];
+    constructor() {
+        this.htmlElement = document.getElementById("sequenceAnswerFormWrp");
+        this.form = document.querySelector("#sequenceAnswerFormWrp form");
+        this.display = document.querySelector("#sequenceAnswerFormWrp div");
+        this.list = document.querySelector("#sequenceAnswerFormWrp ul");
+        if (!this.htmlElement || !this.form || !this.list || !this.display) {
+            throw new ReferenceError("sequenceAnswerForm can't be built, not all of required elements was found");
+        }
+        this.answerArray = [];
+        let cancelBtn = <HTMLButtonElement>document.querySelector("#sequenceAnswerFormWrp button.cancel");
+        cancelBtn.onclick = () => {
+            this.display.textContent = "";
+            this.answerArray = [];
+            document.querySelectorAll("#sequenceAnswerFormWrp ul button").forEach(b => (<HTMLButtonElement>b).disabled=false);
+        };
+    }
     showAndGetAnswer(): Promise<Answer> {
-        throw new Error("Method not implemented.");
+        let answer = new Answer();
+        this.htmlElement.classList.remove("hidden");
+        return new Promise<Answer>((resolve, reject) => {
+            this.form.onsubmit = e => {
+                e.preventDefault();
+                answer.data = this.answerArray;
+                this.answerArray = [];
+                this.display.textContent = "";
+                this.list.innerHTML = "";
+                resolve(answer);
+            };
+        });
     }
     fill(additive: string[]) {
-        throw new Error("Method not implemented.");
+        for (let text of additive) {
+            let btn = document.createElement("button");
+            btn.textContent = text;
+            btn.onclick = ev => {
+                (<HTMLButtonElement>ev.target).disabled = true;
+                this.answerArray.push(text);
+                if (this.display.textContent.length > 0) this.display.textContent += ", ";
+                this.display.textContent += text;
+            };
+
+            let li = document.createElement("li");
+            li.appendChild(btn);
+            this.list.appendChild(li);
+        }
     }
     hide() {
-        throw new Error("Method not implemented.");
+        this.htmlElement.classList.add("hidden");
     }
 
 }

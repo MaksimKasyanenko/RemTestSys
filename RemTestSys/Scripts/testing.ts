@@ -11,6 +11,7 @@
     formManager.register("TextAnswer", textAnswerForm);
     formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
     formManager.register("SomeVariantsAnswer", new SomeVariantsAnswerForm());
+    formManager.register("SequenceAnswer", new SequenceAnswerForm());
     formManager.hideForms();
     let confirmForm = formManager.getForm("confirm");
     let timer = new TestingTimer(document.getElementById("timerDisp"));
