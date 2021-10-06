@@ -167,3 +167,17 @@ class SomeVariantsAnswerForm implements IAnswerForm {
     }
 
 }
+class SequenceAnswerForm implements IAnswerForm {
+    htmlElement: HTMLElement;
+    form: HTMLFormElement;
+    showAndGetAnswer(): Promise<Answer> {
+        throw new Error("Method not implemented.");
+    }
+    fill(additive: string[]) {
+        throw new Error("Method not implemented.");
+    }
+    hide() {
+        throw new Error("Method not implemented.");
+    }
+
+}
