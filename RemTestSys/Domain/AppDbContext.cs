@@ -20,6 +20,7 @@ namespace RemTestSys
         public DbSet<TextAnswer> TextAnswers { get; set; }
         public DbSet<OneOfFourVariantsAnswer> OneVariantAnswers { get; set; }
         public DbSet<SomeVariantsAnswer> SomeVariantsAnswers { get; set; }
+        public DbSet<SequenceAnswer> SequenceAnswers { get; set; }
         public DbSet<QuestionInSession> QuestionsInSessions { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<ResultOfTesting> ResultsOfTesting { get; set; }

@@ -83,9 +83,51 @@ namespace UnitTests
         public class GettingRightText
         {
             [Fact]
-            public void ReturnsStringsWhichContainsAllElementsOfSentenceInRightOrder()
+            public void ReturnsStringWhichContainsAllElementsOfSentenceInRightOrder()
             {
+                var answer = new SequenceAnswer();
+                string[] source = new string[] { "1", "2", "3" };
+                answer.SetSequence(source);
 
+                string[] res = answer.RightText.Split(", ");
+
+                for(int i = 0; i < source.Length; i++)
+                {
+                    Assert.Equal(source[i], res[i]);
+                }
+            }
+        }
+
+        public class Matching
+        {
+            [Theory]
+            [InlineData("1","2")]
+            [InlineData("12","13","14")]
+            [InlineData("34","44","54","64")]
+            public void ReturnsTrue_WhenPassedRightAnswer(params string[] sequence)
+            {
+                var answer = new SequenceAnswer();
+                answer.SetSequence(sequence);
+                var answerSequence = new string[sequence.Length];
+                Array.Copy(sequence,answerSequence,sequence.Length);
+
+                var res = answer.IsMatch(answerSequence);
+
+                Assert.True(res);
+            }
+
+            [Theory]
+            [InlineData("1", "22")]
+            [InlineData("1", "2", "3")]
+            [InlineData("1", "22", "3", "4")]
+            public void ReturnsTrue_WhenPassedWrongAnswer(params string[] answerSequence)
+            {
+                var answer = new SequenceAnswer();
+                answer.SetSequence(new string[] {"1","22","3"});
+
+                var res = answer.IsMatch(answerSequence);
+
+                Assert.False(res);
             }
         }
     }
