@@ -50,7 +50,7 @@ namespace RemTestSys.Domain.Models
         private string serRightAns;
         private string serFakes;
 
-        public override string[] GetAddition()
+        public override string[] GetAdditiveData()
         {
             string[] fakes = JsonSerializer.Deserialize<string[]>(SerializedFakes);
             string[] rightAnswers = JsonSerializer.Deserialize<string[]>(SerializedRightAnswers);
@@ -92,7 +92,6 @@ namespace RemTestSys.Domain.Models
         public void SetRightAnswers(params string[] rightAnswers)
         {
             if (rightAnswers == null) throw new InvalidOperationException("Passed args cannot be NULL");
-            if (rightAnswers.Length<1) throw new InvalidOperationException("Right Answers must contain at least 1 answer");
             if (rightAnswers.Contains(null)) throw new InvalidOperationException("Right Answers cannot contain NULL");
             serRightAns = JsonSerializer.Serialize(rightAnswers);
         }

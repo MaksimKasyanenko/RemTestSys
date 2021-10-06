@@ -4,7 +4,8 @@ namespace RemTestSys.Domain.Models
 {
     public class TextAnswer : AnswerBase
     {
-        public override string[] GetAddition()
+        public bool CaseMatters { get; set; }
+        public override string[] GetAdditiveData()
         {
             return null;
         }

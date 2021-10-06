@@ -22,7 +22,7 @@ namespace RemTestSys.Domain.Models
             string[] fakes = { f1, f2, f3 };
             _seriazedFakes = JsonSerializer.Serialize(fakes);
         }
-        public override string[] GetAddition()
+        public override string[] GetAdditiveData()
         {
             string[] fakes = JsonSerializer.Deserialize<string[]>(SerializedFakes);
             string[] res = new string[fakes.Length + 1];

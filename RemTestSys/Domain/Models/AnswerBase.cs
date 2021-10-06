@@ -6,8 +6,7 @@ namespace RemTestSys.Domain.Models
     {
         public int Id { get; set; }
         public virtual string RightText { get; set; }
-        public virtual bool CaseMatters { get; set; }
-        public abstract string[] GetAddition();
+        public abstract string[] GetAdditiveData();
         public abstract bool IsMatch(string[] data);
     }
 }

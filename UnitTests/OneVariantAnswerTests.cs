@@ -18,7 +18,7 @@ namespace UnitTests
                     SerializedFakes = JsonSerializer.Serialize(new string[] { "fake1", "fake2", "fake3" })
                 };
 
-                var res = answer.GetAddition();
+                var res = answer.GetAdditiveData();
 
                 Assert.IsType<string[]>(res);
                 Assert.Equal(4, res.Length);
@@ -32,7 +32,7 @@ namespace UnitTests
                     SerializedFakes = JsonSerializer.Serialize(new string[] { "fake1", "fake2", "fake3" })
                 };
 
-                var res = answer.GetAddition();
+                var res = answer.GetAdditiveData();
 
                 Assert.Contains("rightVariant", res);
                 Assert.Contains("fake1", res);

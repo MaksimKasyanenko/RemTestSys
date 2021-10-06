@@ -19,7 +19,7 @@ namespace UnitTests
                     SerializedFakes = fakes
                 };
 
-                var res = answer.GetAddition();
+                var res = answer.GetAdditiveData();
                 int sum = JsonSerializer.Deserialize<string[]>(rightSet).Length + JsonSerializer.Deserialize<string[]>(fakes).Length;
 
                 Assert.Equal(sum, res.Length);
@@ -34,7 +34,7 @@ namespace UnitTests
                 answer.SetFakes(fakes);
                 answer.SetRightAnswers(rightAnswers);
 
-                var res = answer.GetAddition();
+                var res = answer.GetAdditiveData();
 
                 for(int i = 0; i < fakes.Length; i++)
                 {
@@ -50,10 +50,9 @@ namespace UnitTests
         public class SettingAdditiveDataTests
         {
             [Theory]
-            [InlineData("[]", new string[] { })]
             [InlineData("[null,\"gh\"]", new string[] {"data",null})]
             [InlineData(null, null)]
-            public void ThrowsExceptions_WhenPassedNoRightAnswer(string serializedData, string[] arr)
+            public void ThrowsExceptions_WhenPassedNull(string serializedData, string[] arr)
             {
                 var answer = new SomeVariantsAnswer();
 

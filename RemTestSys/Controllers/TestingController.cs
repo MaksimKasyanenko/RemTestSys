@@ -62,7 +62,7 @@ namespace RemTestSys.Controllers
                         QuestionText = session.CurrentQuestion.Text,
                         QuestionSubText = session.CurrentQuestion.SubText,
                         AnswerType = session.CurrentQuestion.Answer.GetType().Name,
-                        Addition = session.CurrentQuestion.Answer.GetAddition()
+                        Addition = session.CurrentQuestion.Answer.GetAdditiveData()
                     };
                 }
                 return new ObjectResult(vm);
