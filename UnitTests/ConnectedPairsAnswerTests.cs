@@ -58,14 +58,12 @@ namespace UnitTests
 
                 var res = answer.GetAdditiveData();
 
-                Assert.Equal(res[0], res[1].ToLower());
-                Assert.Equal(res[2], res[3].ToLower());
-                Assert.Equal(res[4], res[5].ToLower());
-
-                foreach(var el in new string[] { "a", "b", "c", "A", "B", "C" })
-                {
-                    Assert.Contains(el, res);
-                }
+                Assert.Equal(0, Array.IndexOf(res, "a") % 2);
+                Assert.Equal(0, Array.IndexOf(res, "b") % 2);
+                Assert.Equal(0, Array.IndexOf(res, "c") % 2);
+                Assert.Equal(1, Array.IndexOf(res, "A") % 2);
+                Assert.Equal(1, Array.IndexOf(res, "B") % 2);
+                Assert.Equal(1, Array.IndexOf(res, "C") % 2);
             }
         }
 
@@ -86,10 +84,8 @@ namespace UnitTests
         public class Matching
         {
             [Theory]
-            [InlineData()]
             [InlineData("a", "A", "b", "C", "c", "B")]
             [InlineData("a","B","c","A","b","C")]
-            [InlineData("a","A","b","B","c","C")]
             [InlineData("a", "A", "b", "B", "c")]
             [InlineData("a", "A", "b", "B", "c", "C","d")]
             [InlineData("a", "A", "c", "C")]
@@ -102,7 +98,16 @@ namespace UnitTests
 
                 Assert.False(res);
             }
+            [Fact]
+            public void ReturnsFalse_WhenPassedNull()
+            {
+                var answer = new ConnectedPairsAnswer();
+                answer.SetPairs(GetTestAdditiveData());
 
+                var res = answer.IsMatch(null);
+
+                Assert.False(res);
+            }
             [Fact]
             public void ReturnsTrue_WhenPassedRightAnswerArray()
             {

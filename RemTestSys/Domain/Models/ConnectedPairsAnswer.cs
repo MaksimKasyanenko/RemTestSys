@@ -1,14 +1,30 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace RemTestSys.Domain.Models
 {
 	public class ConnectedPairsAnswer : AnswerBase
 	{
-		public string SerializedPairs
+        public override string RightText
+        {
+            get
+            {
+				Pair[] pairs = JsonSerializer.Deserialize<Pair[]>(_serializedPairs);
+				StringBuilder sb = new StringBuilder();
+				foreach(var pair in pairs)
+                {
+					sb.Append(pair.Value1);
+					sb.Append(" - ");
+					sb.Append(pair.Value2);
+					sb.Append("\n");
+                }
+				return sb.ToString();
+            }
+            set { }
+        }
+        public string SerializedPairs
 		{
 			get
 			{
@@ -34,11 +50,12 @@ namespace RemTestSys.Domain.Models
 		{
 			Pair[] pairs = JsonSerializer.Deserialize<Pair[]>(_serializedPairs);
 			string[] res = new string[pairs.Length * 2];
-			RandomSequence rnd = new RandomSequence(0, pairs.Length);
+			RandomSequence rnd1 = new RandomSequence(0, pairs.Length);
+			RandomSequence rnd2 = new RandomSequence(0, pairs.Length);
 			for (int i = 0; i < pairs.Length; i++)
 			{
-				res[i * 2] = pairs[i].Value1;
-				res[i * 2 + 1] = pairs[i].Value2;
+				res[i * 2] = pairs[rnd1.GetNext()].Value1;
+				res[i * 2 + 1] = pairs[rnd2.GetNext()].Value2;
 			}
 			return res;
 		}
