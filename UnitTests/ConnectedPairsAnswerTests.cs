@@ -14,14 +14,17 @@ namespace UnitTests
         public class SettingAdditiveData
         {
             [Fact]
-            public void SetMethodSetsSerilizedDataProperty()
+            public void SetMethodAndSerializedPairsPropertySetsSerilizedDataProperty()
             {
-                var answer = new ConnectedPairsAnswer();
+                var answer1 = new ConnectedPairsAnswer();
+                var answer2 = new ConnectedPairsAnswer();
                 var testData = GetTestAdditiveData();
 
-                answer.SetPairs(testData);
+                answer1.SetPairs(testData);
+                answer2.SerializedPairs = "[{\"Value1\":\"a\",\"Value2\":\"A\"},{\"Value1\":\"b\",\"Value2\":\"B\"},{\"Value1\":\"c\",\"Value2\":\"C\"}]";
 
-                Assert.Equal(JsonSerializer.Serialize(testData), answer.SerializedPairs);
+                Assert.Equal("[{\"Value1\":\"a\",\"Value2\":\"A\"},{\"Value1\":\"b\",\"Value2\":\"B\"},{\"Value1\":\"c\",\"Value2\":\"C\"}]", answer1.SerializedPairs);
+                Assert.Equal("[{\"Value1\":\"a\",\"Value2\":\"A\"},{\"Value1\":\"b\",\"Value2\":\"B\"},{\"Value1\":\"c\",\"Value2\":\"C\"}]", answer2.SerializedPairs);
             }
 
             [Fact]
@@ -37,6 +40,7 @@ namespace UnitTests
                 var answer = new ConnectedPairsAnswer();
 
                 Assert.Throws<InvalidOperationException>(()=>answer.SetPairs(null));
+                Assert.Throws<InvalidOperationException>(()=>answer.SerializedPairs=null);
             }
             [Fact]
             public void SetMethodAndSerializedDataPropertyThrowInvalidOperationException_WhenPassedLessThen1Pair()
@@ -44,6 +48,7 @@ namespace UnitTests
                 var answer = new ConnectedPairsAnswer();
 
                 Assert.Throws<InvalidOperationException>(() => answer.SetPairs(new ConnectedPairsAnswer.Pair[0]));
+                Assert.Throws<InvalidOperationException>(()=>answer.SerializedPairs="[]");
             }
         }
 

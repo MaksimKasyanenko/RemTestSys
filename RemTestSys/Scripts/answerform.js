@@ -191,3 +191,14 @@ class SequenceAnswerForm {
         this.htmlElement.classList.add("hidden");
     }
 }
+class ConnectedPairsAnswerForm {
+    showAndGetAnswer() {
+        throw new Error("Method not implemented.");
+    }
+    fill(additive) {
+        throw new Error("Method not implemented.");
+    }
+    hide() {
+        throw new Error("Method not implemented.");
+    }
+}
