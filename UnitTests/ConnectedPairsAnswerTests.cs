@@ -65,19 +65,21 @@ namespace UnitTests
             }
 
             [Fact]
-            public void ReturnsStringArrayWhichContainsAllElementsFromSourceArraysAndinRightOrder()
+            public void ReturnsStringArrayWhichContainsAllElementsFromSourceArraysInRightOrder()
             {
                 var answer = new ConnectedPairsAnswer();
                 answer.SetAdditiveData(new string[] {"a","b","c"},new string[] {"A","B","C"});
 
                 var res = answer.GetAdditiveData();
 
-                Assert.Equal("a", res[0]);
-                Assert.Equal("A", res[1]);
-                Assert.Equal("b", res[2]);
-                Assert.Equal("B", res[3]);
-                Assert.Equal("c", res[4]);
-                Assert.Equal("C", res[5]);
+                Assert.Equal(res[0], res[1].ToLower());
+                Assert.Equal(res[2], res[3].ToLower());
+                Assert.Equal(res[4], res[5].ToLower());
+
+                foreach(var el in new string[] { "a", "b", "c", "A", "B", "C" })
+                {
+                    Assert.Contains(el, res);
+                }
             }
         }
 
@@ -92,6 +94,39 @@ namespace UnitTests
                 string res = answer.RightText;
 
                 Assert.Equal("a - A\nb - B\nc - C\n",res);
+            }
+        }
+
+        public class Matching
+        {
+            [Theory]
+            [InlineData(null)]
+            [InlineData("a", "A", "b", "C", "c", "B")]
+            [InlineData("a","B","c","A","b","C")]
+            [InlineData("a","A","b","B","c","C")]
+            [InlineData("a", "A", "b", "B", "c")]
+            [InlineData("a", "A", "b", "B", "c", "C","d")]
+            [InlineData("a", "A", "c", "C")]
+            public void ReturnsFalse_WhenPassedWrongAnswerArray(params string[] answerArray)
+            {
+                var answer = new ConnectedPairsAnswer();
+                answer.SetAdditiveData(new string[] {"a","b","c"}, new string[] {"A","B","C"});
+
+                var res = answer.IsMatch(answerArray);
+
+                Assert.False(res);
+            }
+
+            [Fact]
+            public void ReturnsTrue_WhenPassedRightAnswerArray()
+            {
+                var answer = new ConnectedPairsAnswer();
+                answer.SetAdditiveData(new string[] {"a","b","c"},new string[] {"A","B","C"});
+                string[] answerArray = new string[] {"a","A","b","B","c","C"};
+
+                bool res = answer.IsMatch(answerArray);
+
+                Assert.True(res);
             }
         }
     }
