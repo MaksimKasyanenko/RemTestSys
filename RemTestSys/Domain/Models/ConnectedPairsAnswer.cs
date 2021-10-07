@@ -79,7 +79,7 @@ namespace RemTestSys.Domain.Models
 				get { return value2; }
 				set
 				{
-					(value == null) throw new InvalidOperationException("The property cannot be setted as NULL");
+					if(value == null) throw new InvalidOperationException("The property cannot be setted as NULL");
 					value2 = value;
 				}
 			}
@@ -87,6 +87,8 @@ namespace RemTestSys.Domain.Models
 			private string value2;
 			public Pair(string v1, string v2)
 			{
+				value1 = "";
+				value2 = "";
 				Value1 = v1;
 				Value2 = v2;
 			}

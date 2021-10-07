@@ -25,10 +25,10 @@ namespace UnitTests
             }
 
             [Fact]
-            public void ThrowsArgumentNullException_WhenPassedNullToConstructorOfPairStruct()
+            public void ThrowsInvalidOperationException_WhenPassedNullToConstructorOfPairStruct()
             {
-                Assert.Throws<ArgumentNullException>(()=>new ConnectedPairsAnswer.Pair("a",null));
-                Assert.Throws<ArgumentNullException>(()=>new ConnectedPairsAnswer.Pair(null,"b"));
+                Assert.Throws<InvalidOperationException>(()=>new ConnectedPairsAnswer.Pair("a",null));
+                Assert.Throws<InvalidOperationException>(()=>new ConnectedPairsAnswer.Pair(null,"b"));
             }
 
             [Fact]
@@ -86,7 +86,7 @@ namespace UnitTests
         public class Matching
         {
             [Theory]
-            [InlineData(null)]
+            [InlineData()]
             [InlineData("a", "A", "b", "C", "c", "B")]
             [InlineData("a","B","c","A","b","C")]
             [InlineData("a","A","b","B","c","C")]
