@@ -1,4 +1,4 @@
-﻿interface IAnswerForm {
+interface IAnswerForm {
     htmlElement: HTMLElement;
     form: HTMLFormElement;
     showAndGetAnswer(): Promise<Answer>;
@@ -263,32 +263,48 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
     }
     fill(additive: string[]) {
         let counter = 0;
-        let boof = [];
+        let boof:HTMLButtonElement[] = [];
         for (let text of additive) {
             let btn = document.createElement("button");
             btn.textContent = text;
-            if (this.answerArray.length % 2 === 1) {
-
-            } else {
-
-            }
-
-
-
-            btn.onclick = ev => {
-                (<HTMLButtonElement>ev.target).disabled = true;
-                this.answerArray.push(text);
-                this.display.textContent += text;
-                if (this.answerArray.length % 2 === 0) {
-                    this.display.textContent += "\n";
-                } else {
-                    this.display.textContent += " - ";
-                }
-            };
-
             let li = document.createElement("li");
             li.appendChild(btn);
-            this.list.appendChild(li);
+            if (counter % 2 === 0) {
+            	btn.onclick = ev => {
+            		if(boof[1]){
+            			(<HTMLButtonElement>ev.target).disabled = true;
+            			boof[1].classList.remove("choosed");
+            			boof[1].disabled=true;
+            			this.display.textContent+=`${ev.target.textContent} - ${boof[1].textContent}\n`;
+            			this.answerArray.push(ev.target.textContent);
+            			this.answerArray.push(boof[1].textContent);
+            			boof.length=0;
+            		}else{
+            			this.allButtons.forEach(b=>b.classList.remove("choosed"));
+            			ev.target.classList.add("choosed");
+            			boof[0]=ev.target;
+            		}
+                };
+                this.leftList.appendChild(li);
+            } else {
+            	btn.onclick = ev => {
+            		if(boof[0]){
+            			(<HTMLButtonElement>ev.target).disabled = true;
+            			boof[0].classList.remove("choosed");
+            			boof[0].disabled=true;
+            			this.display.textContent+=`${boof[0].textContent} - ${ev.target.textContent}\n`;
+            			this.answerArray.push(boof[0].textContent);
+            			this.answerArray.push(ev.target.textContent);
+            			boof.length=0;
+            		}else{
+            			this.allButtons.forEach(b=>b.classList.remove("choosed"));
+            			ev.target.classList.add("choosed");
+            			boof[1]=ev.target;
+            		}
+                };
+                this.rightList.appendChild(li);
+            }
+            counter++;
         }
     }
     hide() {
