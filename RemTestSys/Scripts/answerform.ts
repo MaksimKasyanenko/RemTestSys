@@ -182,7 +182,7 @@ class SequenceAnswerForm implements IAnswerForm {
             throw new ReferenceError("sequenceAnswerForm can't be built, not all of required elements was found");
         }
         this.answerArray = [];
-        let cancelBtn = <HTMLButtonElement>document.querySelector("#sequenceAnswerFormWrp button.cancel");
+        let cancelBtn = document.querySelector("#sequenceAnswerFormWrp button.cancel") as HTMLButtonElement;
         cancelBtn.onclick = () => {
             this.display.textContent = "";
             this.answerArray = [];
@@ -228,14 +228,71 @@ class SequenceAnswerForm implements IAnswerForm {
 class ConnectedPairsAnswerForm implements IAnswerForm{
     htmlElement: HTMLElement;
     form: HTMLFormElement;
+    display: HTMLDivElement;
+    leftList: HTMLUListElement;
+    rightList: HTMLUListElement;
+    answerArray: string[];
+    constructor() {
+        this.htmlElement = document.getElementById("connectedPairsAnswerFormWrp");
+        this.display = document.querySelector("#connectedPairsAnswerFormWrp div");
+        this.form = document.querySelector("#connectedPairsAnswerFormWrp form");
+        this.leftList = document.getElementById("connectedPairsLeftCol") as HTMLUListElement;
+        this.rightList = document.getElementById("connectedPairsRightCol") as HTMLUListElement;
+        this.answerArray = [];
+        let cancelBtn = document.querySelector("#sequenceAnswerFormWrp button.cancel") as HTMLButtonElement;
+        cancelBtn.onclick = () => {
+            this.display.textContent = "";
+            this.answerArray = [];
+            document.querySelectorAll("#connectedPairsAnswerFormWrp ul button").forEach(b => (<HTMLButtonElement>b).disabled = false);
+        };
+    }
     showAndGetAnswer(): Promise<Answer> {
-        throw new Error("Method not implemented.");
+        let answer = new Answer();
+        this.htmlElement.classList.remove("hidden");
+        return new Promise<Answer>((resolve, reject) => {
+            this.form.onsubmit = e => {
+                e.preventDefault();
+                answer.data = this.answerArray;
+                this.answerArray = [];
+                this.display.textContent = "";
+                this.leftList.innerHTML = "";
+                this.rightList.innerHTML = "";
+                resolve(answer);
+            };
+        });
     }
     fill(additive: string[]) {
-        throw new Error("Method not implemented.");
+        let counter = 0;
+        let boof = [];
+        for (let text of additive) {
+            let btn = document.createElement("button");
+            btn.textContent = text;
+            if (this.answerArray.length % 2 === 1) {
+
+            } else {
+
+            }
+
+
+
+            btn.onclick = ev => {
+                (<HTMLButtonElement>ev.target).disabled = true;
+                this.answerArray.push(text);
+                this.display.textContent += text;
+                if (this.answerArray.length % 2 === 0) {
+                    this.display.textContent += "\n";
+                } else {
+                    this.display.textContent += " - ";
+                }
+            };
+
+            let li = document.createElement("li");
+            li.appendChild(btn);
+            this.list.appendChild(li);
+        }
     }
     hide() {
-        throw new Error("Method not implemented.");
+        this.htmlElement.classList.add("hidden");
     }
 
 }
