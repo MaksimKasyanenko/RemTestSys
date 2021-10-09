@@ -264,11 +264,13 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
     fill(additive: string[]) {
         let counter = 0;
         let boof:HTMLButtonElement[] = [];
+        let allButtons:HTMLButtonElement[] = [];
         for (let text of additive) {
             let btn = document.createElement("button");
             btn.textContent = text;
             let li = document.createElement("li");
             li.appendChild(btn);
+            allButtons.push(btn);
             if (counter % 2 === 0) {
             	btn.onclick = ev => {
             		if(boof[1]){
@@ -280,7 +282,7 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
             			this.answerArray.push(boof[1].textContent);
             			boof.length=0;
             		}else{
-            			this.allButtons.forEach(b=>b.classList.remove("choosed"));
+            			allButtons.forEach(b=>b.classList.remove("choosed"));
             			ev.target.classList.add("choosed");
             			boof[0]=ev.target;
             		}
@@ -297,7 +299,7 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
             			this.answerArray.push(ev.target.textContent);
             			boof.length=0;
             		}else{
-            			this.allButtons.forEach(b=>b.classList.remove("choosed"));
+            			allButtons.forEach(b=>b.classList.remove("choosed"));
             			ev.target.classList.add("choosed");
             			boof[1]=ev.target;
             		}
