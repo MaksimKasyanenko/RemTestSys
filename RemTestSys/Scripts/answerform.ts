@@ -239,7 +239,7 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
         this.leftList = document.getElementById("connectedPairsLeftCol") as HTMLUListElement;
         this.rightList = document.getElementById("connectedPairsRightCol") as HTMLUListElement;
         this.answerArray = [];
-        let cancelBtn = document.querySelector("#sequenceAnswerFormWrp button.cancel") as HTMLButtonElement;
+        let cancelBtn = document.querySelector("#connectedPairsAnswerFormWrp button.cancel") as HTMLButtonElement;
         cancelBtn.onclick = () => {
             this.display.textContent = "";
             this.answerArray = [];
@@ -272,36 +272,38 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
             li.appendChild(btn);
             allButtons.push(btn);
             if (counter % 2 === 0) {
-            	btn.onclick = ev => {
-            		if(boof[1]){
-            			(<HTMLButtonElement>ev.target).disabled = true;
+                btn.onclick = ev => {
+                    let senderBtn: HTMLButtonElement = ev.target as HTMLButtonElement;
+                    if (boof[1]) {
+                        senderBtn.disabled = true;
             			boof[1].classList.remove("choosed");
-            			boof[1].disabled=true;
-            			this.display.textContent+=`${ev.target.textContent} - ${boof[1].textContent}\n`;
-            			this.answerArray.push(ev.target.textContent);
+                        boof[1].disabled = true;
+                        this.display.textContent += `${senderBtn.textContent} - ${boof[1].textContent}\n`;
+                        this.answerArray.push(senderBtn.textContent);
             			this.answerArray.push(boof[1].textContent);
             			boof.length=0;
             		}else{
-            			allButtons.forEach(b=>b.classList.remove("choosed"));
-            			ev.target.classList.add("choosed");
-            			boof[0]=ev.target;
+                        allButtons.forEach(b => b.classList.remove("choosed"));
+                        senderBtn.classList.add("choosed");
+                        boof[0] = senderBtn;
             		}
                 };
                 this.leftList.appendChild(li);
             } else {
-            	btn.onclick = ev => {
-            		if(boof[0]){
-            			(<HTMLButtonElement>ev.target).disabled = true;
+                btn.onclick = ev => {
+                    let senderBtn: HTMLButtonElement = ev.target as HTMLButtonElement;
+                    if (boof[0]) {
+                        senderBtn.disabled = true;
             			boof[0].classList.remove("choosed");
-            			boof[0].disabled=true;
-            			this.display.textContent+=`${boof[0].textContent} - ${ev.target.textContent}\n`;
-            			this.answerArray.push(boof[0].textContent);
-            			this.answerArray.push(ev.target.textContent);
+                        boof[0].disabled = true;
+                        this.display.textContent += `${boof[0].textContent} - ${senderBtn.textContent}\n`;
+                        this.answerArray.push(boof[0].textContent);
+                        this.answerArray.push(senderBtn.textContent);
             			boof.length=0;
             		}else{
-            			allButtons.forEach(b=>b.classList.remove("choosed"));
-            			ev.target.classList.add("choosed");
-            			boof[1]=ev.target;
+                        allButtons.forEach(b => b.classList.remove("choosed"));
+                        senderBtn.classList.add("choosed");
+                        boof[1] = senderBtn;
             		}
                 };
                 this.rightList.appendChild(li);

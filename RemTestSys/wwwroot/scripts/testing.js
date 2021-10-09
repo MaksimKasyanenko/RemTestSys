@@ -195,14 +195,90 @@ class SequenceAnswerForm {
     }
 }
 class ConnectedPairsAnswerForm {
+    constructor() {
+        this.htmlElement = document.getElementById("connectedPairsAnswerFormWrp");
+        this.display = document.querySelector("#connectedPairsAnswerFormWrp div");
+        this.form = document.querySelector("#connectedPairsAnswerFormWrp form");
+        this.leftList = document.getElementById("connectedPairsLeftCol");
+        this.rightList = document.getElementById("connectedPairsRightCol");
+        this.answerArray = [];
+        let cancelBtn = document.querySelector("#connectedPairsAnswerFormWrp button.cancel");
+        cancelBtn.onclick = () => {
+            this.display.textContent = "";
+            this.answerArray = [];
+            document.querySelectorAll("#connectedPairsAnswerFormWrp ul button").forEach(b => b.disabled = false);
+        };
+    }
     showAndGetAnswer() {
-        throw new Error("Method not implemented.");
+        let answer = new Answer();
+        this.htmlElement.classList.remove("hidden");
+        return new Promise((resolve, reject) => {
+            this.form.onsubmit = e => {
+                e.preventDefault();
+                answer.data = this.answerArray;
+                this.answerArray = [];
+                this.display.textContent = "";
+                this.leftList.innerHTML = "";
+                this.rightList.innerHTML = "";
+                resolve(answer);
+            };
+        });
     }
     fill(additive) {
-        throw new Error("Method not implemented.");
+        let counter = 0;
+        let boof = [];
+        let allButtons = [];
+        for (let text of additive) {
+            let btn = document.createElement("button");
+            btn.textContent = text;
+            let li = document.createElement("li");
+            li.appendChild(btn);
+            allButtons.push(btn);
+            if (counter % 2 === 0) {
+                btn.onclick = ev => {
+                    let senderBtn = ev.target;
+                    if (boof[1]) {
+                        senderBtn.disabled = true;
+                        boof[1].classList.remove("choosed");
+                        boof[1].disabled = true;
+                        this.display.textContent += `${senderBtn.textContent} - ${boof[1].textContent}\n`;
+                        this.answerArray.push(senderBtn.textContent);
+                        this.answerArray.push(boof[1].textContent);
+                        boof.length = 0;
+                    }
+                    else {
+                        allButtons.forEach(b => b.classList.remove("choosed"));
+                        senderBtn.classList.add("choosed");
+                        boof[0] = senderBtn;
+                    }
+                };
+                this.leftList.appendChild(li);
+            }
+            else {
+                btn.onclick = ev => {
+                    let senderBtn = ev.target;
+                    if (boof[0]) {
+                        senderBtn.disabled = true;
+                        boof[0].classList.remove("choosed");
+                        boof[0].disabled = true;
+                        this.display.textContent += `${boof[0].textContent} - ${senderBtn.textContent}\n`;
+                        this.answerArray.push(boof[0].textContent);
+                        this.answerArray.push(senderBtn.textContent);
+                        boof.length = 0;
+                    }
+                    else {
+                        allButtons.forEach(b => b.classList.remove("choosed"));
+                        senderBtn.classList.add("choosed");
+                        boof[1] = senderBtn;
+                    }
+                };
+                this.rightList.appendChild(li);
+            }
+            counter++;
+        }
     }
     hide() {
-        throw new Error("Method not implemented.");
+        this.htmlElement.classList.add("hidden");
     }
 }
 
@@ -297,6 +373,7 @@ window.addEventListener("load", function () {
         formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
         formManager.register("SomeVariantsAnswer", new SomeVariantsAnswerForm());
         formManager.register("SequenceAnswer", new SequenceAnswerForm());
+        formManager.register("ConnectedPairsAnswer", new ConnectedPairsAnswerForm());
         formManager.hideForms();
         let confirmForm = formManager.getForm("confirm");
         let timer = new TestingTimer(document.getElementById("timerDisp"));

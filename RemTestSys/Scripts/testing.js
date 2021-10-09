@@ -18,6 +18,7 @@ window.addEventListener("load", function () {
         formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
         formManager.register("SomeVariantsAnswer", new SomeVariantsAnswerForm());
         formManager.register("SequenceAnswer", new SequenceAnswerForm());
+        formManager.register("ConnectedPairsAnswer", new ConnectedPairsAnswerForm());
         formManager.hideForms();
         let confirmForm = formManager.getForm("confirm");
         let timer = new TestingTimer(document.getElementById("timerDisp"));
