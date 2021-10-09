@@ -39,7 +39,8 @@ namespace RemTestSys.Controllers
             {
                 Student student = new Student {
                     FirstName = regData.FirstName,
-                    LastName = regData.LastName
+                    LastName = regData.LastName,
+                    RegistrationDate = DateTime.Now
                 };
                 Group group = await dbContext.Groups.FirstOrDefaultAsync(g=>g.Name == regData.GroupName);
                 student.Group = group;

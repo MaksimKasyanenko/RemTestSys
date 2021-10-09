@@ -11,6 +11,5 @@ namespace RemTestSys.ViewModel
         public string TestDescription { get; set; }
         public int CountOfQuestions { get; set; }
         public int Duration { get; set; }
-        public DateTime Deadline { get; set; }
     }
 }

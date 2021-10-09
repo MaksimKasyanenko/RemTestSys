@@ -25,7 +25,10 @@ namespace RemTestSys.Domain
         public int GetNext()
         {
             _cursor++;
-            if (_cursor >= _seq.Length) _cursor = 0;
+            if (_cursor >= _seq.Length) {
+                _cursor = 0;
+                Mix();
+            } 
             return _seq[_cursor];
         }
 

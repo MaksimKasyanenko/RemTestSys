@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace RemTestSys.Domain.Models
 {
@@ -9,5 +9,6 @@ namespace RemTestSys.Domain.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Group Group { get; set; }
+        public DateTime RegistrationDate { get; set; }
     }
 }

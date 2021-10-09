@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using RemTestSys;
 using RemTestSys.Domain;
 using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.Politics;
 
 namespace RTS
 {
@@ -31,8 +32,8 @@ namespace RTS
                 .AddCookie(
                     options => {
                         options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Registration");
-                        options.ExpireTimeSpan = TimeSpan.FromDays(90);
-                        options.SlidingExpiration = true;
+                        options.ExpireTimeSpan = AccountValidityPolitics.GetTerm();
+                        options.SlidingExpiration = false;
                         }
                 );
             services.AddControllersWithViews();
