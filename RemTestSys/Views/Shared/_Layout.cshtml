@@ -8,8 +8,21 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+    <header class="main-header">
+        <div class="logo"><img src="~/images/site-logo.svg" /></div>
+        <nav>
+            <ul>
+                <li class="@(ViewData["Page"].ToString() == "AvailableTests" ? "CurrentPage" : "")"><a asp-action="AvailableTests" asp-controller="Student">Тести</a></li>
+                <li class="@(ViewData["Page"].ToString() == "Results" ? "CurrentPage" : "")"><a asp-action="Results" asp-controller="Student">Результати</a></li>
+                <li><a asp-action="LogOut" asp-controller="Account">Вийти</a></li>
+            </ul>
+        </nav>
+    </header>
     <div class="layout">
         @RenderBody()
     </div>
+    <footer>
+        
+    </footer>
 </body>
 </html>

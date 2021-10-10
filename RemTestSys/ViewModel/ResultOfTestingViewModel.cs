@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RemTestSys.ViewModel
 {
@@ -10,5 +7,6 @@ namespace RemTestSys.ViewModel
         public int Id { get; set; }
         public string TestName { get; set; }
         public string Mark { get; set; }
+        public DateTime PassedAt { get; set; }
     }
 }

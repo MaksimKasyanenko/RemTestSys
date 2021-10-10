@@ -66,6 +66,13 @@ namespace RemTestSys.Controllers
             return View(regData);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction(nameof(Registration));
+        }
+
 
         private async Task<string> RandomLogId()
         {

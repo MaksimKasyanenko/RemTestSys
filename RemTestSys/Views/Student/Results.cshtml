@@ -1,0 +1,17 @@
+﻿@model List<ResultOfTestingViewModel>
+@{
+    ViewData["Title"] = "Результати тестів";
+    ViewData["Page"] = "Results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Результати пройденних тестів</h1>
+<table>
+        @foreach (ResultOfTestingViewModel res in Model)
+        {
+            <tr>
+                <td>@res.TestName</td><td>@($"{res.PassedAt.Day}.{res.PassedAt.Month}.{res.PassedAt.Year}, {res.PassedAt.Hour}:{res.PassedAt.Minute}")</td><td>@res.Mark</td>
+            </tr>
+        }
+</table>
+

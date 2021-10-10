@@ -52,6 +52,34 @@ namespace RemTestSys.Controllers
         }
 
         [Authorize]
+        public async Task<IActionResult> Results()
+        {
+            string logId;
+            Student student = null;
+            if (this.TryGetLogIdFromCookie(out logId))
+                student = await dbContext.Students.Where(s => s.LogId == logId).SingleOrDefaultAsync();
+            if (student == null) return RedirectToAction("Registration", "Account");
+            var results = await dbContext.ResultsOfTesting
+                                         .Where(r => r.Student.Id == student.Id)
+                                         .OrderByDescending(r=>r.PassedAt)
+                                         .Take(10)
+                                         .Include(r=>r.Test)
+                                         .ToArrayAsync();
+            List<ResultOfTestingViewModel> resViewList = new List<ResultOfTestingViewModel>(results.Length);
+            foreach(var res in results)
+            {
+                resViewList.Add(
+                        new ResultOfTestingViewModel {
+                            TestName=res.Test.Name,
+                            Mark = res.Mark.ToString(),
+                            PassedAt= res.PassedAt
+                        }
+                    );
+            }
+            return View(resViewList);
+        }
+
+        [Authorize]
         public async Task<IActionResult> Testing(int id)
         {
             string logId;

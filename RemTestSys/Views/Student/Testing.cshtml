@@ -1,6 +1,8 @@
 ﻿@model TestingViewModel;
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Тестування - "+Model.TestName;
+    ViewData["Page"] = "Testing";
 }
 <input type="hidden" id="scriptData" data-sessionid="@Model.SessionId" data-hrefresult='@Url.Action("ResultOfTesting", "Student")' />
 <h3>

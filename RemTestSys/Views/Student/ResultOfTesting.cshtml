@@ -1,7 +1,9 @@
 ﻿@model RemTestSys.ViewModel.ResultOfTestingViewModel
 
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Результат тестування";
+    ViewData["Page"] = "ResultOfTesting";
 }
 
 <h1>Тест @Model.TestName завершено</h1>
