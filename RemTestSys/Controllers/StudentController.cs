@@ -30,6 +30,7 @@ namespace RemTestSys.Controllers
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await dbContext.Students.Where(s => s.LogId == logId).Include(s=>s.Group).SingleOrDefaultAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
+            SetStudentNameToView(student);
 
             var tests = await dbContext.AccessesToTest
                                        .Where(at => at.EveryBody || at.Group.Id == student.Group.Id || at.Student.Id == student.Id)
@@ -59,6 +60,7 @@ namespace RemTestSys.Controllers
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await dbContext.Students.Where(s => s.LogId == logId).SingleOrDefaultAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
+            SetStudentNameToView(student);
             var results = await dbContext.ResultsOfTesting
                                          .Where(r => r.Student.Id == student.Id)
                                          .OrderByDescending(r=>r.PassedAt)
@@ -87,6 +89,7 @@ namespace RemTestSys.Controllers
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await dbContext.Students.Where(s => s.LogId == logId).Include(s=>s.Group).SingleOrDefaultAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
+            SetStudentNameToView(student);
 
             AccessToTest accessToTest = await dbContext.AccessesToTest.FirstOrDefaultAsync(at => at.Test.Id == id && (at.EveryBody || at.Group.Id == student.Group.Id || at.Student.Id == student.Id));
             if (accessToTest == null) return View("Error");
@@ -127,6 +130,7 @@ namespace RemTestSys.Controllers
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
+            SetStudentNameToView(student);
 
             ResultOfTesting result = await dbContext.ResultsOfTesting
                                                     .Where(r => r.Id == id && r.Student.Id == student.Id)
@@ -144,6 +148,11 @@ namespace RemTestSys.Controllers
             {
                 return RedirectToAction("AvailableTests");
             }
+        }
+
+        private void SetStudentNameToView(Student student)
+        {
+            ViewBag.StudentFullName = $"{student.FirstName} {student.LastName}";
         }
     }
 }
