@@ -14,7 +14,7 @@
             <ul>
                 <li class="@(ViewData["Page"].ToString() == "AvailableTests" ? "CurrentPage" : "")"><a asp-action="AvailableTests" asp-controller="Student">Тести</a></li>
                 <li class="@(ViewData["Page"].ToString() == "Results" ? "CurrentPage" : "")"><a asp-action="Results" asp-controller="Student">Результати</a></li>
-                <li><a asp-action="LogOut" asp-controller="Account">Вийти</a></li>
+                <li><a asp-action="LogOut" asp-controller="Account">Вийти з системи</a></li>
             </ul>
         </nav>
     </header>

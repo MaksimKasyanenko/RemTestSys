@@ -19,7 +19,7 @@ else
     <h3>Тест: @testInfo.TestName</h3>
     <p>Опис: @testInfo.TestDescription</p>
     <p>Питань в тесті: @testInfo.CountOfQuestions</p>
-    <p>Часу на проходження: @testInfo.Duration</p>
+    <p>Часу на проходження: @($"{(int)(testInfo.Duration/60)}хв. {testInfo.Duration%60}сек.")</p>
     <div class="row text-c"><a asp-action="Testing" asp-controller="Student" asp-route-id="@testInfo.TestId">Пройти</a></div>
 </div>
     }
