@@ -39,13 +39,23 @@ namespace RemTestSys.Controllers
             var vmList = new List<TestInfoViewModel>();
             foreach (var tst in tests)
             {
+                string lastMark = "-";
+                ResultOfTesting lastRes = await dbContext.ResultsOfTesting
+                                                         .Where(r => r.Student.Id == student.Id && r.Test.Id == tst.Id)
+                                                         .OrderByDescending(r => r.PassedAt)
+                                                         .FirstOrDefaultAsync();
+                if(lastRes != null)
+                {
+                    lastMark = lastRes.Mark.ToString();
+                }
                 var tstInfo = new TestInfoViewModel
                 {
                     TestId = tst.Id,
                     TestName = tst.Name,
                     TestDescription = tst.Description,
                     CountOfQuestions = tst.QuestionsCount,
-                    Duration = tst.Duration
+                    Duration = tst.Duration,
+                    LastMark = lastMark
                 };
                 vmList.Add(tstInfo);
             }

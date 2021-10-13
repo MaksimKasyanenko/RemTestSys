@@ -9,19 +9,18 @@
         <header class="login-form-header">
             <h3>Реєстрація</h3>
         </header>
-
+        <form asp-action="Registration" asp-controller="Account" asp-antiforgery="true" method="post">
+            <input type="text" asp-for="FirstName" placeholder="Ім'я" /><br />
+            <input type="text" asp-for="LastName" placeholder="Прізвище" /><br />
+            <select asp-for="GroupName">
+                @foreach (var g in Model.GroupNameList)
+                {
+                    <option>@g</option>
+                }
+            </select><br />
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="submit" value="Зареєструватися" />
+        </form>
     </div>
-    <form asp-action="Registration" asp-controller="Account" asp-antiforgery="true" method="post">
-        <input type="text" asp-for="FirstName" placeholder="Ім'я" /><br />
-        <input type="text" asp-for="LastName" placeholder="Прізвище" /><br />
-        <select asp-for="GroupName">
-            @foreach (var g in Model.GroupNameList)
-            {
-                <option>@g</option>
-            }
-        </select><br />
-        <div asp-validation-summary="ModelOnly"></div>
-        <input type="submit" value="Зареєструватися" />
-    </form>
 </div>
 
