@@ -1,43 +1,27 @@
 ﻿@model RegistrationViewModel
 @{
     ViewData["Title"] = "Вхід до системи";
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Page"] = "Registration";
 }
+<div>
+    <div class="login-form">
+        <header class="login-form-header">
+            <h3>Реєстрація</h3>
+        </header>
 
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="author" content="Maksim Kasyanenko" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-<body class="login-page">
-    <div class="logo"><img src="~/images/site-logo.svg" /></div>
-    <div class="layout">
-        <div>
-            <hgroup>
-                <h1>Система дистанційного тестування учнів</h1>
-                <h3>Предмет: хімія та біологія</h3>
-            </hgroup>
-            <form asp-action="Registration" asp-controller="Account" asp-antiforgery="true" method="post">
-                <input type="text" asp-for="FirstName" />
-                <input type="text" asp-for="LastName" />
-                <select asp-for="GroupName">
-                    @foreach (var g in Model.GroupNameList)
-                    {
-                        <option>@g</option>
-                    }
-                </select>
-                <div asp-validation-summary="ModelOnly"></div>
-                <input type="submit" value="Зареєструватися" />
-            </form>
-        </div> 
     </div>
-    <footer>
-        <a asp-action="LogIn" asp-controller="Redactor">red</a>
-    </footer>
-</body>
-</html>
+    <form asp-action="Registration" asp-controller="Account" asp-antiforgery="true" method="post">
+        <input type="text" asp-for="FirstName" placeholder="Ім'я" /><br />
+        <input type="text" asp-for="LastName" placeholder="Прізвище" /><br />
+        <select asp-for="GroupName">
+            @foreach (var g in Model.GroupNameList)
+            {
+                <option>@g</option>
+            }
+        </select><br />
+        <div asp-validation-summary="ModelOnly"></div>
+        <input type="submit" value="Зареєструватися" />
+    </form>
+</div>
 
