@@ -5,18 +5,27 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Результати пройденних тестів</h1>
+<header>
+    <h1>Результати пройденних тестів</h1>
+</header>
 @if (Model.Count > 0)
 {
     <table>
-        @foreach (ResultOfTestingViewModel res in Model)
-        {
+        <tbody>
             <tr>
-                <td>@res.TestName</td>
-                <td>@($"{res.PassedAt.Day}.{res.PassedAt.Month}.{res.PassedAt.Year}, {res.PassedAt.Hour}:{res.PassedAt.Minute}")</td>
-                <td>@res.Mark</td>
+                <th>Назва тесту</th>
+                <th>Дата проходження</th>
+                <th>Оцінка</th>
             </tr>
-        }
+            @foreach (ResultOfTestingViewModel res in Model)
+            {
+                <tr>
+                    <td>@res.TestName</td>
+                    <td>@($"{res.PassedAt.Day}.{res.PassedAt.Month}.{res.PassedAt.Year}, {res.PassedAt.Hour}:{res.PassedAt.Minute}")</td>
+                    <td>@res.Mark</td>
+                </tr>
+            }
+        </tbody>
     </table>
 }
 else

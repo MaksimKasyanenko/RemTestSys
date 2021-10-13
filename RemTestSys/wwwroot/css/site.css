@@ -1,5 +1,4 @@
-﻿/************ layout ********************/
-html{
+﻿html{
     height: 100%;
 }
 body{
@@ -26,8 +25,16 @@ body{
     justify-content: space-between;
     align-items: center;
 }
+.center-panel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .hidden{
     display: none;
+}
+.content p{
+	color: #585858;
 }
 
 /************ forms ********************/
@@ -52,6 +59,30 @@ input[type="submit"]{
     background-color: #23c2ac;
 }
 
+/************* table ****************/
+table{
+    font-family: Arial, Helvetica, sans-serif;
+    width:100%;
+}
+table th,
+table td{
+    color:#424242;
+    border: 1px solid white;
+    padding: 0.4rem;
+}
+td:first-of-type{
+    width: 50%;
+}
+td:not(:first-of-type){
+    text-align: center;
+}
+th{
+    font-weight: bold;
+    background-color: #f8cdaa
+}
+tr{
+    background-color: #d3d3d3;
+}
 
 /************ text ********************/
 h1, h2, h3, h4, h5, h6{
@@ -68,6 +99,12 @@ input[type="submit"]{
     font-family: Arial, Helvetica, sans-serif;
     text-decoration: none;
     color:#ffffff;
+}
+.content .big-text{
+    font-size: 4rem;
+    color: #ffaf9e;
+    margin: 2rem 0;
+	margin-bottom: 3rem;
 }
 
 /************ IO ********************/
@@ -133,10 +170,10 @@ button.choosed{
 }
 .login-form{
     width: 96%;
-    max-width: 400px;
+    max-width: 460px;
     margin: 0 auto;
     padding: 0 0.8rem 0.8rem 0.8rem;
-    box-shadow: 2px 2px 8px #7c7c7c;
+    box-shadow: 2px 2px 8px #ccc;
 }
 .login-form form{
     width: 100%;
@@ -205,5 +242,12 @@ div.validation-summary-errors ul{
     }
     .test-info-block dd{
         width: 60%;
+    }
+    table{
+        font-size: 0.8rem;
+    }
+    .site-header,
+    .site-footer{
+        font-size: 0.8rem;
     }
 }

@@ -6,7 +6,11 @@
     ViewData["Page"] = "ResultOfTesting";
 }
 
-<h1>Тест @Model.TestName завершено</h1>
+<header>
+    <h1>Тест @Model.TestName завершено</h1>
+</header>
 
-<p>Ваша оцінка - @Model.Mark</p>
-<a asp-action="AvailableTests">На головну</a>
+<p class="big-text">Ваша оцінка - @Model.Mark</p>
+<div class="center-panel">
+    <a asp-action="AvailableTests" class="primary-button">На головну</a>
+</div>
