@@ -154,7 +154,8 @@ class SequenceAnswerForm {
         }
         this.answerArray = [];
         let cancelBtn = document.querySelector("#sequenceAnswerFormWrp button.cancel");
-        cancelBtn.onclick = () => {
+        cancelBtn.onclick = ev => {
+            ev.preventDefault();
             this.display.textContent = "";
             this.answerArray = [];
             document.querySelectorAll("#sequenceAnswerFormWrp ul button").forEach(b => b.disabled = false);
@@ -203,7 +204,8 @@ class ConnectedPairsAnswerForm {
         this.rightList = document.getElementById("connectedPairsRightCol");
         this.answerArray = [];
         let cancelBtn = document.querySelector("#connectedPairsAnswerFormWrp button.cancel");
-        cancelBtn.onclick = () => {
+        cancelBtn.onclick = ev => {
+            ev.preventDefault();
             this.display.textContent = "";
             this.answerArray = [];
             document.querySelectorAll("#connectedPairsAnswerFormWrp ul button").forEach(b => b.disabled = false);

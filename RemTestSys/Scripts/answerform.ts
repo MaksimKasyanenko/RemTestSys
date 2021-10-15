@@ -183,7 +183,8 @@ class SequenceAnswerForm implements IAnswerForm {
         }
         this.answerArray = [];
         let cancelBtn = document.querySelector("#sequenceAnswerFormWrp button.cancel") as HTMLButtonElement;
-        cancelBtn.onclick = () => {
+        cancelBtn.onclick = ev => {
+            ev.preventDefault();
             this.display.textContent = "";
             this.answerArray = [];
             document.querySelectorAll("#sequenceAnswerFormWrp ul button").forEach(b => (<HTMLButtonElement>b).disabled=false);
@@ -240,7 +241,8 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
         this.rightList = document.getElementById("connectedPairsRightCol") as HTMLUListElement;
         this.answerArray = [];
         let cancelBtn = document.querySelector("#connectedPairsAnswerFormWrp button.cancel") as HTMLButtonElement;
-        cancelBtn.onclick = () => {
+        cancelBtn.onclick = ev => {
+            ev.preventDefault();
             this.display.textContent = "";
             this.answerArray = [];
             document.querySelectorAll("#connectedPairsAnswerFormWrp ul button").forEach(b => (<HTMLButtonElement>b).disabled = false);
