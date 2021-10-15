@@ -31,7 +31,7 @@
         if (answerResult.isRight) {
             display.showMessage("Правильно!","");
         } else {
-            display.showMessage("Неправильно!", `Правильна відповідь: ${answerResult.rightText}`);
+            display.showMessage("Неправильно!", `Правильна відповідь:\n${answerResult.rightText}`);
         }
         await confirmForm.showAndGetAnswer();
         confirmForm.hide();
