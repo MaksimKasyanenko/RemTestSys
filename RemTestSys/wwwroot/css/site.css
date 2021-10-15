@@ -108,6 +108,13 @@ tr {
 }
 
 /************ text ********************/
+a,
+a:visited{
+    color: #23c2ac;
+}
+    a:hover {
+        color: #ffaf9e;
+    }
 h1, h2, h3, h4, h5, h6 {
     font-weight: bold !important;
 }
@@ -191,7 +198,7 @@ button {
     }
 
     button.choosed {
-        border: 2px solid #ffaf9e;
+        border: 2px solid #23c2ac;
     }
 
 /************ extra ********************/
@@ -434,6 +441,9 @@ div.validation-summary-errors ul {
     #connectedPairsAnswerFormWrp li button {
         width: 100%;
     }
+.account-info *{
+    margin-bottom: 1rem;
+}
 
 @media (max-width: 600px) {
     .test-info-block dt {

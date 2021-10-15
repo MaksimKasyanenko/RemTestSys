@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Models;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using RemTestSys.Extensions;
 
 namespace RemTestSys.Controllers
 {
@@ -73,6 +75,22 @@ namespace RemTestSys.Controllers
             return RedirectToAction(nameof(Registration));
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> AccountInfo()
+        {
+            string logId;
+            Student student = null;
+            if (this.TryGetLogIdFromCookie(out logId))
+                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
+            if (student == null) return RedirectToAction("Registration", "Account");
+
+            return View(new StudentInfoViewModel {
+                FullName = $"{student.FirstName} {student.LastName}",
+                GroupName = student.Group.Name,
+                RegDate = student.RegistrationDate.ToString()
+            });
+        }
 
         private async Task<string> RandomLogId()
         {

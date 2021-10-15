@@ -38,7 +38,7 @@ window.addEventListener("load", function () {
                 display.showMessage("Правильно!", "");
             }
             else {
-                display.showMessage("Неправильно!", `Правильна відповідь: ${answerResult.rightText}`);
+                display.showMessage("Неправильно!", `Правильна відповідь:\n${answerResult.rightText}`);
             }
             yield confirmForm.showAndGetAnswer();
             confirmForm.hide();

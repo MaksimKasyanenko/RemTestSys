@@ -1,0 +1,16 @@
+﻿@model StudentInfoViewModel
+@{
+    ViewData["Title"] = "Інформація про аккаунт";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Page"] = "AccountInfo";
+}
+<header>
+    <h2>Аккаунт</h2>
+</header>
+<div class="account-info">
+    <p>Студент: @Model.FullName</p>
+    <p>Група: @Model.GroupName</p>
+    <p>Дата реєстрації: @Model.RegDate</p>
+    <a asp-action="LogOut" asp-controller="Account">Вийти з системи</a>
+</div>
+

@@ -22,7 +22,10 @@
                     <ul class="right-panel">
                         <li class="@(ViewData["Page"].ToString() == "AvailableTests" ? "current-page" : "")"><a asp-action="AvailableTests" asp-controller="Student">Тести</a></li>
                         <li class="@(ViewData["Page"].ToString() == "Results" ? "current-page" : "")"><a asp-action="Results" asp-controller="Student">Результати</a></li>
-                        <li><a asp-action="AccountInfo" asp-controller="Account">@ViewBag.StudentFullName</a></li>
+                        @if (ViewData["Page"].ToString() != "AccountInfo")
+                        {
+                            <li><a asp-action="AccountInfo" asp-controller="Account">@ViewBag.StudentFullName</a></li>
+                        }
                     </ul>
                 </nav>
             }
