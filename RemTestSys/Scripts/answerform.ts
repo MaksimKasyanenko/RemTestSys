@@ -280,7 +280,8 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
                         senderBtn.disabled = true;
             			boof[1].classList.remove("choosed");
                         boof[1].disabled = true;
-                        this.display.textContent += `${senderBtn.textContent} - ${boof[1].textContent}\n`;
+                        if(this.display.textContent.length>0)this.display.textContent+=", ";
+                        this.display.textContent += `${senderBtn.textContent} - ${boof[1].textContent}`;
                         this.answerArray.push(senderBtn.textContent);
             			this.answerArray.push(boof[1].textContent);
             			boof.length=0;
@@ -298,7 +299,8 @@ class ConnectedPairsAnswerForm implements IAnswerForm{
                         senderBtn.disabled = true;
             			boof[0].classList.remove("choosed");
                         boof[0].disabled = true;
-                        this.display.textContent += `${boof[0].textContent} - ${senderBtn.textContent}\n`;
+                        if(this.display.textContent.length>0)this.display.textContent+=", ";
+                        this.display.textContent += `${boof[0].textContent} - ${senderBtn.textContent}`;
                         this.answerArray.push(boof[0].textContent);
                         this.answerArray.push(senderBtn.textContent);
             			boof.length=0;
