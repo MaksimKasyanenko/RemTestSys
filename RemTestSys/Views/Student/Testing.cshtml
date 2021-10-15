@@ -1,37 +1,37 @@
 ﻿@model TestingViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Тестування - "+Model.TestName;
+    ViewData["Title"] = "Тестування - " + Model.TestName;
     ViewData["Page"] = "Testing";
 }
 <input type="hidden" id="scriptData" data-sessionid="@Model.SessionId" data-hrefresult='@Url.Action("ResultOfTesting", "Student")' />
-<h3>
-    @Model.TestName
-</h3>
-<div>
-    <header>
-        <div>
+<header>
+    <h2>
+        @Model.TestName
+    </h2>
+</header>
+<div class="testing-dialog-widget">
+    <div id="placeholder" class="download-cover hidden">Будь ласка, зачекайте...</div>
+    <header class="between-panel">
+        <h3>
             Питання <span id="questionNum">-</span> з @Model.QuestionsCount
-        </div>
-        <div>
-            <img src="" />
+        </h3>
+        <h3 class="timer right-panel">
+            <img src="~/images/clock-ico.svg" />
             <span id="timerDisp">-- : --</span>
-        </div>
+        </h3>
     </header>
-    <div>
-        <div>
-            <div id="placeholder">Будь ласка, зачекайте...</div>
-            <div id="questionText"></div>
-            <div id="questionSubText"></div>
-        </div>
-        <div>
-            @await Html.PartialAsync("~/Views/AnswerForms/ConfirmForm.cshtml")
-            @await Html.PartialAsync("~/Views/AnswerForms/TextAnswerForm.cshtml")
-            @await Html.PartialAsync("~/Views/AnswerForms/OneOfFourVariantsAnswerForm.cshtml")
-            @await Html.PartialAsync("~/Views/AnswerForms/SomeVariantAnswerForm.cshtml")
-            @await Html.PartialAsync("~/Views/AnswerForms/SequenceAnswerForm.cshtml")
-            @await Html.PartialAsync("~/Views/AnswerForms/ConnectedPairsAnswerForm.cshtml")
-        </div>
+    <div class="question-text-container">
+        <div id="questionText"></div>
+        <div id="questionSubText"></div>
+    </div>
+    <div class="answer-forms-container">
+        @await Html.PartialAsync("~/Views/AnswerForms/ConfirmForm.cshtml")
+        @await Html.PartialAsync("~/Views/AnswerForms/TextAnswerForm.cshtml")
+        @await Html.PartialAsync("~/Views/AnswerForms/OneOfFourVariantsAnswerForm.cshtml")
+        @await Html.PartialAsync("~/Views/AnswerForms/SomeVariantAnswerForm.cshtml")
+        @await Html.PartialAsync("~/Views/AnswerForms/SequenceAnswerForm.cshtml")
+        @await Html.PartialAsync("~/Views/AnswerForms/ConnectedPairsAnswerForm.cshtml")
     </div>
 </div>
 <script src="~/scripts/testing.js"></script>

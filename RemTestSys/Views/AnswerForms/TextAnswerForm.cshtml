@@ -1,8 +1,8 @@
-﻿<div id="textAnswerFormWrp">
+﻿<div id="textAnswerFormWrp" class="hidden">
     @await Html.PartialAsync("~/Views/AnswerForms/SpecialSymbolsPanel.cshtml")
     <form>
-        <div>
-            <input type="text" placeholder="Ваша відповідь" />
+        <input type="text" placeholder="Ваша відповідь" />
+        <div class="center-panel">
             <input type="submit" value="Підтвердити" />
         </div>
     </form>
