@@ -8,6 +8,11 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Area("Editor")]
     public class AccountController : Controller
     {
+        publuc AccountController(IConfiguration config)
+        {
+            Config = config??throw new ArgumentNullException(nameof(config));
+        }
+        private readonly IConfiguration Config;
         [HttpGet]
         public IActionResult LogIn()
         {
@@ -15,6 +20,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         [HttpPost]
+        [AntiforgeryToken]
         public async Task<IActionResult> LogIn(LoginViewModel loginViewModel)
         {
             if (ModelState.IsValid)
@@ -24,7 +30,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             else
             {
-                ModelState.AddModelError("","Потрібно указати і логін і пароль");
+                ModelState.AddModelError("","ГЏГ®ГІГ°ВіГЎГ­Г® ГіГЄГ Г§Г ГІГЁ Ві Г«Г®ГЈВіГ­ Ві ГЇГ Г°Г®Г«Гј");
                 return View(loginViewModel);
             }
         }
