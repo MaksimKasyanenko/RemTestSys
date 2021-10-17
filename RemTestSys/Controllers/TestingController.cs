@@ -109,7 +109,8 @@ namespace RemTestSys.Controllers
                             Student = session.Student,
                             Test = session.Test,
                             Mark = session.GetMark(),
-                            PassedAt = DateTime.Now
+                            PassedAt = DateTime.Now,
+                            Session = session
                         };
                         dbContext.ResultsOfTesting.Add(resultOfTesting);
                         session.Result = resultOfTesting;

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<RemTestSys.Domain.Models.ResultOfTesting>
+
+@{
+    ViewData["Title"] = "Результати проходження тестів";
+}
+
+<h2>Результати проходження тестів (всі)</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Учень</th>
+            <th>Тест</th>
+            <th>Дата проходження</th>
+            <th>Оцінка</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@item.Student.FullName</td>
+            <td>@item.Test.Name</td>
+            <td>@item.PassedAt.ToString()</td>
+            <td>@item.Mark.ToString()</td>
+        </tr>
+}
+    </tbody>
+</table>
+<a asp-action="ClearAll">Видалити усі результати</a>

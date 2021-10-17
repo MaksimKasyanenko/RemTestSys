@@ -19,21 +19,30 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         private readonly AppDbContext dbContext;
         [HttpGet]
-        public async Task<IActionResult> Index(int page=1)
+        public async Task<IActionResult> Index(int? page)
         {
-            if (page < 1) page = 1;
+            if (page == null || page < 1) page = 1;
             int listLength=30;
             int countOfResults = await dbContext.ResultsOfTesting.CountAsync();
             int countOfPages = countOfResults / listLength;
             if (countOfPages == 0 && countOfResults > 0) countOfPages = 1;
-            ViewBag["CountOfPages"] = countOfPages;
-            ViewBag["CurrentPageNum"] = page;
+            ViewBag.CountOfPages = countOfPages;
+            ViewBag.CurrentPageNum = page;
             List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
-                                                            .Skip((page-1)*listLength)
+                                                            .Skip(((int)page-1)*listLength)
                                                             .Take(listLength)
+                                                            .Include(r=>r.Student)
+                                                            .Include(r=>r.Test)
                                                             .OrderByDescending(r=>r.PassedAt)
                                                             .ToListAsync();
             return View(resultList);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ClearAll()
+        {
+            dbContext.ResultsOfTesting.RemoveRange(dbContext.ResultsOfTesting);
+            await dbContext.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
     }
 }

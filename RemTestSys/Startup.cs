@@ -66,7 +66,7 @@ namespace RTS
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "areas",
-                    pattern: "{area:exists}/{controller=Account}/{action=LogIn}");
+                    pattern: "{area:exists}/{controller=Account}/{action=LogIn}/{page?}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Student}/{action=AvailableTests}/{id?}");
