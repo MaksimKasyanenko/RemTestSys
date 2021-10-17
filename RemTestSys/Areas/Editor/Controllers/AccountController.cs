@@ -25,8 +25,11 @@ namespace RemTestSys.Areas.Editor.Controllers
         {
             if (ModelState.IsValid)
             {
-                await Task.CompletedTask;
-                return Redirect("www.google.com");
+                if(loginViewModel.Login!=Config["EditorAccount:Login"]
+                   || loginViewModel.Password!=Config["EditorAccount:Password"])
+                {
+                    ModelState.AddModelError("","
+                }
             }
             else
             {
