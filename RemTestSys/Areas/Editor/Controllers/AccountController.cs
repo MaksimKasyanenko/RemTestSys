@@ -31,7 +31,11 @@ namespace RemTestSys.Areas.Editor.Controllers
                     ModelState.AddModelError("","Невірний логін або пароль");
                     return View(loginViewModel);
                 }
-                !!!
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                claimsIdentity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, "Editor"));
+                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+                return RedirectToAction("Index", "Results");
             }
             else
             {
