@@ -1,3 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RemTestSys.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace RemTestSys.Areas.Editor.Controllers
 {
     [Area("Editor")]
@@ -12,12 +21,16 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int page=1)
         {
+            if (page < 1) page = 1;
             int listLength=30;
-            int count = await dbContext.ResultsOfTesting.CountAsync();
-            if(page<1)page=1;
-            List<ResultViewModel> resultList=await dbContext.ResultsOfTesting
-                                                            .Skip((page-1)*30)
-                                                            .Take(30)
+            int countOfResults = await dbContext.ResultsOfTesting.CountAsync();
+            int countOfPages = countOfResults / listLength;
+            if (countOfPages == 0 && countOfResults > 0) countOfPages = 1;
+            ViewBag["CountOfPages"] = countOfPages;
+            ViewBag["CurrentPageNum"] = page;
+            List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
+                                                            .Skip((page-1)*listLength)
+                                                            .Take(listLength)
                                                             .OrderByDescending(r=>r.PassedAt)
                                                             .ToListAsync();
             return View(resultList);

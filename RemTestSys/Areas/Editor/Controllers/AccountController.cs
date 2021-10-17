@@ -1,6 +1,10 @@
-
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using RemTestSys.Areas.Editor.ViewModel;
+using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.Controllers
@@ -8,7 +12,7 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Area("Editor")]
     public class AccountController : Controller
     {
-        publuc AccountController(IConfiguration config)
+        public AccountController(IConfiguration config)
         {
             Config = config??throw new ArgumentNullException(nameof(config));
         }
@@ -20,7 +24,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         [HttpPost]
-        [AntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogIn(LoginViewModel loginViewModel)
         {
             if (ModelState.IsValid)
@@ -39,7 +43,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             else
             {
-                ModelState.AddModelError("","Ïîòð³áíî óêàçàòè ³ ëîã³í ³ ïàðîëü");
+                ModelState.AddModelError("","Необхідно ввести і логін і пароль");
                 return View(loginViewModel);
             }
         }

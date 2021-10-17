@@ -32,6 +32,7 @@ namespace RTS
                 .AddCookie(
                     options => {
                         options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Registration");
+                        options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Editor/Account/LogIn");
                         options.ExpireTimeSpan = AccountValidityPolitics.GetTerm();
                         options.SlidingExpiration = false;
                         }
