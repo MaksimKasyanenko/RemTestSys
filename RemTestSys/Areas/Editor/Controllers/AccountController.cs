@@ -43,5 +43,11 @@ namespace RemTestSys.Areas.Editor.Controllers
                 return View(loginViewModel);
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("LogIn");
+        }
     }
 }
