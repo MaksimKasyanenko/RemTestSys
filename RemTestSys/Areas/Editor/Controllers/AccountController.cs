@@ -28,8 +28,10 @@ namespace RemTestSys.Areas.Editor.Controllers
                 if(loginViewModel.Login!=Config["EditorAccount:Login"]
                    || loginViewModel.Password!=Config["EditorAccount:Password"])
                 {
-                    ModelState.AddModelError("","
+                    ModelState.AddModelError("","Невірний логін або пароль");
+                    return View(loginViewModel);
                 }
+                !!!
             }
             else
             {
