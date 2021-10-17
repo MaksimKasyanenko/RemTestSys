@@ -1,4 +1,37 @@
-@
-{
-
+﻿@model LoginViewModel
+@{
+    Layout = null;
 }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Вхід до редактору тестів</title>
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="col-6 col-sm-12 mx-auto mt-4 border">
+            <header class="bg-primary text-white p-2"><h2>Вхід</h2></header>
+            <div class="p-2">
+                <form asp-action="LogIn" asp-antiforgery="true">
+                    <div>
+                        <label asp-for="Login" class="form-label">Логін</label>
+                        <input asp-for="Login" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label">Пароль</label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="text-center">
+                        <input type="submit" value="Ввійти" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
