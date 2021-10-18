@@ -11,8 +11,15 @@ namespace RemTestSys.Areas.Editor.ViewModel
             {
                 if(AllElementsCount<1)return 0;
                 int res = AllElementsCount/ElementsPerPage;
-                if(AllElementsCount%ElementsPerPage)res++;
+                if(AllElementsCount%ElementsPerPage != 0)res++;
                 return res;
+            }
+        }
+        public int SkippedPages
+        {
+            get
+            {
+                return ElementsPerPage * (CurrentPage - 1);
             }
         }
     }

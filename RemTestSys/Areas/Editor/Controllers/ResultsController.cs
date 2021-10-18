@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RemTestSys.Areas.Editor.ViewModel;
 using RemTestSys.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,15 @@ namespace RemTestSys.Areas.Editor.Controllers
         public async Task<IActionResult> Index(int? page)
         {
             if (page == null || page < 1) page = 1;
-            ViewBaginationLength=listLength;
-            ViewBginationCount = await dbContext.ResultsOfTesting.CountAsync();
-            ViewBaginationCurrent = page;
-            ViewBag.PaginationData = pagin;
+            PaginationViewModel pagination = new PaginationViewModel();
+            pagination.AllElementsCount = await dbContext.ResultsOfTesting.CountAsync();
+            pagination.CurrentPage = (int)page;
+            pagination.ElementsPerPage = 30;
+            ViewBag.PaginationData = pagination;
             
             List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
-                                                            .Skip(((int)page-1)*listLength)
-                                                            .Take(listLength)
+                                                            .Skip(pagination.SkippedPages)
+                                                            .Take(pagination.ElementsPerPage)
                                                             .Include(r=>r.Student)
                                                             .Include(r=>r.Test)
                                                             .OrderByDescending(r=>r.PassedAt)

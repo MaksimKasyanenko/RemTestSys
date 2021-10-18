@@ -26,4 +26,5 @@
 }
     </tbody>
 </table>
+@await Html.PartialAsync("_Pagination", ViewBag.Pagination, ViewData)
 <a asp-action="ClearAll">Видалити усі результати</a>

@@ -135,7 +135,7 @@ namespace RemTestSys.Controllers
         [Authorize]
         public async Task<IActionResult> ResultOfTesting(int? id)
         {
-            if (id == null) return return RedirectToAction("AvailableTests");
+            if (id == null) return RedirectToAction("AvailableTests");
             string logId;
             Student student = null;
             if (this.TryGetLogIdFromCookie(out logId))
