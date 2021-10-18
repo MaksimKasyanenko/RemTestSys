@@ -23,11 +23,10 @@ namespace RemTestSys.Areas.Editor.Controllers
         {
             if (page == null || page < 1) page = 1;
             int listLength=30;
-            int countOfResults = await dbContext.ResultsOfTesting.CountAsync();
-            int countOfPages = countOfResults / listLength;
-            if (countOfPages == 0 && countOfResults > 0) countOfPages = 1;
-            ViewBag.CountOfPages = countOfPages;
-            ViewBag.CurrentPageNum = page;
+            ViewBag.PaginationLength=listLength;
+            ViewBag.PaginationCount = await dbContext.ResultsOfTesting.CountAsync();
+            ViewBag.PaginationCurrent = page;
+            
             List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
                                                             .Skip(((int)page-1)*listLength)
                                                             .Take(listLength)
