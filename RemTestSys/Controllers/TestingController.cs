@@ -33,7 +33,6 @@ namespace RemTestSys.Controllers
                                                 .Include(s=>s.Questions)
                                                 .ThenInclude(q=>q.Question)
                                                 .ThenInclude(q=>q.Answer)
-                                                .Include(s=>s.Result)
                                                 .SingleOrDefaultAsync();
             if(session != null)
             {
@@ -46,7 +45,7 @@ namespace RemTestSys.Controllers
                         Finished = session.Finished,
                         QuestionNum = session.QuestionNum,
                         TimeLeft = session.TimeLeft,
-                        ResultId = session.Result.Id
+                        ResultId = session.IdOfResult
                     };
                 }
                 else
@@ -109,11 +108,11 @@ namespace RemTestSys.Controllers
                             Student = session.Student,
                             Test = session.Test,
                             Mark = session.GetMark(),
-                            PassedAt = DateTime.Now,
-                            Session = session
+                            PassedAt = DateTime.Now
                         };
                         dbContext.ResultsOfTesting.Add(resultOfTesting);
-                        session.Result = resultOfTesting;
+                        await dbContext.SaveChangesAsync();
+                        session.IdOfResult = resultOfTesting.Id;
                     }
                     await dbContext.SaveChangesAsync();
                     return new ObjectResult(ar);

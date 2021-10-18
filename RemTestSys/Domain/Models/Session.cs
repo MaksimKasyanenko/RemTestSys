@@ -11,7 +11,7 @@ namespace RemTestSys.Domain.Models
         public Test Test { get; set; }
         public DateTime StartTime { get; set; }
         public int RightAnswersCount { get; set; }
-        public ResultOfTesting Result { get; set; }
+        public int? IdOfResult { get; set; }
 
         private bool _finished = false;
         public bool Finished
