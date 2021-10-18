@@ -22,10 +22,10 @@ namespace RemTestSys.Areas.Editor.Controllers
         public async Task<IActionResult> Index(int? page)
         {
             if (page == null || page < 1) page = 1;
-            int listLength=30;
-            ViewBag.PaginationLength=listLength;
-            ViewBag.PaginationCount = await dbContext.ResultsOfTesting.CountAsync();
-            ViewBag.PaginationCurrent = page;
+            ViewBaginationLength=listLength;
+            ViewBginationCount = await dbContext.ResultsOfTesting.CountAsync();
+            ViewBaginationCurrent = page;
+            ViewBag.PaginationData = pagin;
             
             List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
                                                             .Skip(((int)page-1)*listLength)
