@@ -20,18 +20,9 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         private readonly AppDbContext dbContext;
         [HttpGet]
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index()
         {
-            if (page == null || page < 1) page = 1;
-            PaginationViewModel pagination = new PaginationViewModel();
-            pagination.AllElementsCount = await dbContext.ResultsOfTesting.CountAsync();
-            pagination.CurrentPage = (int)page;
-            pagination.ElementsPerPage = 30;
-            ViewBag.PaginationData = pagination;
-            
             List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
-                                                            .Skip(pagination.SkippedPages)
-                                                            .Take(pagination.ElementsPerPage)
                                                             .Include(r=>r.Student)
                                                             .Include(r=>r.Test)
                                                             .OrderByDescending(r=>r.PassedAt)
