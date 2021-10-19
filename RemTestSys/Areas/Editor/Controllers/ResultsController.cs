@@ -42,7 +42,17 @@ namespace RemTestSys.Areas.Editor.Controllers
                                                               .ToListAsync();
             !return View(resultList);
         }
-        []
+        [HttpGet]
+        public async Task<IActionResult> GetGroupResults(int id)
+        {
+            List<ResultOfTesting> resultList = await dbContext.ResultsOfTesting
+                                                              .Where(r => r.Student.Group.Id == id)
+                                                              .Include(r => r.Student)
+                                                              .Include(r => r.Test)
+                                                              .OrderByDescending(r => r.PassedAt)
+                                                              .ToListAsync();
+            !return View(resultList);
+        }
         [HttpGet]
         public async Task<IActionResult> ClearAll()
         {
