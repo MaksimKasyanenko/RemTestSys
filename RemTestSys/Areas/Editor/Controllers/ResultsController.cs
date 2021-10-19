@@ -70,5 +70,17 @@ namespace RemTestSys.Areas.Editor.Controllers
             await Remove(r=>r.Student.Group.Id==id);
             return RedirectToAction("Group", new{id=id});
         }
+        [HttpGet]
+        public async Task<IActionResult> ClearForStudent(int id)
+        {
+            await Remove(r=>r.Student.Id==id);
+            return RedirectToAction("Student", new{id=id});
+        }
+        [HttpGet]
+        public async Task<IActionResult> ClearForTest(int id)
+        {
+             await Remove(r=>r.Test.Id==id);
+             return RedirectToAction("Test", new{id=id});
+        }
     }
 }
