@@ -24,11 +24,25 @@ namespace RemTestSys.Areas.Editor.Controllers
         {
             List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
                                                             .Include(r=>r.Student)
+                                                            .ThenInclude(s=>s.Group)
                                                             .Include(r=>r.Test)
                                                             .OrderByDescending(r=>r.PassedAt)
                                                             .ToListAsync();
             return View(resultList);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetStudentResults(int id)
+        {
+            List<ResultOfTesting> resultList = await dbContext.ResultsOfTesting
+                                                              .Where(r => r.Student.Id == id)
+                                                              .Include(r => r.Student)
+                                                              .ThenInclude(s => s.Group)
+                                                              .Include(r => r.Test)
+                                                              .OrderByDescending(r => r.PassedAt)
+                                                              .ToListAsync();
+            !return View(resultList);
+        }
+        []
         [HttpGet]
         public async Task<IActionResult> ClearAll()
         {
