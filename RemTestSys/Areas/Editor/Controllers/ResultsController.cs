@@ -52,13 +52,23 @@ namespace RemTestSys.Areas.Editor.Controllers
                                                               .ToListAsync();
             return resultList;
         }
+        private async Task Remove(Expression<Func<ResultOfTesting,bool>> filter)
+        {
+            dbContext.ResultsOfTesting.RemoveRange(dbContext.ResultsOfTesting.Where(filter));
+            await dbContext.SaveChangesAsync();
+        }
 
         [HttpGet]
         public async Task<IActionResult> ClearAll()
         {
-            dbContext.ResultsOfTesting.RemoveRange(dbContext.ResultsOfTesting);
-            await dbContext.SaveChangesAsync();
-            return RedirectToAction("Index");
+           await Remove(r=>true);
+           return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> ClearForGroup(int id)
+        {
+            await Remove(r=>r.Student.Group.Id==id);
+            return RedirectToAction("Group", new{id=id});
         }
     }
 }
