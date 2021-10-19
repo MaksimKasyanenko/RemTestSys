@@ -38,8 +38,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Test(int id)
         {
-            
-            !return View(resultList);
+            !return View(await GetResults(r=>r.Test.Id));
         }
 
         private async Task<List<ResultOfTesting>> GetResults(Expression<Func<ResultOfTesting, bool>> filter)
