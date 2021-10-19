@@ -6,6 +6,7 @@ using RemTestSys.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.Controllers
@@ -22,37 +23,37 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<ResultOfTesting> resultList=await dbContext.ResultsOfTesting
-                                                            .Include(r=>r.Student)
-                                                            .ThenInclude(s=>s.Group)
-                                                            .Include(r=>r.Test)
-                                                            .OrderByDescending(r=>r.PassedAt)
-                                                            .ToListAsync();
-            return View(resultList);
+            return View(await GetResults(r=>true));
         }
         [HttpGet]
-        public async Task<IActionResult> GetStudentResults(int id)
+        public async Task<IActionResult> Student(int id)
+        {
+            !return View(await GetResults(r=>r.Student.Id == id));
+        }
+        [HttpGet]
+        public async Task<IActionResult> Group(int id)
+        {
+            !return View(await GetResults(r=>r.Student.Group.Id == id));
+        }
+        [HttpGet]
+        public async Task<IActionResult> Test(int id)
+        {
+            
+            !return View(resultList);
+        }
+
+        private async Task<List<ResultOfTesting>> GetResults(Expression<Func<ResultOfTesting, bool>> filter)
         {
             List<ResultOfTesting> resultList = await dbContext.ResultsOfTesting
-                                                              .Where(r => r.Student.Id == id)
+                                                              .Where(filter)
                                                               .Include(r => r.Student)
-                                                              .ThenInclude(s => s.Group)
+                                                              .ThenInclude(r => r.Group)
                                                               .Include(r => r.Test)
                                                               .OrderByDescending(r => r.PassedAt)
                                                               .ToListAsync();
-            !return View(resultList);
+            return resultList;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetGroupResults(int id)
-        {
-            List<ResultOfTesting> resultList = await dbContext.ResultsOfTesting
-                                                              .Where(r => r.Student.Group.Id == id)
-                                                              .Include(r => r.Student)
-                                                              .Include(r => r.Test)
-                                                              .OrderByDescending(r => r.PassedAt)
-                                                              .ToListAsync();
-            !return View(resultList);
-        }
+
         [HttpGet]
         public async Task<IActionResult> ClearAll()
         {
