@@ -36,7 +36,10 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Group(int id)
         {
-            !return View(await GetResults(r=>r.Student.Group.Id == id));
+            Group group  = await dbContext.Groups.SingleAsync(g=>g.Id==id);
+            ViewData["GroupName"] = group.Name;
+            ViewData["GroupId"] = group.Id;
+            return View(await GetResults(r=>r.Student.Group.Id == id));
         }
         [HttpGet]
         public async Task<IActionResult> Test(int id)
