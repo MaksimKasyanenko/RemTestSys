@@ -26,7 +26,7 @@
                 <tr>
                     <td>@item.Student.FullName <a asp-action="Student" asp-route-id="@item.Student.Id" class="link-secondary">⮵</a></td>
                     <td>@item.Student.Group.Name <a asp-action="Group" asp-route-id="@item.Student.Group.Id" class="link-secondary">⮵</a></td>
-                    <td>@item.Test.Name <a asp-action="Test" asp-route-id="@item.Student.Group.Id" class="link-secondary">⮵</a></td>
+                    <td>@item.Test.Name <a asp-action="Test" asp-route-id="@item.Test.Id" class="link-secondary">⮵</a></td>
                     <td>@item.PassedAt.ToString()</td>
                     <td>@item.Mark.ToString()</td>
                 </tr>
