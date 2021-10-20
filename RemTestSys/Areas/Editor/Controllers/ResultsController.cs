@@ -38,8 +38,19 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Test(int id)
         {
-            !return View(await GetResults(r=>r.Test.Id));
+            !return View(await GetResults(r=>r.Test.Id == id));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ClearAll() => await Remove(r => true);
+        [HttpGet]
+        public async Task<IActionResult> ClearForGroup(int id) => await Remove(r => r.Student.Group.Id == id);
+        [HttpGet]
+        public async Task<IActionResult> ClearForStudent(int id) => await Remove(r => r.Student.Id == id);
+        [HttpGet]
+        public async Task<IActionResult> ClearForTest(int id) => await Remove(r => r.Test.Id == id);
+
+
 
         private async Task<List<ResultOfTesting>> GetResults(Expression<Func<ResultOfTesting, bool>> filter)
         {
@@ -52,35 +63,11 @@ namespace RemTestSys.Areas.Editor.Controllers
                                                               .ToListAsync();
             return resultList;
         }
-        private async Task Remove(Expression<Func<ResultOfTesting,bool>> filter)
+        private async Task<IActionResult> Remove(Expression<Func<ResultOfTesting, bool>> filter)
         {
             dbContext.ResultsOfTesting.RemoveRange(dbContext.ResultsOfTesting.Where(filter));
             await dbContext.SaveChangesAsync();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ClearAll()
-        {
-           await Remove(r=>true);
-           return RedirectToAction("Index");
-        }
-        [HttpGet]
-        public async Task<IActionResult> ClearForGroup(int id)
-        {
-            await Remove(r=>r.Student.Group.Id==id);
-            return RedirectToAction("Group", new{id=id});
-        }
-        [HttpGet]
-        public async Task<IActionResult> ClearForStudent(int id)
-        {
-            await Remove(r=>r.Student.Id==id);
-            return RedirectToAction("Student", new{id=id});
-        }
-        [HttpGet]
-        public async Task<IActionResult> ClearForTest(int id)
-        {
-             await Remove(r=>r.Test.Id==id);
-             return RedirectToAction("Test", new{id=id});
+            return RedirectToAction("Index");
         }
     }
 }
