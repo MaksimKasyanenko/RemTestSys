@@ -28,7 +28,9 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Student(int id)
         {
-            ViewData["StudentFullName"]=(await dbContext.Students.SingleAsync(s=>s.Id==id)).FullName;
+            Student student = await dbContext.Students.SingleAsync(s=>s.Id==id);
+            ViewData["StudentFullName"]=student.FullName;
+            ViewData["StudentId"]=student.Id;
             return View(await GetResults(r=>r.Student.Id == id));
         }
         [HttpGet]
