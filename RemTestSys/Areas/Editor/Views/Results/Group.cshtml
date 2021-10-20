@@ -1,0 +1,38 @@
+@model IEnumerable<RemTestSys.Domain.Models.ResultOfTesting>
+
+@{
+    ViewData["Title"] = "Результати проходження тестів";
+}
+
+<h2>Результати проходження тестів (@ViewData["GroupName])</h2>
+@if (Model.Count() > 0)
+{
+    <div class="text-end">
+        <a asp-action="ClearForGroup" asp-route-id="@ViewData["GroupId"]" class="btn btn-danger">Видалити всі результати</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Учень</th>
+                <th>Тест</th>
+                <th>Дата проходження</th>
+                <th>Оцінка</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Student.FullName <a asp-action="Student" asp-route-id="@item.Student.Id" class="link-secondary">&#10157;</a></td>
+                    <td>@item.Test.Name <a asp-action="Test" asp-route-id="@item.Test.Id" class="link-secondary">&#10157;</a></td>
+                    <td>@item.PassedAt.ToString()</td>
+                    <td>@item.Mark.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-center text-secondary">Результатів не знайдено</p>
+}
