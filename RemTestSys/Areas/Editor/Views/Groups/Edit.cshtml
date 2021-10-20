@@ -1,31 +1,29 @@
 ﻿@model RemTestSys.Domain.Models.Group
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редагувати групу";
 }
 
-<h1>Edit</h1>
-
-<h4>Group</h4>
+<h2>Редагування групи</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+            <div class="form-group mb-4">
+                <label asp-for="Name" class="control-label">Назва</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group text-center">
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад до списку</a>
 </div>
 

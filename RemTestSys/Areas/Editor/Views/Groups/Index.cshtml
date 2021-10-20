@@ -4,11 +4,11 @@
     ViewData["Title"] = "Групи учнів";
 }
 
-<h2>Групи учнів</h2>
+<h2>Всі групи</h2>
 
-<div class="text-end">
-    <a asp-action="Create" class="btn btn-primary">Створити нову групу</a>
-</div>
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-primary">Створити нову</a>
+</p>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -25,7 +25,8 @@
                 @item.Name
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> | 
+                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
             </td>
         </tr>

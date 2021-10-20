@@ -1,0 +1,23 @@
+﻿@model RemTestSys.Domain.Models.Group
+
+@{
+    ViewData["Title"] = "Деталі";
+}
+
+<h2>Деталі групи</h2>
+<hr />
+<div>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Назва
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Name
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="InGroup" asp-controller="Students" asp-route-id="@Model.Id">Учні групи</a> | 
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редагувати</a> |
+    <a asp-action="Index">Назад до списку</a>
+</div>

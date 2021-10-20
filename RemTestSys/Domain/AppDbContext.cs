@@ -26,6 +26,11 @@ namespace RemTestSys
         public DbSet<Group> Groups { get; set; }
         public DbSet<ResultOfTesting> ResultsOfTesting { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+        }
+
         private void Fill()
         {
             Group group1 = new Group { Name = "Demo Group 1" };
