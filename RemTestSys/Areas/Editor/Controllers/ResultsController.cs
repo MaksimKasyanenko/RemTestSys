@@ -28,7 +28,8 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Student(int id)
         {
-            !return View(await GetResults(r=>r.Student.Id == id));
+            ViewData["StudentFullName"]=(await dbContext.Students.SingleAsync(s=>s.Id==id)).FullName;
+            return View(await GetResults(r=>r.Student.Id == id));
         }
         [HttpGet]
         public async Task<IActionResult> Group(int id)
