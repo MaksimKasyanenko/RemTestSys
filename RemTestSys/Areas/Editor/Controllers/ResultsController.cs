@@ -44,7 +44,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpGet]
         public async Task<IActionResult> Test(int id)
         {
-            Test test = await dbContext.SingleAsync(t=>t.Id==id);
+            Test test = await dbContext.Tests.SingleAsync(t=>t.Id==id);
             ViewData["TestName"]=test.Name;
             ViewData["TestId"]=test.Id;
             return View(await GetResults(r=>r.Test.Id == id));
