@@ -28,25 +28,6 @@ namespace RemTestSys.Areas.Editor.Controllers
             return View(await _context.Groups.ToListAsync());
         }
 
-        // GET: Editor/Groups/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var @group = await _context.Groups
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (@group == null)
-            {
-                return NotFound();
-            }
-
-            return View(@group);
-        }
-
-        // GET: Editor/Groups/Create
         public IActionResult Create()
         {
             return View();
