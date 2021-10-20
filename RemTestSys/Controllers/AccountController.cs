@@ -62,7 +62,7 @@ namespace RemTestSys.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "Необхідно вказати ім'я та прізвище");
+                ModelState.AddModelError("", "Необхідно вказати ім'я, прізвище, та групу(класс)");
             }
             regData.GroupNameList = await dbContext.Groups.Select(g => g.Name).ToArrayAsync();
             return View(regData);

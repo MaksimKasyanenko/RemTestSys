@@ -37,7 +37,9 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
 
             var @group = await _context.Groups
-                .FirstOrDefaultAsync(m => m.Id == id);
+                                       .Where(g => g.Id == id)
+                                       .Include(g => g.Students)
+                                       .FirstOrDefaultAsync();
             if (@group == null)
             {
                 return NotFound();

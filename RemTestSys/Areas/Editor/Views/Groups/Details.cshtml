@@ -8,16 +8,55 @@
 <hr />
 <div>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Назва
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Model.Name
+        </dd>
+        <dt class="col-sm-2">
+            Учні групи
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Students.Count() > 0)
+            {
+                @foreach (var student in Model.Students)
+                {
+                    <table class="table table-bordered table-striped table-success">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Ім'я
+                                </th>
+                                <th>
+                                    Дата реєстрації
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @student.FullName
+                                </td>
+                                <td>
+                                    @student.RegistrationDate
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+
+
+
+            }
+            else
+            {
+                <p>В данній групі немає жодного учня</p>
+            }
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="InGroup" asp-controller="Students" asp-route-id="@Model.Id">Учні групи</a> | 
     <a asp-action="Edit" asp-route-id="@Model.Id">Редагувати</a> |
     <a asp-action="Index">Назад до списку</a>
 </div>

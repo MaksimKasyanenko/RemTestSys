@@ -13,7 +13,9 @@ namespace RemTestSys
         }
 
         public DbSet<Student> Students { get; set; }
-        public DbSet<AccessToTest> AccessesToTest { get; set; }
+        public DbSet<AccessToTestForStudent> AccessesToTestForStudent { get; set; }
+        public DbSet<AccessToTestForAll> AccessesToTestForAll { get; set; }
+        public DbSet<AccessToTestForGroup> AccessesToTestForGroup { get; set; }
         public DbSet<Test> Tests { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Question> Questions { get; set; }
@@ -25,11 +27,6 @@ namespace RemTestSys
         public DbSet<QuestionInSession> QuestionsInSessions { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<ResultOfTesting> ResultsOfTesting { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-
-        }
 
         private void Fill()
         {
@@ -56,7 +53,7 @@ namespace RemTestSys
             ConnectedPairsAnswers.Add((ConnectedPairsAnswer)questions[4].Answer);
             Questions.Add(questions[4]);
 
-            AccessesToTest.Add(new AccessToTest {Group=group1, Test=test1});
+            AccessesToTestForGroup.Add(new AccessToTestForGroup {Test=test1, Group=group1});
             SaveChanges();
         }
     }
