@@ -11,6 +11,7 @@ using RemTestSys.Domain.Models;
 namespace RemTestSys.Areas.Editor.Controllers
 {
     [Area("Editor")]
+    [Authorize(Roles="Editor")]
     public class StudentsController : Controller
     {
         private readonly AppDbContext _context;
