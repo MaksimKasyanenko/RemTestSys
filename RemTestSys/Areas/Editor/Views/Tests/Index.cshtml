@@ -1,0 +1,67 @@
+﻿@model IEnumerable<RemTestSys.Domain.Models.Test>
+
+@{
+    ViewData["Title"] = "Всі тести";
+}
+
+<h2>Всі тести</h2>
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-primary">Створити новий</a>
+</p>
+@if (Model.Count() > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="col-2">
+                    Назва
+                </th>
+                <th class="col-2">
+                    Опис
+                </th>
+                <th class="col">
+                    Кількість питань
+                </th>
+                <th class="col">
+                    Часу на проходження
+                </th>
+                <th class="col">
+                    Балів за відповідь
+                </th>
+                <th class="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.QuestionsCount
+                    </td>
+                    <td>
+                        @item.Duration
+                    </td>
+                    <td>
+                        @item.ScoresPerRightAnswer
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-center text-secondary">Не знайдено жодного тесту</p>
+}
