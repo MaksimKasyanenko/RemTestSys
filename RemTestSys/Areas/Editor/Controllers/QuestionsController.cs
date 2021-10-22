@@ -12,6 +12,11 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles="Editor")]
     public class QuestionsController : Controller
     {
+        public QuestionsController(AppDbContext context)
+        {
+            dbContext = context;
+        }
+        private readonly AppDbContext dbContext;
         // GET: QuestionsController/Details/5
         public ActionResult Details(int id)
         {
@@ -67,9 +72,9 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         // POST: QuestionsController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
