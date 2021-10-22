@@ -1,48 +1,91 @@
 ﻿@model RemTestSys.Domain.Models.Test
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Деталі";
 }
-
-<h1>Details</h1>
-
+<h4>Деталі по тесту</h4>
+<hr />
 <div>
-    <h4>Test</h4>
-    <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+        <dt class="col-sm-2">
+            Назва
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dd class="col-sm-10">
+            @Model.Name
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+        <dt class="col-sm-2">
+            Опис
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+        <dd class="col-sm-10">
+            @Model.Description
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QuestionsCount)
+        <dt class="col-sm-2">
+            Кількість питань
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QuestionsCount)
+        <dd class="col-sm-10">
+            @Model.QuestionsCount
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Duration)
+        <dt class="col-sm-2">
+            Часу на проходження(сек.)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Duration)
+        <dd class="col-sm-10">
+            @Model.Duration
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ScoresPerRightAnswer)
+        <dt class="col-sm-2">
+            Балів за питання
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ScoresPerRightAnswer)
+        <dd class="col-sm-10">
+            @Model.ScoresPerRightAnswer
+        </dd>
+        <dt class="col-sm-2">
+            Питання тесту
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Questions.Count() > 0)
+            {
+                <table class="table table-bordered table-striped table-success">
+                    <thead>
+                        <tr>
+                            <th>
+                                Питання
+                            </th>
+                            <th>
+                                Відповідь
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var question in Model.Questions)
+                        {
+                            <tr>
+                                <td>
+                                    @question.Text
+                                </td>
+                                <td>
+                                    @question.Answer.RightText
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-controller="Questions" asp-route-id="@question.Id">Редагувати</a> |
+                                    <a asp-action="Details" asp-controller="Questions" asp-route-id="@question.Id">Деталі</a> |
+                                    <a asp-action="Delete" asp-controller="Questions" asp-route-id="@question.Id">Видалити</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-center">В данному тесті немає жодного запитання</p>
+            }
+        <div class="text-center">
+            <a asp-action="Create" asp-controller="Questions" class="btn btn-primary">Створити нове питання</a>
+        </div>
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редагувати тест</a> |
+    <a asp-action="Index">Назад до списку</a>
 </div>

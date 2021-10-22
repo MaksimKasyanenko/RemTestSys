@@ -2,7 +2,7 @@
 
 namespace RemTestSys.Domain.Models
 {
-    public class TextAnswer : AnswerBase
+    public class TextAnswer : Answer
     {
         public bool CaseMatters { get; set; }
         public override string[] GetAdditiveData()

@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace RemTestSys.Domain.Models
 {
-    public class OneOfFourVariantsAnswer : AnswerBase
+    public class OneOfFourVariantsAnswer : Answer
     {
         public string SerializedFakes
         {

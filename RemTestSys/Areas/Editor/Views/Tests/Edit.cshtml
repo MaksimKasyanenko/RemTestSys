@@ -1,12 +1,10 @@
 ﻿@model RemTestSys.Domain.Models.Test
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редагувати тест";
 }
 
-<h1>Edit</h1>
-
-<h4>Test</h4>
+<h2>Редагування тесту</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,31 +12,31 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Назва</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label asp-for="Description" class="control-label">Опис</label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="QuestionsCount" class="control-label"></label>
+                <label asp-for="QuestionsCount" class="control-label">Кількість питань</label>
                 <input asp-for="QuestionsCount" class="form-control" />
                 <span asp-validation-for="QuestionsCount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
+                <label asp-for="Duration" class="control-label">Час на проходження(сек.)</label>
                 <input asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ScoresPerRightAnswer" class="control-label"></label>
+            <div class="form-group mb-4">
+                <label asp-for="ScoresPerRightAnswer" class="control-label">Балів за питання</label>
                 <input asp-for="ScoresPerRightAnswer" class="form-control" />
                 <span asp-validation-for="ScoresPerRightAnswer" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group text-center">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -46,6 +44,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад до списку</a>
 </div>
 

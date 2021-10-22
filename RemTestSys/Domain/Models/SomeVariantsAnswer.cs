@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RemTestSys.Domain.Models
 {
-    public class SomeVariantsAnswer : AnswerBase
+    public class SomeVariantsAnswer : Answer
     {
         public override string RightText
         {

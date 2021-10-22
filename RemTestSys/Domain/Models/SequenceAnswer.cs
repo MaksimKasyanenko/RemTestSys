@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RemTestSys.Domain.Models
 {
-    public class SequenceAnswer : AnswerBase
+    public class SequenceAnswer : Answer
     {
         public override string RightText {
             get

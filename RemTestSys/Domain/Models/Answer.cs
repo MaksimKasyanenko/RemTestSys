@@ -2,11 +2,13 @@
 
 namespace RemTestSys.Domain.Models
 {
-    public abstract class AnswerBase
+    public abstract class Answer
     {
         public int Id { get; set; }
         public virtual string RightText { get; set; }
         public abstract string[] GetAdditiveData();
         public abstract bool IsMatch(string[] data);
+        public int QuestionId { get; set; }
+        public Question Question { get; set; }
     }
 }

@@ -37,6 +37,8 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
 
             var test = await _context.Tests
+                .Include(t=>t.Questions)
+                .ThenInclude(q=>q.Answer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (test == null)
             {

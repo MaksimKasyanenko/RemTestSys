@@ -1,51 +1,52 @@
 ﻿@model RemTestSys.Domain.Models.Test
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Видалення тесту";
 }
 
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
+<h2>Видалення тесту</h2>
+<p class="text-danger">Ви впевнені, що хочете видалити цей тест? Всі питання, що входять до тесту також будуть видалені!</p>
 <div>
-    <h4>Test</h4>
+    <h4>Тест</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+        <dt class="col-sm-2">
+            Назва
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dd class="col-sm-10">
+            @Model.Name
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+        <dt class="col-sm-2">
+            Опис
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+        <dd class="col-sm-10">
+            @Model.Description
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QuestionsCount)
+        <dt class="col-sm-2">
+            Кількість питань
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QuestionsCount)
+        <dd class="col-sm-10">
+            @Model.QuestionsCount
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Duration)
+        <dt class="col-sm-2">
+            Час на проходження
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Duration)
+        <dd class="col-sm-10">
+            @Model.Duration
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ScoresPerRightAnswer)
+        <dt class="col-sm-2">
+            Балів за відповідь
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ScoresPerRightAnswer)
+        <dd class="col-sm-10">
+            @Model.ScoresPerRightAnswer
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <div class="mb-4">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Видалити" class="btn btn-danger" />
+        </div>
+        <a asp-action="Index">Назад до списку</a>
     </form>
 </div>

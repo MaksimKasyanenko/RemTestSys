@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace RemTestSys.Domain.Models
 {
-	public class ConnectedPairsAnswer : AnswerBase
+	public class ConnectedPairsAnswer : Answer
 	{
         public override string RightText
         {
