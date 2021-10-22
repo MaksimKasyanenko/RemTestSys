@@ -1,0 +1,35 @@
+﻿@model RemTestSys.Domain.Models.Question
+
+@{
+    ViewData["Title"] = "Видалення питання";
+}
+
+<h2>Видалення питання</h2>
+<p class="text-danger">Ви впевнені, що хочете видалити це питання?</p>
+<div>
+    <h4>Питання</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Питання
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Text
+        </dd>
+        <dt class="col-sm-2">
+            Відповідь
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Answer.RightText
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <div class="mb-4">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="hidden" name="TestId" value="@Model.TestId" />
+            <input type="submit" value="Видалити" class="btn btn-danger" />
+        </div>
+        <a asp-action="Details" asp-controller="Tests" asp-route-id="@Model.TestId">Назад</a>
+    </form>
+</div>

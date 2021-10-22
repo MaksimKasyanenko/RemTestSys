@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RemTestSys.Areas.Editor.ViewModel;
+using RemTestSys.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,24 +69,21 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         // GET: QuestionsController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q=>q.Answer).SingleAsync();
+            return View(q);
         }
 
         // POST: QuestionsController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(ConfirmedDeleteForQuestionViewModel confirmedDelete)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var question = await dbContext.Questions.FindAsync(confirmedDelete.Id);
+            dbContext.Questions.Remove(question);
+            await dbContext.SaveChangesAsync();
+            return RedirectToAction("Details", "Tests", new { id=confirmedDelete.TestId});
         }
     }
 }
