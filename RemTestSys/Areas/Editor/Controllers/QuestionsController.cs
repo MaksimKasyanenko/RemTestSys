@@ -27,9 +27,13 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         // GET: QuestionsController/Create
-        public ActionResult Create()
+        public async Task<IActionResult> CreateFor(int? id)
         {
-            return View();
+            if (id == null) return NotFound();
+            Test test = await dbContext.Tests.SingleOrDefaultAsync(t=>t.Id==id);
+            if (test == null) return NotFound();
+            ViewData["TestId"] = test.Id;
+            return View("Create");
         }
 
         // POST: QuestionsController/Create

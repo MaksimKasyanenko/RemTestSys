@@ -80,7 +80,7 @@
                 <p class="text-center">В данному тесті немає жодного запитання</p>
             }
         <div class="text-center">
-            <a asp-action="Create" asp-controller="Questions" class="btn btn-primary">Створити нове питання</a>
+            <a asp-action="CreateFor" asp-controller="Questions" asp-route-id="@Model.Id" class="btn btn-primary">Створити нове питання</a>
         </div>
         </dd>
     </dl>
