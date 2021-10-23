@@ -1,0 +1,55 @@
+@{
+    ViewData["Title"] = "Нове питання";
+}
+
+<h2>Нове питання</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+    	<form>
+    		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    		<div class="form-group">
+                <label class="control-label">Текст питання</label>
+                <input id="questionText" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Пояснення(необов'язково)</label>
+                <input id="questionSubText" class="form-control" />
+                <input id="questionTestId"type="hidden" value="@ViewData["TestId"]" />
+            </div>
+    	</form>
+    	<hr />
+    	<h4>Відповідь</h4>
+    	<div id="choiseOfAnswerType">
+    		<button class="btn btn-primary" onclick="switchToForm(this, textAnswerForm);">Текст</button>
+    		<button class="btn" onclick="switchToForm(this, textAnswerForm);">1 з 4</button>
+    		<button class="btn" onclick="switchToForm(this, textAnswerForm);">Декілька</button>
+    		<button class="btn" onclick="switchToForm(this, textAnswerForm);">Послідовність</button>
+    		<button class="btn" onclick="switchToForm(this, textAnswerForm);">Відповідність</button>
+    		<script>
+    			function switchToForm(caller, id){
+    				document.getElementsByName("answerForm").forEach(f=>f.classList.add("d-none"));
+    				document.querySelectorAll("#choiseOfAnswerType button").forEach(b=>b.classList.remove("btn-primary"));
+    				caller.classList.add("btn-primary");
+    				document.getElementById(id).classList.remove("d-none");
+    			}
+    		</script>
+    	</div>
+    	<div id="textAnswerForm" name="answerForm" class="">
+    		@await Html.PartialAsync("~/Views/AnswerForms/SpecialSymbolsPanel.cshtml")
+    		<form>
+            <div class="form-group mb-4">
+                <label class="control-label">Правильна відповідь</label>
+                <input id="textAnswer" class="form-control" />
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Створити" class="btn btn-primary" />
+            </div>
+        </form>
+    	</div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@ViewData["TestId"]">Назад</a>
+</div>
