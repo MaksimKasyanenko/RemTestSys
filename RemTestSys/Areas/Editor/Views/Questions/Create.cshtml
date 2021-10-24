@@ -21,12 +21,13 @@
             </div>
             <h4>Відповідь</h4>
             <hr />
-            
-            
             <div class="mb-4">
             	<div>
-            		<label><input type="radio" name="AnswerType" checked />Текст</label>
-            		<div>
+            		<h5>Тип відповіді</h5>
+            		<label class="control-label"><input type="radio" value="Text" name="AnswerType" onchange="changeAnswerType(this);" checked />Текст</label>
+            	</div>
+            	<div>
+            		<div class="" name="answerTab" data-type="Text">
             			@Html.PartialAsync("~/Views/AnswerForms/SpecialSymbolsPanel.cshtml");
             			<input type="text" class="form-control" asp-for="RightText" id="textAnswerInpt" />
             			<script src="~/wwwroot/js/testing.js"></script>
@@ -37,11 +38,18 @@
             			</script>
             		</div>
             	</div>
+            	<script>
+            		function changeAnswerType(sender){
+            			if(!sender.checked)return;
+            			document.getElementsByName("answerTab").forEach(tab=>tab.classList.add("d-none"));
+            			document.querySelector(`[data-type="${sender.dataSet.type}"]`).classList.remove("d-none");
+            		}
+            	</script>
             </div>
             
             
             <div class="form-group text-center">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Створити" class="btn btn-primary" />
             </div>
         </form>
     </div>
