@@ -13,7 +13,6 @@ window.addEventListener("load", function () {
         let formManager = new FormManager();
         formManager.register("confirm", new ConfirmForm());
         let textAnswerForm = new TextAnswerForm();
-        registerSpecialSymbolsPanel(textAnswerForm.input);
         formManager.register("TextAnswer", textAnswerForm);
         formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
         formManager.register("SomeVariantsAnswer", new SomeVariantsAnswerForm());

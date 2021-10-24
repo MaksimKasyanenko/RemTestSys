@@ -374,7 +374,6 @@ window.addEventListener("load", function () {
         let formManager = new FormManager();
         formManager.register("confirm", new ConfirmForm());
         let textAnswerForm = new TextAnswerForm();
-        registerSpecialSymbolsPanel(textAnswerForm.input);
         formManager.register("TextAnswer", textAnswerForm);
         formManager.register("OneOfFourVariantsAnswer", new OneOfFourVariantsAnswerForm());
         formManager.register("SomeVariantsAnswer", new SomeVariantsAnswerForm());
@@ -466,18 +465,4 @@ class TestingTimer {
 }
 
 class TestState {
-}
-
-function registerSpecialSymbolsPanel(input) {
-    let inptSymbols = document.querySelectorAll("#specialSymbolsPanel button");
-    if (!input)
-        throw new ReferenceError("input isn't passed");
-    if (!inptSymbols)
-        throw new ReferenceError("inptSymbols isn't found");
-    for (let btn of inptSymbols) {
-        btn.onclick = () => {
-            input.value = input.value + btn.dataset.symbol;
-            input.focus();
-        };
-    }
 }

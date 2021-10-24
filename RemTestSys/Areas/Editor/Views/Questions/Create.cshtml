@@ -1,4 +1,4 @@
-@model RemTestSys.Areas.Editor.ViewModels.QuestionViewModel
+@model RemTestSys.Areas.Editor.ViewModel.QuestionViewModel
 
 @{
     ViewData["Title"] = "Нове питання";
@@ -29,7 +29,7 @@
             	</div>
             	<div>
             		<div class="" name="answerTab" data-type="Text">
-            			@Html.PartialAsync("~/Views/AnswerForms/SpecialSymbolsPanel.cshtml");
+            			@Html.PartialAsync("SpecialSymbolsPanel");
             			<input type="text" class="form-control" asp-for="RightText" id="textAnswerInpt" />
             			<script src="~/wwwroot/js/testing.js"></script>
             			<script>
@@ -57,6 +57,6 @@
 </div>
 
 <div>
-    <a asp-action="Details" asp-controller="Tests" asp-route-id="@DataView["TestId"]">Назад</a>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@ViewData["TestId"]">Назад</a>
 </div>
 
