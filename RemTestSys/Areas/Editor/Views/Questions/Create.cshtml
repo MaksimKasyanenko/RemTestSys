@@ -1,3 +1,5 @@
+@model RemTestSys.Areas.Editor.ViewModels.QuestionViewModel
+
 @{
     ViewData["Title"] = "Нове питання";
 }
@@ -6,59 +8,46 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form>
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label class="control-label">Текст питання</label>
-                <textarea rows="3" id="questionText" class="form-control"></textarea>
+                <label asp-for="Text" class="control-label">Питання</label>
+                <textarea asp-for="Text" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label">Пояснення(необов'язково)</label>
-                <textarea id="questionSubText" class="form-control"></textarea>
-                <input id="questionTestId" type="hidden" value="@ViewData["TestId"]" />
+            <div class="form-group mb-4">
+                <label asp-for="SubText" class="control-label">Пояснення(необов'язково)</label>
+                <textarea asp-for="SubText" class="form-control" rows="3"></textarea>
+            </div>
+            <h4>Відповідь</h4>
+            <hr />
+            
+            
+            <div class="mb-4">
+            	<div>
+            		<label><input type="radio" name="AnswerType" checked />Текст</label>
+            		<div>
+            			@Html.PartialAsync("~/Views/AnswerForms/SpecialSymbolsPanel.cshtml");
+            			<input type="text" class="form-control" asp-for="RightText" id="textAnswerInpt" />
+            			<script src="~/wwwroot/js/testing.js"></script>
+            			<script>
+            				window.addEventListener("load", function(){
+            					registerSpecialPanel(document.getElementById("textAnswerInpt"));
+            				});
+            			</script>
+            		</div>
+            	</div>
+            </div>
+            
+            
+            <div class="form-group text-center">
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
-        <hr />
-        <h4>Відповідь</h4>
-        <div id="choiseOfAnswerType">
-            <button class="btn btn-primary" onclick="switchToForm(this, 'textAnswerFormContainer');">Текст</button>
-            <button class="btn" onclick="switchToForm(this, 'textAnswerFormContainer');">1 з 4</button>
-            <button class="btn" onclick="switchToForm(this, 'textAnswerFormContainer');">Декілька</button>
-            <button class="btn" onclick="switchToForm(this, 'textAnswerFormContainer');">Послідовність</button>
-            <button class="btn" onclick="switchToForm(this, 'textAnswerFormContainer');">Відповідність</button>
-            <script>
-                function switchToForm(caller, id) {
-                    document.getElementsByName("answerForm").forEach(f => f.classList.add("d-none"));
-                    document.querySelectorAll("#choiseOfAnswerType button").forEach(b => b.classList.remove("btn-primary"));
-                    caller.classList.add("btn-primary");
-                    document.getElementById(id).classList.remove("d-none");
-                }
-            </script>
-        </div>
-        <div id="textAnswerFormContainer" name="answerForm" class="">
-            @await Html.PartialAsync("~/Views/AnswerForms/SpecialSymbolsPanel.cshtml")
-            <form asp-action="CreateWithTextAnswer" id="textAnswerForm">
-                <div class="form-group mb-4">
-                    <label class="control-label">Правильна відповідь</label>
-                    <input id="textAnswer" class="form-control" name="RightAnswer" />
-                </div>
-                <div class="form-group text-center">
-                    <input type="submit" value="Створити" class="btn btn-primary" />
-                </div>
-            </form>
-            <script src="~/scripts/testing.js"></script>
-            <script>
-                window.addEventListener("load", function () {
-                    registerSpecialSymbolsPanel(document.getElementById('textAnswer'));
-                });
-            </script>
-        </div>
     </div>
-    <script>
-        let forms = document.getElementsByName("answerForm");!!!!!!!!!!
-    </script>
 </div>
 
 <div>
-    <a asp-action="Details" asp-controller="Tests" asp-route-id="@ViewData["TestId"]">Назад</a>
+    <a asp-action="Index">Назад до списку</a>
 </div>
+
