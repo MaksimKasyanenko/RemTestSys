@@ -10,6 +10,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" value="@ViewData["TestId"]" />
             <div class="form-group">
                 <label asp-for="Text" class="control-label">Питання</label>
                 <textarea asp-for="Text" class="form-control" rows="3"></textarea>
@@ -56,6 +57,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Назад до списку</a>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@DataView["TestId"]">Назад</a>
 </div>
 
