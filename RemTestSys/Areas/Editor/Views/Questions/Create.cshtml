@@ -28,13 +28,13 @@
                     <hr />
                     <label class="control-label"><input type="radio" value="Text" name="AnswerType" onchange="changeAnswerType(this);" checked />Текст</label> |
                     <label class="control-label"><input type="radio" value="OneOfFourVariants" name="AnswerType" onchange="changeAnswerType(this);" />1 варіант з 4</label> |
-                    <label class="control-label"><input type="radio" value="SomeVariants" name="AnswerType" onchange="changeAnswerType(this);" />1 варіант з 4</label>
+                    <label class="control-label"><input type="radio" value="SomeVariants" name="AnswerType" onchange="changeAnswerType(this);" />Декілька варіантів</label>
                 </div>
                 <div>
                     @*Text answer*@
                     <div class="" name="answerTab" data-type="Text">
                         @await Html.PartialAsync("SpecialSymbolsPanel")
-                        <label asp-for="RightText" class="control-label">Правильна відповідь</label>
+                        <label class="control-label">Правильна відповідь</label>
                         <input type="text" class="form-control" asp-for="RightText" id="textAnswerInput" />
                         <div class="text-center">
                             <label asp-for="CaseMatters"><input type="checkbox" asp-for="CaseMatters" /> Регістр при порівнянні має вагу</label>
@@ -42,8 +42,18 @@
                     </div>
                     @*OneVariantAnswer*@
                     <div class="d-none" name="answerTab" data-type="OneOfFourVariants">
-                        <label asp-for="SubText" class="control-label">Правильний вариант</label>
+                        <label class="control-label">Правильний вариант</label>
                         <input type="text" class="form-control" asp-for="RightVariant" />
+                        @for (int i = 1; i < 4; i++)
+                        {
+                            <label class="control-label">Неправильний варіант @i</label>
+                            <input type="text" class="form-control" name="Fakes" />
+                        }
+                    </div>
+                    @*SomeVariansAnswer*@
+                    <div class="d-none" name="answerTab" data-type="SomeVariants">
+                        <label class="control-label">Правильний вариант</label>
+                        <input type="text" class="form-control" asp-for="RightVariant" />!!!!!!!!!!!!!!!!!!
                         @for (int i = 1; i < 4; i++)
                         {
                             <label class="control-label">Неправильний варіант @i</label>
