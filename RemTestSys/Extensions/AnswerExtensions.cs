@@ -11,9 +11,17 @@ namespace RemTestSys.Extensions
         public async static Task ToDb(this Answer answer, AppDbContext dbContext)
         {
             if (answer.GetType() == typeof(TextAnswer))
+            {
                 dbContext.TextAnswers.Add((TextAnswer)answer);
-
-            await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
+                return;
+            }else if (answer.GetType() == typeof(OneOfFourVariantsAnswer))
+            {
+                dbContext.OneVariantAnswers.Add((OneOfFourVariantsAnswer)answer);
+                await dbContext.SaveChangesAsync();
+                return;
+            }
+            throw new InvalidOperationException($"Suitable action for {answer.GetType().FullName} type is not found");
         }
     }
 }

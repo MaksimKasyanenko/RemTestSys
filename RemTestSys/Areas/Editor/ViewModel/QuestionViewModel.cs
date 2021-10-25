@@ -15,6 +15,8 @@ namespace RemTestSys.Areas.Editor.ViewModel
         public AnswerTypes AnswerType { get; set; }
         public string RightText { get; set; }
         public bool CaseMatters { get; set; }
+        public string RightVariant { get; set; }
+        public string[] Fakes { get; set; }
 
         public Question GetQuestion()
         {
@@ -30,6 +32,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
             switch (AnswerType)
             {
                 case AnswerTypes.Text: res = Answer.Create(RightText, CaseMatters);break;
+                case AnswerTypes.OneOfFourVariants: res = Answer.Create(RightVariant, Fakes[0], Fakes[1],Fakes[2]);break;
             }
             return res??throw new NullReferenceException("Suitable type for answer is not defined here");
         }
@@ -40,10 +43,11 @@ namespace RemTestSys.Areas.Editor.ViewModel
             switch (AnswerType)
             {
                 case AnswerTypes.Text: if (RightText == null || RightText == "") return false; break;
+                case AnswerTypes.OneOfFourVariants: if (RightVariant == null || RightVariant == "" || Fakes.Length != 3 || Fakes.Any(f => f == null) || Fakes.Any(f => f == "")) return false;break;
             }
             return true;
         }
 
-        public enum AnswerTypes { Text }
+        public enum AnswerTypes { Text, OneOfFourVariants }
     }
 }

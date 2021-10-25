@@ -18,5 +18,12 @@ namespace RemTestSys.Domain.Models
                 CaseMatters = caseMatters
             };
         }
+        public static Answer Create(string rightVariant, string fake1, string fake2, string fake3)
+        {
+            OneOfFourVariantsAnswer answer = new OneOfFourVariantsAnswer();
+            answer.RightText = rightVariant;
+            answer.SetFakes(fake1, fake2, fake3);
+            return answer;
+        }
     }
 }

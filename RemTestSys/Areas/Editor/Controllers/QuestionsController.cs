@@ -39,6 +39,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             if (!questionViewModel.IsValid)
             {
                 ModelState.AddModelError("", "Присутні невірні данні");
+                ViewData["TestId"] = questionViewModel.TestId;
                 return View(questionViewModel);
             }
             else
