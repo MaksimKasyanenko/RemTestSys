@@ -51,15 +51,34 @@
                         }
                     </div>
                     @*SomeVariansAnswer*@
-                    <div class="d-none" name="answerTab" data-type="SomeVariants">
-                        <label class="control-label">Правильний вариант</label>
-                        <input type="text" class="form-control" asp-for="RightVariant" />!!!!!!!!!!!!!!!!!!
-                        @for (int i = 1; i < 4; i++)
-                        {
-                            <label class="control-label">Неправильний варіант @i</label>
-                            <input type="text" class="form-control" name="Fakes" />
-                        }
+                <div class="d-none" name="answerTab" data-type="SomeVariants">
+                    <label class="control-label">Правильні варіанти</label>
+                    <div id="rightVariantsContainer" class="mb-2">
+                        <input type="text" class="form-control" name="SomeRightVariants" />
                     </div>
+                    <div class="text-center mb-2"><button class="btn btn-primary" type="button" onclick="addRightVariant();">+</button></div>
+                    <label class="control-label">Неправильні варіанти</label>
+                    <div id="fakeVariantsContainer" class="mb-2">
+                        <input type="text" class="form-control" name="SomeFakeVariants" />
+                    </div>
+                    <div class="text-center"><button class="btn btn-primary" type="button" onclick="addFakeVariant();">+</button></div>
+                    <script>
+                        function addRightVariant() {
+                            let v = document.createElement("input");
+                            v.type = "text";
+                            v.classList.add("form-control");
+                            v.name = "SomeRightVariants";
+                            document.getElementById("rightVariantsContainer").appendChild(v);
+                        }
+                        function addFakeVariant() {
+                            let v = document.createElement("input");
+                            v.type = "text";
+                            v.classList.add("form-control");
+                            v.name = "SomeFakeVariants";
+                            document.getElementById("fakeVariantsContainer").appendChild(v);
+                        }
+                    </script>
+                </div>
                 </div>
                 <script>
                     function changeAnswerType(sender) {

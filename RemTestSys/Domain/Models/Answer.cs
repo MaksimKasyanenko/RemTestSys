@@ -25,5 +25,12 @@ namespace RemTestSys.Domain.Models
             answer.SetFakes(fake1, fake2, fake3);
             return answer;
         }
+        public static Answer Create(string[] rightVariants, string[] fakeVariants)
+        {
+            SomeVariantsAnswer answer = new SomeVariantsAnswer();
+            answer.SetRightAnswers(rightVariants);
+            answer.SetFakes(fakeVariants);
+            return answer;
+        }
     }
 }

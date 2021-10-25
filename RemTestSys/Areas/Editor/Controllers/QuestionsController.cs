@@ -36,13 +36,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(QuestionViewModel questionViewModel)
         {
-            if (!questionViewModel.IsValid)
-            {
-                ModelState.AddModelError("", "Присутні невірні данні");
-                ViewData["TestId"] = questionViewModel.TestId;
-                return View(questionViewModel);
-            }
-            else
+            try
             {
                 Question question = questionViewModel.GetQuestion();
                 dbContext.Questions.Add(question);
@@ -51,7 +45,13 @@ namespace RemTestSys.Areas.Editor.Controllers
                 answer.Question = question;
                 await answer.ToDb(dbContext);
             }
-            return RedirectToAction("Details", "Tests", new {id=questionViewModel.TestId});
+            catch (InvalidOperationException)
+            {
+                ModelState.AddModelError("", "Присутні невірні данні");
+                ViewData["TestId"] = questionViewModel.TestId;
+                return View(questionViewModel);
+            }
+            return RedirectToAction("Details", "Tests", new { id = questionViewModel.TestId });
         }
 
         // GET: QuestionsController/Edit/5

@@ -11,12 +11,13 @@ namespace RemTestSys.Areas.Editor.ViewModel
         public int TestId { get; set; }
         public string Text { get; set; }
         public string SubText { get; set; }
-        public bool IsValid { get => Validate(); }
         public AnswerTypes AnswerType { get; set; }
         public string RightText { get; set; }
         public bool CaseMatters { get; set; }
         public string RightVariant { get; set; }
         public string[] Fakes { get; set; }
+        public string[] SomeRightVariants { get; set; }
+        public string[] SomeFakeVariants { get; set; }
 
         public Question GetQuestion()
         {
@@ -33,21 +34,11 @@ namespace RemTestSys.Areas.Editor.ViewModel
             {
                 case AnswerTypes.Text: res = Answer.Create(RightText, CaseMatters);break;
                 case AnswerTypes.OneOfFourVariants: res = Answer.Create(RightVariant, Fakes[0], Fakes[1],Fakes[2]);break;
+                case AnswerTypes.SomeVariants:res = Answer.Create(SomeRightVariants, SomeFakeVariants);break;
             }
             return res??throw new NullReferenceException("Suitable type for answer is not defined here");
         }
-        private bool Validate()
-        {
-            if (TestId < 1) return false;
-            if (Text == null || Text == "") return false;
-            switch (AnswerType)
-            {
-                case AnswerTypes.Text: if (RightText == null || RightText == "") return false; break;
-                case AnswerTypes.OneOfFourVariants: if (RightVariant == null || RightVariant == "" || Fakes.Length != 3 || Fakes.Any(f => f == null) || Fakes.Any(f => f == "")) return false;break;
-            }
-            return true;
-        }
 
-        public enum AnswerTypes { Text, OneOfFourVariants }
+        public enum AnswerTypes { Text, OneOfFourVariants, SomeVariants }
     }
 }
