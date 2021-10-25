@@ -1,28 +1,30 @@
 ﻿<div id="specialSymbolsPanel">
-    <div class="uniform-panel">
-        <button data-symbol="↑" class="btn">&#8593;</button>
-        <button data-symbol="↓" class="btn">&#8595;</button>
-        <button data-symbol="→" class="btn">&#8594;</button>
-        <button data-symbol="+" class="btn">+</button>
+    <div class="uniform-panel mb-2">
+        <button data-symbol="↑" class="btn btn-secondary">&#8593;</button>
+        <button data-symbol="↓" class="btn btn-secondary">&#8595;</button>
+        <button data-symbol="→" class="btn btn-secondary">&#8594;</button>
+        <button data-symbol="+" class="btn btn-secondary">+</button>
     </div>
-    <div class="uniform-panel">
-        <button data-symbol="₁" class="btn">X<sub>1</sub></button>
-        <button data-symbol="₂" class="btn">X<sub>2</sub></button>
-        <button data-symbol="₃" class="btn">X<sub>3</sub></button>
-        <button data-symbol="₄" class="btn">X<sub>4</sub></button>
-        <button data-symbol="₅" class="btn">X<sub>5</sub></button>
-        <button data-symbol="₆" class="btn">X<sub>6</sub></button>
-        <button data-symbol="₇" class="btn">X<sub>7</sub></button>
-        <button data-symbol="₈" class="btn">X<sub>8</sub></button>
-        <button data-symbol="₉" class="btn">X<sub>9</sub></button>
-        <button data-symbol="₀" class="btn">X<sub>0</sub></button>
+    <div class="uniform-panel mb-2">
+        <button data-symbol="₁" class="btn btn-secondary">X<sub>1</sub></button>
+        <button data-symbol="₂" class="btn btn-secondary">X<sub>2</sub></button>
+        <button data-symbol="₃" class="btn btn-secondary">X<sub>3</sub></button>
+        <button data-symbol="₄" class="btn btn-secondary">X<sub>4</sub></button>
+        <button data-symbol="₅" class="btn btn-secondary">X<sub>5</sub></button>
+        <button data-symbol="₆" class="btn btn-secondary">X<sub>6</sub></button>
+        <button data-symbol="₇" class="btn btn-secondary">X<sub>7</sub></button>
+        <button data-symbol="₈" class="btn btn-secondary">X<sub>8</sub></button>
+        <button data-symbol="₉" class="btn btn-secondary">X<sub>9</sub></button>
+        <button data-symbol="₀" class="btn btn-secondary">X<sub>0</sub></button>
     </div>
 </div>
 <script>
     window.addEventListener("load", function () {
         let inptSymbols = document.querySelectorAll("#specialSymbolsPanel button");
+        let input = document.getElementById("textAnswerInput");
         for (let btn of inptSymbols) {
-            btn.onclick = () => {
+            btn.onclick = (ev) => {
+                ev.preventDefault();
                 input.value = input.value + btn.dataset.symbol;
                 input.focus();
             };

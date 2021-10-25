@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Areas.Editor.ViewModel;
 using RemTestSys.Domain.Models;
+using RemTestSys.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,35 +21,36 @@ namespace RemTestSys.Areas.Editor.Controllers
             dbContext = context;
         }
         private readonly AppDbContext dbContext;
-        // GET: QuestionsController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
         // GET: QuestionsController/Create
-        public async Task<IActionResult> CreateFor(int? id)
+        public async Task<IActionResult> Create(int id)
         {
-            if (id == null) return NotFound();
             Test test = await dbContext.Tests.SingleOrDefaultAsync(t=>t.Id==id);
             if (test == null) return NotFound();
             ViewData["TestId"] = test.Id;
-            return View("Create");
+            return View();
         }
 
         // POST: QuestionsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(QuestionViewModel questionViewModel)
         {
-            try
+            if (!questionViewModel.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "Присутні невірні данні");
+                return View(questionViewModel);
             }
-            catch
+            else
             {
-                return View();
+                Question question = questionViewModel.GetQuestion();
+                dbContext.Questions.Add(question);
+                await dbContext.SaveChangesAsync();
+                Answer answer = questionViewModel.GetAnswer();
+                answer.Question = question;
+                await answer.ToDb(dbContext);
             }
+            return RedirectToAction("Details", "Tests", new {id=questionViewModel.TestId});
         }
 
         // GET: QuestionsController/Edit/5
