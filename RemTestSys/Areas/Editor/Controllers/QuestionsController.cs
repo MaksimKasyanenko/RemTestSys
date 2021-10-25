@@ -36,14 +36,12 @@ namespace RemTestSys.Areas.Editor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(QuestionViewModel questionViewModel)
         {
+            Question question;
+            Answer answer;
             try
             {
-                Question question = questionViewModel.GetQuestion();
-                dbContext.Questions.Add(question);
-                await dbContext.SaveChangesAsync();
-                Answer answer = questionViewModel.GetAnswer();
-                answer.Question = question;
-                await answer.ToDb(dbContext);
+                question = questionViewModel.GetQuestion();
+                answer = questionViewModel.GetAnswer();
             }
             catch (InvalidOperationException)
             {
@@ -51,6 +49,10 @@ namespace RemTestSys.Areas.Editor.Controllers
                 ViewData["TestId"] = questionViewModel.TestId;
                 return View(questionViewModel);
             }
+            dbContext.Questions.Add(question);
+            await dbContext.SaveChangesAsync();
+            answer.Question = question;
+            await answer.ToDb(dbContext);
             return RedirectToAction("Details", "Tests", new { id = questionViewModel.TestId });
         }
 
