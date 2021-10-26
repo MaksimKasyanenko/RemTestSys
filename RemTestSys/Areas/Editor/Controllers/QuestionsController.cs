@@ -22,39 +22,48 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         private readonly AppDbContext dbContext;
 
-        // GET: QuestionsController/Create
+        [HttpGet]
         public async Task<IActionResult> Create(int id)
         {
-            Test test = await dbContext.Tests.SingleOrDefaultAsync(t=>t.Id==id);
-            if (test == null) return NotFound();
-            ViewData["TestId"] = test.Id;
-            return View();
+            return await CreateTextAnswer(id);
         }
 
-        // POST: QuestionsController/Create
+
+
+        [HttpGet]
+        public async Task<IActionResult> CreateTextAnswer(int id)
+        {
+            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
+            if (test == null) return NotFound();
+            ViewData["TestId"] = test.Id;
+            return View("CreateTextAnswer");
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(QuestionViewModel questionViewModel)
+        public async Task<IActionResult> CreateTextAnswer(QuestionWithTextAnswerViewModel question)
         {
-            Question question;
-            Answer answer;
+            Question ques;
+            Answer answ;
             try
             {
-                question = questionViewModel.GetQuestion();
-                answer = questionViewModel.GetAnswer();
+                ques = Question.Create(question.Text, question.SubText, question.TestId);
+                answ = Answer.CreateTextAnswer(question.RightText, question.CaseMatters);
             }
             catch (InvalidOperationException)
             {
                 ModelState.AddModelError("", "Присутні невірні данні");
-                ViewData["TestId"] = questionViewModel.TestId;
-                return View(questionViewModel);
+                ViewData["TestId"] = question.TestId;
+                return View(question);
             }
-            dbContext.Questions.Add(question);
+            dbContext.Questions.Add(ques);
             await dbContext.SaveChangesAsync();
-            answer.Question = question;
-            await answer.ToDb(dbContext);
-            return RedirectToAction("Details", "Tests", new { id = questionViewModel.TestId });
+            answ.Question = ques;
+            await answ.ToDb(dbContext);
+            return RedirectToAction("Details", "Tests", new { id = question.TestId });
         }
+
+
+
 
         // GET: QuestionsController/Edit/5
         public ActionResult Edit(int id)

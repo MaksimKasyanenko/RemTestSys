@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.ViewModel
 {
-    public class QuestionViewModel
+    public class QuestionWithTextAnswerViewModel:QuestionViewModel
     {
-        public int TestId { get; set; }
-        public string Text { get; set; }
-        public string SubText { get; set; }
+        public string RightText { get; set; }
+        public bool CaseMatters { get; set; }
     }
 }

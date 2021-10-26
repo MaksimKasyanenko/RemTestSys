@@ -1,0 +1,36 @@
+﻿@model QuestionWithTextAnswerViewModel
+@{
+    ViewData["Title"] = "Нове питання";
+}
+
+<h2>Нове питання</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <form asp-action="CreateTextAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @await Html.PartialAsync("_QuestionForm", ViewData["TestId"])
+            <h4>Відповідь</h4>
+            <hr />
+            <div class="mb-4">
+                <div class="border p-4 mb-2">
+                    <h5>Тип відповіді</h5>
+                    <hr />
+                    <a class="" href="">Текст</a>
+                </div>
+                @await Html.PartialAsync("SpecialSymbolsPanel")
+                <label class="control-label">Правильна відповідь</label>
+                <input type="text" class="form-control" asp-for="RightText" id="textAnswerInput" />
+                <div class="text-center">
+                    <label asp-for="CaseMatters"><input type="checkbox" asp-for="CaseMatters" /> Регістр при порівнянні має вагу</label>
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Створити" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@ViewData["TestId"]">Назад</a>
+</div>
