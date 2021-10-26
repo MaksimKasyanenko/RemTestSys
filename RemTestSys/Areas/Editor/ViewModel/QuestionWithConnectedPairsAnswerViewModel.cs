@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.ViewModel
 {
-    public class ConnectedPairsAnswerViewModel
+    public class QuestionWithConnectedPairsAnswerViewModel:QuestionViewModel
     {
         public string[] LeftList { get; set; }
         public string[] RightList { get; set; }

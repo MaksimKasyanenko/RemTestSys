@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.ViewModel
 {
-    public class SomeVariantsAnswerViewModel
+    public class QuestionWithSomeVariantsAnswerViewModel:QuestionViewModel
     {
         public string[] RightVariants { get; set; }
         public string[] FakeVariants { get; set; }

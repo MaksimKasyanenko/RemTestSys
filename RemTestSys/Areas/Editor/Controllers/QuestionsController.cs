@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace RemTestSys.Areas.Editor.Controllers
 {
     [Area("Editor")]
-    [Authorize(Roles="Editor")]
+    [Authorize(Roles = "Editor")]
     public class QuestionsController : Controller
     {
         public QuestionsController(AppDbContext context)
@@ -42,26 +42,55 @@ namespace RemTestSys.Areas.Editor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTextAnswer(QuestionWithTextAnswerViewModel question)
         {
+            if (await TryCreateAnswer(question, () => Answer.CreateTextAnswer(question.RightText, question.CaseMatters)))
+            {
+                return RedirectToAction("Details", "Tests", new { id = question.TestId });
+            }
+            return View(question);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> CreateOneOfFourAnswer(int id)
+        {
+            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
+            if (test == null) return NotFound();
+            ViewData["TestId"] = test.Id;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel question)
+        {
+            if (await TryCreateAnswer(question, () => Answer.CreateOneOfFourVariantsAnswer(question.RightVariant, question.Fake1, question.Fake2, question.Fake3)))
+            {
+                return RedirectToAction("Details", "Tests", new { id = question.TestId });
+            }
+            return View(question);
+        }
+
+
+        private async Task<bool> TryCreateAnswer(QuestionViewModel question, Func<Answer> getAnswerModel)
+        {
             Question ques;
             Answer answ;
             try
             {
                 ques = Question.Create(question.Text, question.SubText, question.TestId);
-                answ = Answer.CreateTextAnswer(question.RightText, question.CaseMatters);
+                answ = getAnswerModel();
             }
             catch (InvalidOperationException)
             {
                 ModelState.AddModelError("", "Присутні невірні данні");
                 ViewData["TestId"] = question.TestId;
-                return View(question);
+                return false;
             }
             dbContext.Questions.Add(ques);
-            await dbContext.SaveChangesAsync();
             answ.Question = ques;
-            await answ.ToDb(dbContext);
-            return RedirectToAction("Details", "Tests", new { id = question.TestId });
+            dbContext.Add(answ);
+            await dbContext.SaveChangesAsync();
+            return true;
         }
-
 
 
 
@@ -89,7 +118,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         // GET: QuestionsController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q=>q.Answer).SingleAsync();
+            Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q => q.Answer).SingleAsync();
             return View(q);
         }
 
@@ -101,7 +130,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             var question = await dbContext.Questions.FindAsync(confirmedDelete.Id);
             dbContext.Questions.Remove(question);
             await dbContext.SaveChangesAsync();
-            return RedirectToAction("Details", "Tests", new { id=confirmedDelete.TestId});
+            return RedirectToAction("Details", "Tests", new { id = confirmedDelete.TestId });
         }
     }
 }
