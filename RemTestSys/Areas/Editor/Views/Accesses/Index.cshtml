@@ -1,0 +1,87 @@
+﻿@model AccessesViewModel
+
+@{
+    ViewData["Title"] = "Доступ до тестів";
+}
+
+<h2>Доступ до тестів</h2>
+<hr />
+@if (Model.AccessesForAll.Count() > 0 || Model.AccessesForGroups.Count() > 0 || Model.AccessesForStudents.Count() > 0)
+{
+    <div class="text-end">
+        <a asp-action="ClearAll" class="btn btn-danger">Закрити доступ всім</a>
+    </div>
+    @if (Model.AccessesForAll.Count() > 0)
+    {
+        <h3>Для всіх</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Тест</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AccessesForAll)
+                {
+                    <tr>
+                        <td>@item.Test.Name</td>
+                        <td><a asp-action="DeleteForAll" asp-controller="Accesses" asp-route-id="@item.Id">Закрити доступ</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.AccessesForGroups.Count() > 0)
+    {
+        <h3>Для груп</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Тест</th>
+                    <th>Група</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AccessesForGroups)
+                {
+                    <tr>
+                        <td>@item.Test.Name</td>
+                        <td>@item.Group.Name</td>
+                        <td><a asp-action="DeleteForGroup" asp-controller="Accesses" asp-route-id="@item.Id">Закрити доступ</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @if (Model.AccessesForStudents.Count() > 0)
+    {
+        <h3>Для учнів</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Тест</th>
+                    <th>Учень</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AccessesForStudents)
+                {
+                    <tr>
+                        <td>@item.Test.Name</td>
+                        <td>@item.Student.FullName</td>
+                        <td><a asp-action="DeleteForStudent" asp-controller="Accesses" asp-route-id="@item.Id">Закрити доступ</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p class="text-center text-secondary">Жодного доступу не відкрито</p>
+}
