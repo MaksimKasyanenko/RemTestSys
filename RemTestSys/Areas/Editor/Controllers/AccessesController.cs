@@ -38,7 +38,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public async Task<IActionResult> OpenAccessToTestForGroups(int id)
+        public async Task<IActionResult> OpenAccessToTestForGroup(int id)
         {
             ViewData["TestId"] = id;
             var groups = await dbContext.Groups.ToListAsync();
@@ -46,15 +46,15 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OpenAccessToTestForGroups(int testId, int groupId)
+        public async Task<IActionResult> OpenAccessToTestForGroup(int id, int testId)
         {
-            var group = await dbContext.Groups.FindAsync(groupId);
+            var group = await dbContext.Groups.FindAsync(id);
             var test = await dbContext.Tests.FindAsync(testId);
-            if(test != null && group != null && await dbContext.AccessesToTestForGroup.AllAsync(a=>a.TestId != testId || a.GroupId != groupId))
+            if(test != null && group != null && await dbContext.AccessesToTestForGroup.AllAsync(a=>a.TestId != testId || a.GroupId != id))
             {
                 AccessToTestForGroup access = new AccessToTestForGroup
                 {
-                    GroupId = groupId,
+                    GroupId = id,
                     TestId = testId
                 };
                 dbContext.AccessesToTestForGroup.Add(access);
@@ -72,19 +72,20 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OpenAccessToTestForStudent(int testId, int studentId)
+        public async Task<IActionResult> OpenAccessToTestForStudent(int id, int testId)
         {
-            foreach (var id in ids)
+            var student = await dbContext.Students.FindAsync(id);
+            var test = await dbContext.Tests.FindAsync(testId);
+            if (test != null && student != null && await dbContext.AccessesToTestForStudent.AllAsync(a => a.TestId != testId || a.StudentId != id))
             {
-                if (await dbContext.AccessesToTestForStudent.AnyAsync(a => a.TestId == testId && a.StudentId == id)) continue;
                 AccessToTestForStudent access = new AccessToTestForStudent
                 {
                     StudentId = id,
                     TestId = testId
                 };
                 dbContext.AccessesToTestForStudent.Add(access);
+                await dbContext.SaveChangesAsync();
             }
-            await dbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> ClearAll()

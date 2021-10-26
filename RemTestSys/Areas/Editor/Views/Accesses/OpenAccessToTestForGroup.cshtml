@@ -25,7 +25,11 @@
                         @item.Name
                     </td>
                     <td>
-                        <a asp-action="OpenAccessToTestForGroups" asp-controller="Accesses" asp-route-groupId="@item.Id" asp-route-testId="@ViewData["TestId"]">Відкрити</a>
+                        <form asp-action="OpenAccessToTestForGroup">
+                            <input type="hidden" value="@item.Id" name="id" />
+                            <input type="hidden" value="@ViewData["TestId"]" name="testId" />
+                            <input type="submit" value="Відкрити доступ" class="btn btn-primary" />
+                        </form>
                     </td>
                 </tr>
             }
