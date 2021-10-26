@@ -69,6 +69,25 @@ namespace RemTestSys.Areas.Editor.Controllers
             return View(question);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CreateSomeAnswer(int id)
+        {
+            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
+            if (test == null) return NotFound();
+            ViewData["TestId"] = test.Id;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSomeAnswer(QuestionWithSomeVariantsAnswerViewModel question)
+        {
+            if (await TryCreateAnswer(question, () => Answer.CreateOneOfFourVariantsAnswer(question.RightVariant, question.Fake1, question.Fake2, question.Fake3)))
+            {
+                return RedirectToAction("Details", "Tests", new { id = question.TestId });
+            }
+            return View(question);
+        }
+
 
         private async Task<bool> TryCreateAnswer(QuestionViewModel question, Func<Answer> getAnswerModel)
         {

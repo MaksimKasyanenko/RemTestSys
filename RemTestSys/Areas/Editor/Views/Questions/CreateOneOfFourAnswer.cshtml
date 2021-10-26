@@ -1,7 +1,32 @@
-﻿
+﻿@model QuestionWithOneOfFourVariantsAnswerViewModel
 @{
-    ViewData["Title"] = "CreateOneOfFourAnswer";
+    ViewData["Title"] = "Нове питання";
 }
 
-<h1>CreateOneOfFourAnswer</h1>
-
+<h2>Нове питання</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <form asp-action="CreateOneOfFourAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @await Html.PartialAsync("_QuestionForm", ViewData["TestId"])
+            <h4>Відповідь</h4>
+            <hr />
+            <div class="mb-4">
+                @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
+                <label class="control-label">Правильний вариант</label>
+                <input type="text" class="form-control mb-2" asp-for="RightVariant" />
+                <label class="control-label">Неправильні варіанти</label>
+                <input type="text" class="form-control mb-2" asp-for="Fake1" />
+                <input type="text" class="form-control mb-2" asp-for="Fake2" />
+                <input type="text" class="form-control mb-2" asp-for="Fake3" />
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Створити" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@ViewData["TestId"]">Назад</a>
+</div>
