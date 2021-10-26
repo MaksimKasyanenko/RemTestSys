@@ -1,0 +1,42 @@
+﻿@model QuestionWithSequenceAnswerViewModel
+@{
+    ViewData["Title"] = "Нове питання";
+}
+
+<h2>Нове питання</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <form asp-action="CreateSequenceAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @await Html.PartialAsync("_QuestionForm", ViewData["TestId"])
+            <h4>Відповідь</h4>
+            <hr />
+            <div class="mb-4">
+                @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
+                <label class="control-label">Послідовність</label>
+                <div id="sequenceContainer" class="mb-2">
+                    <input type="text" class="form-control mb-2" name="Sequence" />
+                </div>
+                <div class="text-center mb-2"><button class="btn btn-primary" type="button" onclick="addElement();">+</button></div>
+                <hr />
+                <script>
+                    function addElement() {
+                        let v = document.createElement("input");
+                        v.type = "text";
+                        v.classList.add("form-control");
+                        v.classList.add("mb-2");
+                        v.name = "Sequence";
+                        document.getElementById("sequenceContainer").appendChild(v);
+                    }
+                </script>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Створити" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@ViewData["TestId"]">Назад</a>
+</div>

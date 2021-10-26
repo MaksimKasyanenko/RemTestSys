@@ -2,6 +2,9 @@
 <div class="border p-4 mb-2">
     <h5>Тип відповіді</h5>
     <hr />
-    <a class="" asp-action="CreateTextAnswer" asp-controller="Questions" asp-route-id="@Model">Текст</a>
-    <a class="" asp-action="CreateOneOfFourAnswer" asp-controller="Questions" asp-route-id="@Model">1 з 4</a>
+    <a class="" asp-action="CreateTextAnswer" asp-controller="Questions" asp-route-id="@Model">Текст</a> |
+    <a class="" asp-action="CreateOneOfFourAnswer" asp-controller="Questions" asp-route-id="@Model">1 з 4</a> |
+    <a class="" asp-action="CreateSomeAnswer" asp-controller="Questions" asp-route-id="@Model">Декілька варіантів</a> |
+    <a class="" asp-action="CreateSequenceAnswer" asp-controller="Questions" asp-route-id="@Model">Послідовність</a> |
+    <a class="" asp-action="CreateConnectedPairsAnswer" asp-controller="Questions" asp-route-id="@Model">Пари</a>
 </div>

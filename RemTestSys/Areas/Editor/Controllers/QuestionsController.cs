@@ -81,7 +81,45 @@ namespace RemTestSys.Areas.Editor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateSomeAnswer(QuestionWithSomeVariantsAnswerViewModel question)
         {
-            if (await TryCreateAnswer(question, () => Answer.CreateOneOfFourVariantsAnswer(question.RightVariant, question.Fake1, question.Fake2, question.Fake3)))
+            if (await TryCreateAnswer(question, () => Answer.CreateSomeVariantsAnswer(question.RightVariants, question.FakeVariants)))
+            {
+                return RedirectToAction("Details", "Tests", new { id = question.TestId });
+            }
+            return View(question);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateSequenceAnswer(int id)
+        {
+            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
+            if (test == null) return NotFound();
+            ViewData["TestId"] = test.Id;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSequenceAnswer(QuestionWithSequenceAnswerViewModel question)
+        {
+            if (await TryCreateAnswer(question, () => Answer.CreateSequenceAnswer(question.Sequence)))
+            {
+                return RedirectToAction("Details", "Tests", new { id = question.TestId });
+            }
+            return View(question);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateConnectedPairsAnswer(int id)
+        {
+            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
+            if (test == null) return NotFound();
+            ViewData["TestId"] = test.Id;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateTextAnswer(QuestionWithConnectedPairsAnswerViewModel question)
+        {
+            if (await TryCreateAnswer(question, () => Answer.CreateConnectedPairsAnswer(question.LeftList,question.RightList)))
             {
                 return RedirectToAction("Details", "Tests", new { id = question.TestId });
             }
