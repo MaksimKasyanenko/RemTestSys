@@ -14,7 +14,7 @@
             <hr />
             <div class="mb-4">
                 @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
-                <label class="control-label">Правильний вариант</label>
+                <label class="form-label">Правильний вариант</label>
                 <input type="text" class="form-control mb-2" asp-for="RightVariant" />
                 <label class="control-label">Неправильні варіанти</label>
                 <input type="text" class="form-control mb-2" asp-for="Fake1" />

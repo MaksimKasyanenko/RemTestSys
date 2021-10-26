@@ -117,7 +117,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTextAnswer(QuestionWithConnectedPairsAnswerViewModel question)
+        public async Task<IActionResult> CreateConnectedPairsAnswer(QuestionWithConnectedPairsAnswerViewModel question)
         {
             if (await TryCreateAnswer(question, () => Answer.CreateConnectedPairsAnswer(question.LeftList,question.RightList)))
             {
@@ -147,29 +147,6 @@ namespace RemTestSys.Areas.Editor.Controllers
             dbContext.Add(answ);
             await dbContext.SaveChangesAsync();
             return true;
-        }
-
-
-
-        // GET: QuestionsController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: QuestionsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // GET: QuestionsController/Delete/5

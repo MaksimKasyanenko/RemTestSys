@@ -14,11 +14,33 @@
             <hr />
             <div class="mb-4">
                 @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
-
-                
-
-
-
+                <label class="form-label"></label>
+                <div id="pairsContainer" class="mb-2">
+                    <div class="row mb-2">
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="LeftList">
+                        </div>
+                        <div class="col-sm-2 text-center">-</div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="RightList">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mb-2"><button class="btn btn-primary" type="button" onclick="addPair();">+</button></div>
+                <hr />
+                <script>
+                    function addPair() {
+                        document.getElementById("pairsContainer").insertAdjacentHTML("beforeend", `<div class="row mb-2">
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="LeftList">
+                        </div>
+                        <div class="col-sm-2 text-center">-</div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="RightList">
+                        </div>
+                    </div>`);
+                    }
+                </script>
             </div>
             <div class="form-group text-center">
                 <input type="submit" value="Створити" class="btn btn-primary" />
