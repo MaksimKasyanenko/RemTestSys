@@ -152,12 +152,14 @@ input[type="submit"] {
 
 .content p {
     font-family: Arial, Helvetica, sans-serif;
-    color: #585858;
+    font-style: italic;
+    text-align: center;
+    color: #ffaf9e;
     white-space: pre-line;
 }
 
 .content .big-text {
-    font-size: 4rem;
+    font-size: 2.6rem;
     color: #ffaf9e;
     margin: 2rem 0;
     margin-bottom: 3rem;
@@ -176,6 +178,9 @@ a.primary-button {
         cursor: pointer;
         background-color: #ffaf9e;
     }
+.uniform-panel button{
+    padding: 0.8rem 0;
+}
 
 button {
     font-family: Arial, Helvetica, sans-serif;
@@ -211,7 +216,6 @@ button {
 
 .site-header {
     padding: 0.8rem 0.2rem;
-    margin-bottom: 2rem;
 }
 
     .site-header img {
@@ -260,7 +264,7 @@ button {
 .testing-dialog-widget {
     width: 96%;
     max-width: 460px;
-    margin: 0 auto;
+    margin: 1.4rem auto;
     padding: 0 0.8rem 0.8rem 0.8rem;
     box-shadow: 2px 2px 8px #ccc;
 }
@@ -288,13 +292,13 @@ button {
 
 .test-info-block {
     font-family: Arial, Helvetica, sans-serif;
-    width: 100%;
+    width: 96%;
     padding: 0.8rem;
-    margin: 0.4rem 0;
+    margin: 0.4rem auto;
     border: none;
     border-radius: 0.1rem;
     color: #585858;
-    background-color: #f5f5f5;
+    box-shadow: 2px 2px 8px #ccc;
 }
 
     .test-info-block header {
@@ -425,13 +429,16 @@ div.validation-summary-errors ul {
 #sequenceAnswerDisp,
 .connectedPairAnswerDisp {
     font-family: Arial, Helvetica, sans-serif;
-    padding: 0.8rem;
+    font-size: 0.8rem;
+    font-style: italic;
+    padding: 0.9rem;
     border-radius: 0.1rem;
     border: 2px solid #f8cdaa;
     color: #585858;
     background-color: #f0f0f0;
     margin-bottom: 0.4rem;
     min-height: 2.8rem;
+    line-height: 1.2rem;
 }
 
 #connectedPairsAnswerFormWrp li {
@@ -446,6 +453,9 @@ div.validation-summary-errors ul {
 }
 
 @media (max-width: 600px) {
+    .site-header img {
+        max-width: 6rem;
+    }
     .test-info-block dt {
         width: 40%;
     }
