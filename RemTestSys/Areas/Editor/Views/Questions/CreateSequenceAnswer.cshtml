@@ -13,12 +13,14 @@
             <h4>Відповідь</h4>
             <hr />
             <div class="mb-4">
-                @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
                 <label class="control-label">Послідовність</label>
                 <div id="sequenceContainer" class="mb-2">
                     <input type="text" class="form-control mb-2" name="Sequence" />
                 </div>
-                <div class="text-center mb-2"><button class="btn btn-primary" type="button" onclick="addElement();">+</button></div>
+                <div class="text-center mb-2">
+                    <button class="btn btn-danger" type="button" onclick="removeLastElement();">-</button>&nbsp;
+                    <button class="btn btn-primary" type="button" onclick="addElement();">+</button>
+                </div>
                 <hr />
                 <script>
                     function addElement() {
@@ -28,6 +30,12 @@
                         v.classList.add("mb-2");
                         v.name = "Sequence";
                         document.getElementById("sequenceContainer").appendChild(v);
+                    }
+                    function removeLastElement() {
+                        let container = document.getElementById("sequenceContainer");
+                        if (container.children.length > 1) {
+                            container.removeChild(container.lastElementChild);
+                        }
                     }
                 </script>
             </div>

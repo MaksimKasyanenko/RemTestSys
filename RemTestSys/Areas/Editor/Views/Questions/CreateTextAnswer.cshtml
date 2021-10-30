@@ -13,7 +13,6 @@
             <h4>Відповідь</h4>
             <hr />
             <div class="mb-4">
-                @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
                 @await Html.PartialAsync("SpecialSymbolsPanel")
                 <label class="form-label">Правильна відповідь</label>
                 <input type="text" class="form-control" asp-for="RightText" id="textAnswerInput" />

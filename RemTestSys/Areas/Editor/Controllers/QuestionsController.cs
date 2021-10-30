@@ -23,20 +23,12 @@ namespace RemTestSys.Areas.Editor.Controllers
         private readonly AppDbContext dbContext;
 
         [HttpGet]
-        public async Task<IActionResult> Create(int id)
-        {
-            return await CreateTextAnswer(id);
-        }
-
-
-
-        [HttpGet]
         public async Task<IActionResult> CreateTextAnswer(int id)
         {
             Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
             if (test == null) return NotFound();
             ViewData["TestId"] = test.Id;
-            return View("CreateTextAnswer");
+            return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

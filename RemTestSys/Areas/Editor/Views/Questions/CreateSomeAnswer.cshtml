@@ -13,18 +13,22 @@
             <h4>Відповідь</h4>
             <hr />
             <div class="mb-4">
-                @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
-
                 <label class="form-label">Правильні варіанти</label>
                 <div id="rightVariantsContainer" class="mb-2">
                     <input type="text" class="form-control mb-2" name="RightVariants" />
                 </div>
-                <div class="text-center mb-2"><button class="btn btn-primary" type="button" onclick="addRightVariant();">+</button></div>
+                <div class="text-center mb-2">
+                    <button class="btn btn-danger" type="button" onclick="removeVariant('rightVariantsContainer');">-</button>&nbsp;
+                    <button class="btn btn-primary" type="button" onclick="addRightVariant();">+</button>
+                </div>
                 <label class="control-label">Неправильні варіанти</label>
                 <div id="fakeVariantsContainer" class="mb-2">
                     <input type="text" class="form-control mb-2" name="FakeVariants" />
                 </div>
-                <div class="text-center"><button class="btn btn-primary" type="button" onclick="addFakeVariant();">+</button></div>
+                <div class="text-center">
+                    <button class="btn btn-danger" type="button" onclick="removeVariant('fakeVariantsContainer');">-</button>&nbsp;
+                    <button class="btn btn-primary" type="button" onclick="addFakeVariant();">+</button>
+                </div>
                 <script>
                     function addRightVariant() {
                         let v = document.createElement("input");
@@ -41,6 +45,12 @@
                         v.classList.add("mb-2");
                         v.name = "FakeVariants";
                         document.getElementById("fakeVariantsContainer").appendChild(v);
+                    }
+                    function removeVariant(containerId) {
+                        let container = document.getElementById(containerId);
+                        if (container.children.length > 1) {
+                            container.removeChild(container.lastElementChild);
+                        }
                     }
                 </script>
 

@@ -85,8 +85,14 @@
             {
                 <p class="text-center">В данному тесті немає жодного запитання</p>
             }
-            <div class="text-center">
-                <a asp-action="Create" asp-controller="Questions" asp-route-id="@Model.Id" class="btn btn-primary">Створити нове питання</a>
+            <div class="border p-4 mb-2">
+                <h5>Створити питання</h5>
+                <hr />
+                <a class="" asp-action="CreateTextAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Текст</a> |
+                <a class="" asp-action="CreateOneOfFourAnswer" asp-controller="Questions" asp-route-id="@Model.Id">1 з 4</a> |
+                <a class="" asp-action="CreateSomeAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Декілька варіантів</a> |
+                <a class="" asp-action="CreateSequenceAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Послідовність</a> |
+                <a class="" asp-action="CreateConnectedPairsAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Пари</a>
             </div>
         </dd>
     </dl>

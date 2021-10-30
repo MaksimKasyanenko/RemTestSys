@@ -13,7 +13,6 @@
             <h4>Відповідь</h4>
             <hr />
             <div class="mb-4">
-                @await Html.PartialAsync("_TypeOfAnswerPanel", ViewData["TestId"])
                 <label class="form-label"></label>
                 <div id="pairsContainer" class="mb-2">
                     <div class="row mb-2">
@@ -26,7 +25,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center mb-2"><button class="btn btn-primary" type="button" onclick="addPair();">+</button></div>
+                <div class="text-center mb-2">
+                    <button class="btn btn-danger" type="button" onclick="removePair();">-</button>&nbsp;
+                    <button class="btn btn-primary" type="button" onclick="addPair();">+</button>
+                </div>
                 <hr />
                 <script>
                     function addPair() {
@@ -39,6 +41,12 @@
                             <input type="text" class="form-control" name="RightList">
                         </div>
                     </div>`);
+                    }
+                    function removePair() {
+                        let container = document.getElementById("pairsContainer");
+                        if (container.children.length > 1) {
+                            container.removeChild(container.lastElementChild);
+                        }
                     }
                 </script>
             </div>
