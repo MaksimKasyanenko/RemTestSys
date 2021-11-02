@@ -54,7 +54,7 @@ namespace RemTestSys.Domain.Models
         {
             get
             {
-                return Test.Duration - (DateTime.Now - StartTime).Seconds;
+                return Test.Duration - (int)((DateTime.Now - StartTime).TotalSeconds);
             }
         }
 
