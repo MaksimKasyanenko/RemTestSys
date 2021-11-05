@@ -2,7 +2,13 @@
     @await Html.PartialAsync("SpecialSymbolsPanel")
 </div>
 <script>
+    window.addEventListener("load", function(){
     let inputs = document.querySelectorAll("input[type='text'], textarea");
     let panel = document.getElementById("specSymPanHidden");
-    
+    for(let inpt of inputs){
+        inpt.onfocus = () => {
+            
+        };
+    }
+    });
 </script>
