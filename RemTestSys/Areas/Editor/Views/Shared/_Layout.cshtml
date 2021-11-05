@@ -7,7 +7,8 @@
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
 </head>
-<body>
+<body style="position: relative;">
+    @await Html.PartialAsync("_SpecialSymbolsPanelHidden")
     <header class="bg-dark bg-gradient mb-4">
         <div class="container">
             <ul class="nav">
