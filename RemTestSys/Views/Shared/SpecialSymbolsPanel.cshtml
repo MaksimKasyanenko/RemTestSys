@@ -21,12 +21,21 @@
 <script>
     window.addEventListener("load", function () {
         let inptSymbols = document.querySelectorAll("#specialSymbolsPanel button");
-        let input = document.getElementById("textAnswerInput");
+        let inputs = document.querySelectorAll("input[type='text'], textarea");
+        let activeElement = null;
+        for (let inpt of inputs) {
+            inpt.addEventListener("focusin", () => activeElement = inpt);
+        }
         for (let btn of inptSymbols) {
             btn.onclick = (ev) => {
                 ev.preventDefault();
-                input.value = input.value + btn.dataset.symbol;
-                input.focus();
+                if (activeElement) {
+                    if (activeElement instanceof HTMLInputElement)
+                        activeElement.value = activeElement.value + btn.dataset.symbol;
+                    else if (activeElement instanceof HTMLTextAreaElement)
+                        activeElement.textContent = activeElement.textContent + btn.dataset.symbol;
+                    activeElement.focus();
+                }
             };
         }
     });
