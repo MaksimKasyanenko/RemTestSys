@@ -1,5 +1,8 @@
 <div id="specSymPanHidden" class="bg-secondary p-1" style="position:absolute; display:none;">
-    @await Html.PartialAsync("SpecialSymbolsPanel")
+    <div>
+        @await Html.PartialAsync("SpecialSymbolsPanel")
+    </div>
+    <div><button type="button" onclick="hidePanel();">X</button></div>
 </div>
 <script>
     window.addEventListener("load", function(){
@@ -14,4 +17,7 @@
         };
     }
     });
+    function hidePanel(){
+        document.getElementById("specSymPanHidden").style.display="none";
+    }
 </script>
