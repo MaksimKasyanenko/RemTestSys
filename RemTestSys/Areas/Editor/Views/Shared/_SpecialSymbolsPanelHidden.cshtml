@@ -1,4 +1,4 @@
-<div id="specSymPanHidden" class="bg-secondary p-1" style="position:absolute;">
+<div id="specSymPanHidden" class="bg-secondary p-1" style="position:absolute; display:none;">
     @await Html.PartialAsync("SpecialSymbolsPanel")
 </div>
 <script>
@@ -7,7 +7,10 @@
     let panel = document.getElementById("specSymPanHidden");
     for(let inpt of inputs){
         inpt.onfocus = () => {
-            panel.style.bottom = window.
+            let b = inpt.getBoundingClientRect();
+            panel.style.bottom = window.pageYOffset+b.top+"px";
+            panel.style.left = window.pageXOffset+b.left+"px";
+            panel.style.display="block";
         };
     }
     });
