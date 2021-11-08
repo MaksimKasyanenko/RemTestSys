@@ -1,23 +1,21 @@
-<div id="specSymPanHidden" class="bg-secondary p-1" style="position:absolute; display:none;">
-    <div>
-        @await Html.PartialAsync("SpecialSymbolsPanel")
-    </div>
-    <div><button type="button" onclick="hidePanel();">X</button></div>
+<div id="specSymPanHidden" class="bg-white border shadow p-1" style="position:absolute; display:none;">
+    <div class="text-end"><button type="button" onclick="hidePanel();" class="p-1 btn btn-danger">X</button></div>
+    @await Html.PartialAsync("SpecialSymbolsPanel")
 </div>
 <script>
-    window.addEventListener("load", function(){
-    let inputs = document.querySelectorAll("input[type='text'], textarea");
-    let panel = document.getElementById("specSymPanHidden");
-    for(let inpt of inputs){
-        inpt.onfocus = () => {
-            let b = inpt.getBoundingClientRect();
-            panel.style.bottom = window.pageYOffset+b.top+"px";
-            panel.style.left = window.pageXOffset+b.left+"px";
-            panel.style.display="block";
-        };
-    }
+    window.addEventListener("load", function () {
+        let inputs = document.querySelectorAll("input[type='text'], textarea");
+        let panel = document.getElementById("specSymPanHidden");
+        for (let inpt of inputs) {
+            inpt.addEventListener("focus", function () {
+                panel.style.display = "block";
+                let b = inpt.getBoundingClientRect();
+                panel.style.top = (window.pageYOffset + b.top - panel.offsetHeight) + "px";
+                panel.style.left = window.pageXOffset + b.left + "px";
+            });
+        }
     });
-    function hidePanel(){
-        document.getElementById("specSymPanHidden").style.display="none";
+    function hidePanel() {
+        document.getElementById("specSymPanHidden").style.display = "none";
     }
 </script>

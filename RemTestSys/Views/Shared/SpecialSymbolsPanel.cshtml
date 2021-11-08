@@ -24,16 +24,13 @@
         let inputs = document.querySelectorAll("input[type='text'], textarea");
         let activeElement = null;
         for (let inpt of inputs) {
-            inpt.addEventListener("focusin", () => activeElement = inpt);
+            inpt.addEventListener("focus", () => activeElement = inpt);
         }
         for (let btn of inptSymbols) {
             btn.onclick = (ev) => {
                 ev.preventDefault();
                 if (activeElement) {
-                    if (activeElement instanceof HTMLInputElement)
-                        activeElement.value = activeElement.value + btn.dataset.symbol;
-                    else if (activeElement instanceof HTMLTextAreaElement)
-                        activeElement.textContent = activeElement.textContent + btn.dataset.symbol;
+                    activeElement.value = activeElement.value + btn.dataset.symbol;
                     activeElement.focus();
                 }
             };
