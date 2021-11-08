@@ -6,10 +6,10 @@ namespace RemTestSys
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){
-            if (Database.EnsureCreated())
+            /*if (Database.EnsureCreated())
             {
                 Fill();
-            }
+            }*/
         }
 
         public DbSet<Student> Students { get; set; }
