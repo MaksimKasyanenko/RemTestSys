@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Models;
 
-namespace RemTestSys
+namespace RemTestSys.Domain
 {
     public class AppDbContext : DbContext
     {

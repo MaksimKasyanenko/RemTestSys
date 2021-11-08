@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using RemTestSys.Extensions;
+using RemTestSys.Domain;
 
 namespace RemTestSys.Controllers
 {
