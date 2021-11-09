@@ -16,53 +16,70 @@ namespace SaveDb
         static Group[] groups;
         static TextAnswer[] textAnswers;
         static OneOfFourVariantsAnswer[] oneOfFourVariantsAnswers;
-        static SomeVariantsAnswer[] someVariantsAnswers;
-        static SequenceAnswer[] sequenceAnswers;
-        static ConnectedPairsAnswer[] connectedPairsAnswers;
-        static AccessToTestForAll[] accessToTestForAlls;
         static AccessToTestForGroup[] accessToTestForGroups;
         public static async Task Main(string[] args)
         {
             Console.WriteLine("Enter connection string>>");
             string connectionString = Console.ReadLine();
+            Console.WriteLine("Enter action>>");
+            string act = Console.ReadLine();
+            switch (act)
+            {
+                case "save": await SaveDb(connectionString); break;
+                case "loadToDb": await LoadToDb(connectionString); break;
+            }
+        }
+
+        private static async Task LoadToDb(string connectionString)
+        {
+            Group[] groups = JsonSerializer.Deserialize<Group[]>(await File.ReadAllTextAsync(@"d:\\dbJson\Group[]"));
+            Test[] tests = JsonSerializer.Deserialize<Test[]>(await File.ReadAllTextAsync(@"d:\\dbJson\Test[]"));
+            Question[] questions = JsonSerializer.Deserialize<Question[]>(await File.ReadAllTextAsync(@"d:\\dbJson\Question[]"));
+            TextAnswer[] textAnswers = JsonSerializer.Deserialize<TextAnswer[]>(await File.ReadAllTextAsync(@"d:\\dbJson\TextAnswer[]"));
+            OneOfFourVariantsAnswer[] oneOfFourVariants = JsonSerializer.Deserialize<OneOfFourVariantsAnswer[]>(await File.ReadAllTextAsync(@"d:\\dbJson\OneOfFourVariantsAnswer[]"));
+            AccessToTestForGroup[] accessToTestForGroups = JsonSerializer.Deserialize<AccessToTestForGroup[]>(await File.ReadAllTextAsync(@"d:\\dbJson\AccessToTestForGroup[]"));
+
             DbContextOptionsBuilder<AppDbContext> optsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             optsBuilder.UseSqlServer(connectionString);
-            using(AppDbContext context = new AppDbContext(optsBuilder.Options))
+            using (AppDbContext context = new AppDbContext(optsBuilder.Options))
+            {
+
+            }
+        }
+
+        private static async Task SaveDb(string connectionString)
+        {
+            DbContextOptionsBuilder<AppDbContext> optsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optsBuilder.UseSqlServer(connectionString);
+            using (AppDbContext context = new AppDbContext(optsBuilder.Options))
             {
                 tests = await context.Tests.ToArrayAsync();
                 questions = await context.Questions.ToArrayAsync();
                 groups = await context.Groups.ToArrayAsync();
                 textAnswers = await context.TextAnswers.ToArrayAsync();
                 oneOfFourVariantsAnswers = await context.OneVariantAnswers.ToArrayAsync();
-                someVariantsAnswers = await context.SomeVariantsAnswers.ToArrayAsync();
-                sequenceAnswers = await context.SequenceAnswers.ToArrayAsync();
-                connectedPairsAnswers = await context.ConnectedPairsAnswers.ToArrayAsync();
-                accessToTestForAlls = await context.AccessesToTestForAll.ToArrayAsync();
                 accessToTestForGroups = await context.AccessesToTestForGroup.ToArrayAsync();
             }
 
-            object[][] arrs = new object[10][];
+            object[][] arrs = new object[6][];
             arrs[0] = tests;
             arrs[1] = groups;
             arrs[2] = textAnswers;
             arrs[3] = oneOfFourVariantsAnswers;
-            arrs[4] = someVariantsAnswers;
-            arrs[5] = sequenceAnswers;
-            arrs[6] = connectedPairsAnswers;
-            arrs[7] = accessToTestForAlls;
-            arrs[8] = accessToTestForGroups;
-            arrs[9] = questions;
+            arrs[4] = accessToTestForGroups;
+            arrs[5] = questions;
 
-            JsonSerializerOptions opts = new JsonSerializerOptions {
-                WriteIndented=true
+            JsonSerializerOptions opts = new JsonSerializerOptions
+            {
+                WriteIndented = true
             };
 
             string folderPath = @"d:\\dbJson\";
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 6; i++)
             {
                 File.WriteAllText(folderPath + arrs[i].GetType().Name, JsonSerializer.Serialize(arrs[i], opts));
             }
-            Console.WriteLine("Done");
+            Console.WriteLine("Saving done");
         }
     }
 }
