@@ -43,6 +43,11 @@ namespace SaveDb
             await LoadDb(remote);
             await SaveDb(local);
         }
+        private static async Task FromLocalToRemote(string local, string remote)
+        {
+            await LoadDb(local);
+            await SaveDb(remote);
+        }
 
         private static async Task SaveDb(string connectionString)
         {
