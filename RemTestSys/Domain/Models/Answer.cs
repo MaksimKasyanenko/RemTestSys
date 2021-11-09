@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace RemTestSys.Domain.Models
 {
@@ -9,6 +10,7 @@ namespace RemTestSys.Domain.Models
         public abstract string[] GetAdditiveData();
         public abstract bool IsMatch(string[] data);
         public int QuestionId { get; set; }
+        [JsonIgnore]
         public Question Question { get; set; }
 
         public static TextAnswer CreateTextAnswer(string text, bool caseMatters)

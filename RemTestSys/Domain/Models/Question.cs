@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace RemTestSys.Domain.Models
 {
@@ -8,6 +9,7 @@ namespace RemTestSys.Domain.Models
         public string Text { get; set; }
         public string SubText { get; set; }
         public int TestId { get; set; }
+        [JsonIgnore]
         public Test Test { get; set; }
         public Answer Answer { get; set; }
 
