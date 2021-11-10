@@ -120,6 +120,49 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            Question question = await dbContext.Questions
+                                               .Include(q=>q.Answer)
+                                               .Include(q=>q.Test)
+                                               .SingleOrDefaultAsync(q=>q.Id==id);
+            if (question == null) return RedirectToAction("Index", "Tests");
+            Type answerType = question.Answer.GetType();
+            if(answerType == typeof(TextAnswer))
+            {
+                return View(QuestionViewModel.CreateForTextAnswer(question));
+            }
+            else if(answerType == typeof(OneOfFourVariantsAnswer))
+            {
+                return EditOneOfFourAnswer(question);
+            }else if(answerType == typeof(SomeVariantsAnswer))
+            {
+                return EditSomeVariantsAnswer(question);
+            }else if(answerType == typeof(SequenceAnswer))
+            {
+                return EditSequenceAnswer(question);
+            }
+            else if(answerType == typeof(ConnectedPairsAnswer))
+            {
+                return EditConnectedPairAnswer(question);
+            }
+            return NotFound();
+        }
+        public async Task<IActionResult> Delete(int id)
+        {
+            Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q => q.Answer).SingleAsync();
+            return View(q);
+        }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(ConfirmedDeleteForQuestionViewModel confirmedDelete)
+        {
+            var question = await dbContext.Questions.FindAsync(confirmedDelete.Id);
+            dbContext.Questions.Remove(question);
+            await dbContext.SaveChangesAsync();
+            return RedirectToAction("Details", "Tests", new { id = confirmedDelete.TestId });
+        }
         private async Task<bool> TryCreateAnswer(QuestionViewModel question, Func<Answer> getAnswerModel)
         {
             Question ques;
@@ -140,24 +183,6 @@ namespace RemTestSys.Areas.Editor.Controllers
             dbContext.Add(answ);
             await dbContext.SaveChangesAsync();
             return true;
-        }
-
-        // GET: QuestionsController/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q => q.Answer).SingleAsync();
-            return View(q);
-        }
-
-        // POST: QuestionsController/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(ConfirmedDeleteForQuestionViewModel confirmedDelete)
-        {
-            var question = await dbContext.Questions.FindAsync(confirmedDelete.Id);
-            dbContext.Questions.Remove(question);
-            await dbContext.SaveChangesAsync();
-            return RedirectToAction("Details", "Tests", new { id = confirmedDelete.TestId });
         }
     }
 }
