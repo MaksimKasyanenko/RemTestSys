@@ -16,8 +16,13 @@ namespace SaveDb
         static Test[] tests;
         static Question[] questions;
         static Group[] groups;
+
         static TextAnswer[] textAnswers;
         static OneOfFourVariantsAnswer[] oneOfFourVariantsAnswers;
+        static SomeVariantsAnswer[] someVariantsAnswers;
+        static SequenceAnswer[] sequenceAnswers;
+        static ConnectedPairsAnswer[] connectedPairsAnswers;
+
         static AccessToTestForGroup[] accessToTestForGroups;
 
         static string remoteString;
@@ -34,7 +39,7 @@ namespace SaveDb
             string command = Console.ReadLine();
             switch (command)
             {
-                case "fromRemToLocal": await FromRemoteToLocal(remoteString, localString);break;
+                case "rem->loc": await FromRemoteToLocal(remoteString, localString);break;
             }
         }
 
@@ -60,8 +65,13 @@ namespace SaveDb
                 context.Groups.AddRange(groups);
                 context.Tests.AddRange(tests);
                 context.Questions.AddRange(questions);
+
                 context.TextAnswers.AddRange(textAnswers);
                 context.OneVariantAnswers.AddRange(oneOfFourVariantsAnswers);
+                context.SomeVariantsAnswers.AddRange(someVariantsAnswers);
+                context.SequenceAnswers.AddRange(sequenceAnswers);
+                context.ConnectedPairsAnswers.AddRange(connectedPairsAnswers);
+
                 context.AccessesToTestForGroup.AddRange(accessToTestForGroups);
                 await context.SaveChangesAsync();
             }
@@ -77,8 +87,13 @@ namespace SaveDb
                 tests = await context.Tests.ToArrayAsync();
                 questions = await context.Questions.ToArrayAsync();
                 groups = await context.Groups.ToArrayAsync();
+
                 textAnswers = await context.TextAnswers.ToArrayAsync();
                 oneOfFourVariantsAnswers = await context.OneVariantAnswers.ToArrayAsync();
+                someVariantsAnswers = await context.SomeVariantsAnswers.ToArrayAsync();
+                sequenceAnswers = await context.SequenceAnswers.ToArrayAsync();
+                connectedPairsAnswers = await context.ConnectedPairsAnswers.ToArrayAsync();
+
                 accessToTestForGroups = await context.AccessesToTestForGroup.ToArrayAsync();
             }
             Console.WriteLine("Loading done");
@@ -89,8 +104,13 @@ namespace SaveDb
             groups.ToList().ForEach(g => g.Id = 0);
             tests.ToList().ForEach(t => t.Id = 0);
             questions.ToList().ForEach(q => q.Id = 0);
+
             textAnswers.ToList().ForEach(ta => ta.Id = 0);
             oneOfFourVariantsAnswers.ToList().ForEach(oa => oa.Id = 0);
+            someVariantsAnswers.ToList().ForEach(sa=>sa.Id=0);
+            sequenceAnswers.ToList().ForEach(sa=>sa.Id=0);
+            connectedPairsAnswers.ToList().ForEach(ca=>ca.Id=0);
+
             accessToTestForGroups.ToList().ForEach(a => a.Id = 0);
         }
     }
