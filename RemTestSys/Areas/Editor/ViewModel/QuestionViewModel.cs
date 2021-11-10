@@ -56,14 +56,29 @@ namespace RemTestSys.Areas.Editor.ViewModel
             };
         }
 
-        internal static string CreateForSequenceAnswer(Question question)
+        internal static QuestionWithSequenceAnswerViewModel CreateForSequenceAnswer(Question question)
         {
-            throw new NotImplementedException();
+            SequenceAnswer answer = (SequenceAnswer)question.Answer;
+            string[] sequence = JsonSerializer.Deserialize<string[]>(answer.SerializedSequence);
+            return new QuestionWithSequenceAnswerViewModel {
+                TestId = question.TestId,
+                Text = question.Text,
+                SubText = question.SubText,
+                Sequence = sequence
+            };
         }
 
-        internal static string CreateForConnectedPairAnswer(Question question)
+        internal static QuestionWithConnectedPairsAnswerViewModel CreateForConnectedPairAnswer(Question question)
         {
-            throw new NotImplementedException();
+            ConnectedPairsAnswer answer = (ConnectedPairsAnswer)question.Answer;
+            ConnectedPairsAnswer.Pair[] pairs = JsonSerializer.Deserialize<ConnectedPairsAnswer.Pair[]>(answer.SerializedPairs);
+            return new QuestionWithConnectedPairsAnswerViewModel {
+                TestId = question.TestId,
+                Text = question.Text,
+                SubText = question.SubText,
+                LeftList = pairs.Select(p => p.Value1).ToArray(),
+                RightList = pairs.Select(p => p.Value2).ToArray()
+            };
         }
     }
 }
