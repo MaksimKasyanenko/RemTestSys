@@ -1,0 +1,39 @@
+﻿@model QuestionWithTextAnswerViewModel
+@{
+    ViewData["Title"] = "Редагувати питання";
+}
+
+<h2>Редагувати питання (Текст)</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <form asp-action="EditTextAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" value="@Model.TestId" name="TestId" />
+            <div class="form-group">
+                <label class="control-label">Питання</label>
+                <textarea name="Text" class="form-control" rows="3">@Model.Text</textarea>
+            </div>
+            <div class="form-group mb-4">
+                <label class="control-label">Пояснення(необов'язково)</label>
+                <textarea name="SubText" class="form-control" rows="3">@Model.SubText</textarea>
+            </div>
+            <h4>Відповідь</h4>
+            <hr />
+            <div class="mb-4">
+                <label class="form-label">Правильна відповідь</label>
+                <input type="text" class="form-control" asp-for="RightText" id="textAnswerInput" />
+                <div class="text-center">
+                    <label asp-for="CaseMatters"><input type="checkbox" asp-for="CaseMatters" /> Регістр при порівнянні має вагу</label>
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Зберегти зміни" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@Model.TestId">Назад</a>
+</div>
+
