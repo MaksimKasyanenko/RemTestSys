@@ -135,17 +135,17 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             else if(answerType == typeof(OneOfFourVariantsAnswer))
             {
-                return EditOneOfFourAnswer(question);
+                return View(QuestionViewModel.CreateForOneOfFourAnswer(question));
             }else if(answerType == typeof(SomeVariantsAnswer))
             {
-                return EditSomeVariantsAnswer(question);
+                return View(QuestionViewModel.CreateForSomeVariantsAnswer(question));
             }else if(answerType == typeof(SequenceAnswer))
             {
-                return EditSequenceAnswer(question);
+                return View(QuestionViewModel.CreateForSequenceAnswer(question));
             }
             else if(answerType == typeof(ConnectedPairsAnswer))
             {
-                return EditConnectedPairAnswer(question);
+                return View(QuestionViewModel.CreateForConnectedPairAnswer(question));
             }
             return NotFound();
         }
