@@ -40,6 +40,7 @@ namespace SaveDb
             switch (command)
             {
                 case "rem->loc": await FromRemoteToLocal(remoteString, localString);break;
+                case "loc->rem": await FromLocalToRemote(remoteString, localString); break;
             }
         }
 
@@ -48,7 +49,7 @@ namespace SaveDb
             await LoadDb(remote);
             await SaveDb(local);
         }
-        private static async Task FromLocalToRemote(string local, string remote)
+        private static async Task FromLocalToRemote(string remote, string local)
         {
             await LoadDb(local);
             await SaveDb(remote);
