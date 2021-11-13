@@ -12,7 +12,7 @@
             <input type="hidden" value="@Model.TestId" name="TestId" />
             <div class="form-group">
                 <label class="control-label">Питання</label>
-                <textarea name="Text" class="form-control" rows="3">@Model.Text</textarea>
+                <textarea class="form-control" rows="3" asp-for="Text"></textarea>
             </div>
             <div class="form-group mb-4">
                 <label class="control-label">Пояснення(необов'язково)</label>

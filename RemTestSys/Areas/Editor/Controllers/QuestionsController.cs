@@ -131,7 +131,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             Type answerType = question.Answer.GetType();
             if(answerType == typeof(TextAnswer))
             {
-                return View(QuestionViewModel.CreateForTextAnswer(question));
+                return View("EditWithTextAnswer", QuestionViewModel.CreateForTextAnswer(question));
             }
             else if(answerType == typeof(OneOfFourVariantsAnswer))
             {
