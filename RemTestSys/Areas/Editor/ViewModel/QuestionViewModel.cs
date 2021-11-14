@@ -10,6 +10,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
     public class QuestionViewModel
     {
         public int TestId { get; set; }
+        public int QuestionId{get;set;}
         public string Text { get; set; }
         public string SubText { get; set; }
 
@@ -20,6 +21,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
         {
             return new QuestionWithTextAnswerViewModel
             {
+                QuestionId=question.Id,
                 Text = question.Text,
                 SubText = question.SubText,
                 TestId = question.TestId,
@@ -32,6 +34,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
         {
             string[] fakes = JsonSerializer.Deserialize<string[]>(((OneOfFourVariantsAnswer)question.Answer).SerializedFakes);
             return new QuestionWithOneOfFourVariantsAnswerViewModel {
+                QuestionId=question.Id,
                 TestId=question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
@@ -48,6 +51,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
             string[] rights = JsonSerializer.Deserialize<string[]>(answer.SerializedRightAnswers);
             string[] fakes = JsonSerializer.Deserialize<string[]>(answer.SerializedFakes);
             return new QuestionWithSomeVariantsAnswerViewModel {
+                QuestionId=quetsion.Id,
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
@@ -61,6 +65,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
             SequenceAnswer answer = (SequenceAnswer)question.Answer;
             string[] sequence = JsonSerializer.Deserialize<string[]>(answer.SerializedSequence);
             return new QuestionWithSequenceAnswerViewModel {
+                QuestionId=qusetion.Id,
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
@@ -73,6 +78,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
             ConnectedPairsAnswer answer = (ConnectedPairsAnswer)question.Answer;
             ConnectedPairsAnswer.Pair[] pairs = JsonSerializer.Deserialize<ConnectedPairsAnswer.Pair[]>(answer.SerializedPairs);
             return new QuestionWithConnectedPairsAnswerViewModel {
+                QuestionId=question.Id,
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,

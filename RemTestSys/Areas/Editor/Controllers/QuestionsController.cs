@@ -131,7 +131,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             Type answerType = question.Answer.GetType();
             if(answerType == typeof(TextAnswer))
             {
-                return View("EditWithTextAnswer", QuestionViewModel.CreateForTextAnswer(question));
+                return View("EditTextAnswer", QuestionViewModel.CreateForTextAnswer(question));
             }
             else if(answerType == typeof(OneOfFourVariantsAnswer))
             {
@@ -147,7 +147,11 @@ namespace RemTestSys.Areas.Editor.Controllers
             {
                 return View(QuestionViewModel.CreateForConnectedPairAnswer(question));
             }
-            return NotFound();
+            throw new NotImplementsException(answerType.FullName);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditTextAnswer(QuestionWithTextAnswerViewModel vm){
+            
         }
         public async Task<IActionResult> Delete(int id)
         {

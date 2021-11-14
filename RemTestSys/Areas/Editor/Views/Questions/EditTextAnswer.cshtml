@@ -9,7 +9,7 @@
     <div class="col-md-6 mx-auto">
         <form asp-action="EditTextAnswer">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" value="@Model.TestId" name="TestId" />
+            <input type="hidden" asp-for="QuestionId" />
             <div class="form-group">
                 <label class="control-label">Питання</label>
                 <textarea class="form-control" rows="3" asp-for="Text"></textarea>
@@ -22,7 +22,7 @@
             <hr />
             <div class="mb-4">
                 <label class="form-label">Правильна відповідь</label>
-                <input type="text" class="form-control" asp-for="RightText" id="textAnswerInput" />
+                <input class="form-control" asp-for="RightText" />
                 <div class="text-center">
                     <label asp-for="CaseMatters"><input type="checkbox" asp-for="CaseMatters" /> Регістр при порівнянні має вагу</label>
                 </div>
