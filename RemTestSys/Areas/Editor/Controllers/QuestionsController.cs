@@ -135,7 +135,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             else if(answerType == typeof(OneOfFourVariantsAnswer))
             {
-                return View(QuestionViewModel.CreateForOneOfFourAnswer(question));
+                return View("EditOneOfFourAnswer", QuestionViewModel.CreateForOneOfFourAnswer(question));
             }else if(answerType == typeof(SomeVariantsAnswer))
             {
                 return View(QuestionViewModel.CreateForSomeVariantsAnswer(question));
@@ -155,12 +155,30 @@ namespace RemTestSys.Areas.Editor.Controllers
                                          .Where(q=>q.Id==vm.QuestionId)
                                          .Include(q=>q.Answer)
                                          .SingleOrDefaultAsync();
-            if(question==null)return RedirectToAction("Details","Tests",new {id=vm.TestId});
-            question.Text=vm.QuestionText;
-            question.SubText=vm.QuestionSubText;
-            question.Answer.RightText=vm.RightText;
-            question.Answer.CaseMatters=vm.CaseMatters;
-            await dbContext.SaveChangesAsync();
+            if(question!=null){
+                question.Text=vm.QuestionText;
+                question.SubText=vm.QuestionSubText;
+                question.Answer.RightText=vm.RightText;
+                question.Answer.CaseMatters=vm.CaseMatters;
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction("Details","Tests",new {id=vm.TestId});
+            
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel){
+            Question question = await dbContext.Questions
+                                         .Where(q=>q.Id==vm.QuestionId)
+                                         .Include(q=>q.Answer)
+                                         .SingleOrDefaultAsync();
+            if(question!=null){
+                question.Text=vm.QuestionText;
+                question.SubText=vm.QuestionSubText;
+                question.Answer.RightText = vm.RightVariant;
+                question.Answer.SetFakes(vm.Fake1, vm.Fake2, vm.Fake3);
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction("Details","Tests",new {id=vm.TestId});
         }
         public async Task<IActionResult> Delete(int id)
         {

@@ -1,0 +1,40 @@
+@model QuestionWithOneOfFourAnswer
+@{
+    ViewData["Title"] = "Редагувати питання";
+}
+
+<h2>Редагувати питання (1 з 4)</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <form asp-action="EditOneOfFourAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="QuestionId" />
+            <div class="form-group">
+                <label class="control-label">Питання</label>
+                <textarea class="form-control" rows="3" asp-for="Text"></textarea>
+            </div>
+            <div class="form-group mb-4">
+                <label class="control-label">Пояснення(необов'язково)</label>
+                <textarea class="form-control" rows="3" asp-for="SubText"></textarea>
+            </div>
+            <h4>Відповідь</h4>
+            <hr />
+            <div class="mb-4">
+                <label class="form-label">Правильний варiант</label>
+                <input type="text" class="form-control mb-2" asp-for="RightVariant" />
+                <label class="control-label">Неправильні варіанти</label>
+                <input type="text" class="form-control mb-2" asp-for="Fake1" />
+                <input type="text" class="form-control mb-2" asp-for="Fake2" />
+                <input type="text" class="form-control mb-2" asp-for="Fake3" />
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Зберегти зміни" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@Model.TestId">Назад</a>
+</div>
+
