@@ -151,7 +151,16 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> EditTextAnswer(QuestionWithTextAnswerViewModel vm){
-            
+            Question question = await dbContext.Questions
+                                         .Where(q=>q.Id==vm.QuestionId)
+                                         .Include(q=>q.Answer)
+                                         .SingleOrDefaultAsync();
+            if(question==null)return RedirectToAction("Details","Tests",new {id=vm.TestId});
+            question.Text=vm.QuestionText;
+            question.SubText=vm.QuestionSubText;
+            question.Answer.RightText=vm.RightText;
+            question.Answer.CaseMatters=vm.CaseMatters;
+            await dbContext.SaveChangesAsync();
         }
         public async Task<IActionResult> Delete(int id)
         {
