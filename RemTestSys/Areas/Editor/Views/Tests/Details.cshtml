@@ -3,35 +3,15 @@
 @{
     ViewData["Title"] = "Деталі";
 }
-<h4>Деталі по тесту</h4>
+<h4>Деталі по тесту '@Model.Name' </h4>
 <hr />
 <div>
     <dl class="row">
-        <dt class="col-sm-2">
-            Назва
-        </dt>
-        <dd class="col-sm-10">
-            @Model.Name
-        </dd>
         <dt class="col-sm-2">
             Опис
         </dt>
         <dd class="col-sm-10">
             @Model.Description
-        </dd>
-        <dt class="col-sm-2">
-            Відкрити доступ
-        </dt>
-        <dd class="col-sm-10">
-            <a asp-action="OpenAccessToTestForAll" asp-controller="Accesses" asp-route-id="@Model.Id" class="btn btn-primary">Для всіх</a>
-            <a asp-action="OpenAccessToTestForGroup" asp-controller="Accesses" asp-route-id="@Model.Id" class="btn btn-primary">Для групи</a>
-            <a asp-action="OpenAccessToTestForStudent" asp-controller="Accesses" asp-route-id="@Model.Id" class="btn btn-primary">Для учня</a>
-        </dd>
-        <dt class="col-sm-2">
-            Кількість питань
-        </dt>
-        <dd class="col-sm-10">
-            @Model.QuestionsCount
         </dd>
         <dt class="col-sm-2">
             Часу на проходження(сек.)
@@ -40,15 +20,35 @@
             @Model.Duration
         </dd>
         <dt class="col-sm-2">
-            Балів за питання
+            Кількість питань
         </dt>
         <dd class="col-sm-10">
-            @Model.ScoresPerRightAnswer
+            @Model.QuestionsCount
         </dd>
         <dt class="col-sm-2">
-            Питання тесту
+            Максимальна оцінка
         </dt>
         <dd class="col-sm-10">
+            @Model.ScoreSum
+        </dd>
+    </dl>
+    <h4>Розподіл питань</h4>
+    <hr />
+    <div>
+        @foreach(var part in Model.MapParts)
+        {
+            <p>@($"{Model.QuestionCount} питань по {Model.Cast} балів")</p>
+        }
+    </div>
+    <h4>Доступ</h4>
+    <hr />
+        <div>
+            <a asp-action="OpenAccessToTestForAll" asp-controller="Accesses" asp-route-id="@Model.Id">Відкрити для всіх</a> | 
+            <a asp-action="OpenAccessToTestForGroup" asp-controller="Accesses" asp-route-id="@Model.Id">Відкрити для групи</a> | 
+            <a asp-action="OpenAccessToTestForStudent" asp-controller="Accesses" asp-route-id="@Model.Id">Відкрити для учня</a>
+        </div>
+    <h4>Питання тесту</h4>
+    <hr />
             @if (Model.Questions.Count() > 0)
             {
                 <table class="table table-bordered table-striped table-success">
@@ -95,8 +95,6 @@
                 <a class="" asp-action="CreateSequenceAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Послідовність</a> |
                 <a class="" asp-action="CreateConnectedPairsAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Пари</a>
             </div>
-        </dd>
-    </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Редагувати тест</a> |
