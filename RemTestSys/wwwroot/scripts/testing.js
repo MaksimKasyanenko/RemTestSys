@@ -370,7 +370,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 window.addEventListener("load", function () {
     return __awaiter(this, void 0, void 0, function* () {
-        let display = new TestingDisplay(document.getElementById("questionNum"), document.getElementById("questionText"), document.getElementById("questionSubText"));
+        let display = new TestingDisplay(document.getElementById("questionNum"), document.getElementById("questionText"), document.getElementById("questionSubText"), document.getElementById("questionCast"));
         let formManager = new FormManager();
         formManager.register("confirm", new ConfirmForm());
         let textAnswerForm = new TextAnswerForm();
@@ -388,7 +388,7 @@ window.addEventListener("load", function () {
         timer.time = server.testState.timeLeft;
         timer.start();
         while (!server.testState.finished) {
-            display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText);
+            display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText, server.testState.questionCast);
             let aForm = formManager.getForm(server.testState.answerType);
             aForm.fill(server.testState.addition);
             let answer = yield aForm.showAndGetAnswer();
@@ -411,15 +411,17 @@ window.addEventListener("load", function () {
 });
 
 class TestingDisplay {
-    constructor(questionNum, questionText, questionSubText) {
+    constructor(questionNum, questionText, questionSubText, questionCast) {
         this.questionNum = questionNum;
         this.questionText = questionText;
         this.questionSubText = questionSubText;
+        this.questionCast = questionCast;
     }
-    update(questionNum, questionText, questionSubText) {
+    update(questionNum, questionText, questionSubText, questionCast) {
         this.questionNum.textContent = questionNum.toString();
         this.questionText.textContent = questionText;
         this.questionSubText.textContent = questionSubText;
+        this.questionCast.textContent = questionCast.toString();
     }
     showMessage(text, subtext) {
         this.questionText.textContent = text;

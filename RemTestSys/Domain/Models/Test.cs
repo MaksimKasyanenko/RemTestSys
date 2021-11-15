@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
 namespace RemTestSys.Domain.Models
 {
@@ -17,7 +19,7 @@ namespace RemTestSys.Domain.Models
             get
             {
                 if(MapParts==null)return 0;
-                return MapParts.Agregate(0, (prev, next)=>prev+next.QuestionCount);
+                return MapParts.Aggregate(0, (prev, next)=>prev+next.QuestionCount);
             }
         }
         [NotMapped]
@@ -26,7 +28,7 @@ namespace RemTestSys.Domain.Models
             get
             {
                 if(MapParts==null)return 0;
-                return MapParts.Agregate(0, (prev,next)=>prev+next.QuestionCount*next.Cast);
+                return  MapParts.Aggregate(0.0, (prev,next)=>prev+next.QuestionCount*next.Cast);
             }
         }
 

@@ -14,7 +14,7 @@
         this.questionNum.textContent = questionNum.toString();
         this.questionText.textContent = questionText;
         this.questionSubText.textContent = questionSubText;
-        this.questionCast.textContent=questionCast;
+        this.questionCast.textContent=questionCast.toString();
     }
     showMessage(text: string, subtext: string) {
         this.questionText.textContent = text;
