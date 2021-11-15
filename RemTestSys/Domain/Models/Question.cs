@@ -10,6 +10,7 @@ namespace RemTestSys.Domain.Models
         public int TestId { get; set; }
         public Test Test { get; set; }
         public Answer Answer { get; set; }
+        public double Cast{get;set;}
 
         public static Question Create(string text, string subText, int testId)
         {
