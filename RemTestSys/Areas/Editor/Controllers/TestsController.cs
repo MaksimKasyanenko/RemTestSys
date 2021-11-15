@@ -40,6 +40,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             var test = await _context.Tests
                 .Include(t=>t.Questions)
                 .ThenInclude(q=>q.Answer)
+                .Include(t=>t.MapParts)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (test == null)
             {
@@ -60,7 +61,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,QuestionsCount,Duration,ScoresPerRightAnswer")] Test test)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,QuestionsCount,Duration,MapParts")] Test test)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +93,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,QuestionsCount,Duration,ScoresPerRightAnswer")] Test test)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,QuestionsCount,Duration,MapParts")] Test test)
         {
             if (id != test.Id)
             {
