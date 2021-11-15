@@ -23,8 +23,7 @@ namespace RemTestSys.Domain
             session.Student = student;
             session.QuestionNum = 1;
             session.Finished = false;
-            Question[] questionsOfTest = test.Questions.ToArray();
-            questionsOfTest = GetRandomSet(questionsOfTest, test.QuestionsCount);
+            Question[] questionsOfTest = GetRandomSet(test);
             for(int i=1; i<=questionsOfTest.Length;i++)
             {
                 session.Questions.Add(new QuestionInSession {
@@ -36,13 +35,18 @@ namespace RemTestSys.Domain
             return session;
         }
 
-        private Question[] GetRandomSet(Question[] src, int size)
+        private Question[] GetRandomSet(Test test)
         {
-            Question[] resultSet = new Question[size];
-            RandomSequence sequence = new RandomSequence(0, src.Length);
-            for(int i = 0; i < resultSet.Length; i++)
+            Question[] resultSet = new Question[test.QuestionsCount];
+            int cursor=0;
+            foreach(var part in test.MapParts.OrderBy(mp=>mp.Cast))
             {
-                resultSet[i] = src[sequence.GetNext()] ;
+                Question[] questions = test.Questions.Where(q=>q.Cast==part.Cast).ToArray();
+                RandomSequence sequence = new RandomSequence(0, questions.Length);
+                for(; cursor < cursor+part.QuestionCount; cursor++)
+                {
+                    resultSet[cursor] = questions[sequence.GetNext()];
+                }
             }
             return resultSet;
         }
