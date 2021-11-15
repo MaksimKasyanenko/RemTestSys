@@ -51,7 +51,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
             string[] rights = JsonSerializer.Deserialize<string[]>(answer.SerializedRightAnswers);
             string[] fakes = JsonSerializer.Deserialize<string[]>(answer.SerializedFakes);
             return new QuestionWithSomeVariantsAnswerViewModel {
-                QuestionId=quetsion.Id,
+                QuestionId=question.Id,
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
@@ -65,7 +65,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
             SequenceAnswer answer = (SequenceAnswer)question.Answer;
             string[] sequence = JsonSerializer.Deserialize<string[]>(answer.SerializedSequence);
             return new QuestionWithSequenceAnswerViewModel {
-                QuestionId=qusetion.Id,
+                QuestionId=question.Id,
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,

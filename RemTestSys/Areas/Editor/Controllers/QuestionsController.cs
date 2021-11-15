@@ -147,7 +147,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             {
                 return View(QuestionViewModel.CreateForConnectedPairAnswer(question));
             }
-            throw new NotImplementsException(answerType.FullName);
+            throw new NotImplementedException(answerType.FullName);
         }
         [HttpPost]
         public async Task<IActionResult> EditTextAnswer(QuestionWithTextAnswerViewModel vm){
@@ -156,26 +156,26 @@ namespace RemTestSys.Areas.Editor.Controllers
                                          .Include(q=>q.Answer)
                                          .SingleOrDefaultAsync();
             if(question!=null){
-                question.Text=vm.QuestionText;
-                question.SubText=vm.QuestionSubText;
+                question.Text=vm.Text;
+                question.SubText=vm.SubText;
                 question.Answer.RightText=vm.RightText;
-                question.Answer.CaseMatters=vm.CaseMatters;
+                ((TextAnswer)question.Answer).CaseMatters=vm.CaseMatters;
                 await dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Details","Tests",new {id=vm.TestId});
             
         }
         [HttpPost]
-        public async Task<IActionResult> EditOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel){
+        public async Task<IActionResult> EditOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel vm){
             Question question = await dbContext.Questions
                                          .Where(q=>q.Id==vm.QuestionId)
                                          .Include(q=>q.Answer)
                                          .SingleOrDefaultAsync();
             if(question!=null){
-                question.Text=vm.QuestionText;
-                question.SubText=vm.QuestionSubText;
+                ((OneOfFourVariantsAnswer)question.Answer).SetFakes(vm.Fake1, vm.Fake2, vm.Fake3);
+                question.Text=vm.Text;
+                question.SubText=vm.SubText;
                 question.Answer.RightText = vm.RightVariant;
-                question.Answer.SetFakes(vm.Fake1, vm.Fake2, vm.Fake3);
                 await dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Details","Tests",new {id=vm.TestId});

@@ -1,5 +1,5 @@
-﻿@model int
-<input type="hidden" value="@Model" name="TestId" />
+﻿@model QuestionViewModel
+<input type="hidden" asp-for="TestId" />
 <div class="form-group">
     <label class="control-label">Питання</label>
     <textarea class="form-control" rows="3" asp-for="Text"></textarea>
