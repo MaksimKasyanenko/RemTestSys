@@ -60,6 +60,7 @@
                             <th>
                                 Відповідь
                             </th>
+                            <th>Балів за відповідь</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -73,6 +74,7 @@
                                 <td>
                                     @question.Answer.RightText
                                 </td>
+                                <td>@question.Cast</td>
                                 <td>
                                     <a asp-action="Edit" asp-controller="Questions" asp-route-id="@question.Id">Редагувати</a> | 
                                     <a asp-action="Delete" asp-controller="Questions" asp-route-id="@question.Id">Видалити</a>

@@ -12,13 +12,14 @@ namespace RemTestSys.Domain.Models
         public Answer Answer { get; set; }
         public double Cast{get;set;}
 
-        public static Question Create(string text, string subText, int testId)
+        public static Question Create(string text, string subText, int testId, double cast)
         {
             if (text == null || text == "") throw new InvalidOperationException();
             return new Question {
                 Text = text,
                 SubText = subText,
-                TestId = testId
+                TestId = testId,
+                Cast=cast
             };
         }
     }

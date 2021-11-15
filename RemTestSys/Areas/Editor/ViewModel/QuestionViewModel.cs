@@ -13,6 +13,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
         public int QuestionId{get;set;}
         public string Text { get; set; }
         public string SubText { get; set; }
+        public double Cast{get;set;}
 
 
 
@@ -24,6 +25,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
                 QuestionId=question.Id,
                 Text = question.Text,
                 SubText = question.SubText,
+                Cast=question.Cast,
                 TestId = question.TestId,
                 RightText = question.Answer.RightText,
                 CaseMatters = ((TextAnswer)question.Answer).CaseMatters
@@ -38,6 +40,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
                 TestId=question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
+                Cast=question.Cast,
                 RightVariant=question.Answer.RightText,
                 Fake1 = fakes[0],
                 Fake2 = fakes[1],
@@ -55,6 +58,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
+                Cast=question.Cast,
                 RightVariants = rights,
                 FakeVariants = fakes
             };
@@ -69,6 +73,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
+                Cast=question.Cast,
                 Sequence = sequence
             };
         }
@@ -82,6 +87,7 @@ namespace RemTestSys.Areas.Editor.ViewModel
                 TestId = question.TestId,
                 Text = question.Text,
                 SubText = question.SubText,
+                Cast=question.Cast,
                 LeftList = pairs.Select(p => p.Value1).ToArray(),
                 RightList = pairs.Select(p => p.Value2).ToArray()
             };

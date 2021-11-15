@@ -158,6 +158,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             if(question!=null){
                 question.Text=vm.Text;
                 question.SubText=vm.SubText;
+                question.Cast=vm.Cast;
                 question.Answer.RightText=vm.RightText;
                 ((TextAnswer)question.Answer).CaseMatters=vm.CaseMatters;
                 await dbContext.SaveChangesAsync();
@@ -175,6 +176,7 @@ namespace RemTestSys.Areas.Editor.Controllers
                 ((OneOfFourVariantsAnswer)question.Answer).SetFakes(vm.Fake1, vm.Fake2, vm.Fake3);
                 question.Text=vm.Text;
                 question.SubText=vm.SubText;
+                question.Cast=vm.Cast;
                 question.Answer.RightText = vm.RightVariant;
                 await dbContext.SaveChangesAsync();
             }
@@ -200,7 +202,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             Answer answ;
             try
             {
-                ques = Question.Create(question.Text, question.SubText, question.TestId);
+                ques = Question.Create(question.Text, question.SubText, question.TestId, question.Cast);
                 answ = getAnswerModel();
             }
             catch (InvalidOperationException)
