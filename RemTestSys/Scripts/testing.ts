@@ -2,7 +2,8 @@
     let display = new TestingDisplay(
         document.getElementById("questionNum"),
         document.getElementById("questionText"),
-        document.getElementById("questionSubText")
+        document.getElementById("questionSubText"),
+        document.getElementById("questionCast")
     );
     let formManager = new FormManager();
     formManager.register("confirm", new ConfirmForm());
@@ -21,7 +22,7 @@
     timer.time = server.testState.timeLeft;
     timer.start();
     while (!server.testState.finished) {
-        display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText);
+        display.update(server.testState.questionNum, server.testState.questionText, server.testState.questionSubText,server.testState.questionCast);
         let aForm = formManager.getForm(server.testState.answerType);
         aForm.fill(server.testState.addition);
         let answer = await aForm.showAndGetAnswer();

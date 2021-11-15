@@ -13,6 +13,7 @@ namespace RemTestSys.ViewModel
         public int TimeLeft { get; internal set; }
         public string QuestionText { get; internal set; }
         public string QuestionSubText { get; internal set; }
+        public double QuestionCast{get; internal set;}
         public string AnswerType { get; internal set; }
         public string[] Addition { get; internal set; }
         public bool Finished { get; internal set; }
