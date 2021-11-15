@@ -52,11 +52,6 @@
                     document.getElementByTagName("tbody").insertAdjacentHTML("beforeEnd", row);
                 }
             </script>
-            <div class="form-group">
-                <label asp-for="QuestionsCount" class="control-label">Кількість питань</label>
-                <input asp-for="QuestionsCount" class="form-control" />
-                <span asp-validation-for="QuestionsCount" class="text-danger"></span>
-            </div>
             <div class="form-group text-center">
                 <input type="submit" value="Створити" class="btn btn-primary" />
             </div>

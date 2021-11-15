@@ -27,7 +27,7 @@
                     Часу на проходження
                 </th>
                 <th class="col">
-                    Балів за відповідь
+                    Максимальна оцінка
                 </th>
                 <th class="col"></th>
             </tr>
@@ -49,7 +49,7 @@
                         @item.Duration
                     </td>
                     <td>
-                        @item.ScoresPerRightAnswer
+                        @item.ScoreSum
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
