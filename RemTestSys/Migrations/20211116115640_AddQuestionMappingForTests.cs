@@ -14,16 +14,19 @@ namespace RemTestSys.Migrations
                 name: "ScoresPerRightAnswer",
                 table: "Tests");
 
-            migrationBuilder.DropColumn(
+            migrationBuilder.AlterColumn<double>(
                 name: "RightAnswersCount",
-                table: "Sessions");
-
-            migrationBuilder.AddColumn<double>(
-                name: "Scores",
                 table: "Sessions",
                 type: "float",
                 nullable: false,
-                defaultValue: 0.0);
+                oldClrType: typeof(int),
+                oldType: "int"
+            );
+
+            migrationBuilder.RenameColumn(
+                name: "RightAnswersCount",
+                table: "Sessions",
+                newName: "Scores");
 
             migrationBuilder.AlterColumn<double>(
                 name: "Mark",
