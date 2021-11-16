@@ -37,7 +37,7 @@
     <div>
         @foreach(var part in Model.MapParts)
         {
-            <p>@($"{Model.QuestionCount} питань по {Model.Cast} балів")</p>
+            <p>@($"{part.QuestionCount} питань по {part.QuestionCast} балів")</p>
         }
     </div>
     <h4>Доступ</h4>

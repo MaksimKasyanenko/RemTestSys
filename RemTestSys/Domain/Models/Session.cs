@@ -66,7 +66,7 @@ namespace RemTestSys.Domain.Models
         public int GetMark()
         {
             if (!Finished) throw new InvalidOperationException("You cannot find out the mark before the session ends");
-            return Math.Ceiling(Scores);
+            return (int)Math.Ceiling(Scores);
         }
     }
 }

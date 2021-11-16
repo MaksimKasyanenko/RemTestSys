@@ -23,7 +23,7 @@ namespace RemTestSys.Domain.Models
             }
         }
         [NotMapped]
-        public int ScoreSum
+        public double ScoreSum
         {
             get
             {
@@ -36,7 +36,7 @@ namespace RemTestSys.Domain.Models
         {
             public int Id{get;set;}
             public int QuestionCount{get;set;}
-            public double Cast{get;set;}
+            public double QuestionCast{get;set;}
             public int TestId{get;set;}
             public Test Test{get;set;}
         }

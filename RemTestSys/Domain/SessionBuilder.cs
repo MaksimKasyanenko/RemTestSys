@@ -39,9 +39,9 @@ namespace RemTestSys.Domain
         {
             Question[] resultSet = new Question[test.QuestionsCount];
             int cursor=0;
-            foreach(var part in test.MapParts.OrderBy(mp=>mp.Cast))
+            foreach(var part in test.MapParts.OrderBy(mp=>mp.QuestionCast))
             {
-                Question[] questions = test.Questions.Where(q=>q.Cast==part.Cast).ToArray();
+                Question[] questions = test.Questions.Where(q=>q.Cast==part.QuestionCast).ToArray();
                 RandomSequence sequence = new RandomSequence(0, questions.Length);
                 for(; cursor < cursor+part.QuestionCount; cursor++)
                 {

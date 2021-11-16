@@ -44,8 +44,8 @@
                 <tbody>
                 @foreach(var part in Model.MapParts){
                     <tr>
-                        <td><input type="number" min="1" name="MapParts_QuestionCount" value="@part.QuestionCount" /></td>
-                        <td><input type="number" min="0" step="0.5" name="MapParts_Cast" value="@part.Cast" /></td>
+                        <td><input type="number" min="1" name="counts" value="@part.QuestionCount" /></td>
+                        <td><input type="number" min="0" step="0.5" name="casts" value="@part.QuestionCast" /></td>
                         <td><button type="button" onclick="this.parentElement.parentElement.remove();">Видалити</button></td>
                     </tr>
                 }
@@ -54,8 +54,8 @@
             <button type="button" onclick="addMapPart();">+</button>
             <script>
                 function addMapPart(){
-                    let row = "<tr><td><input type='number' min='1' name='MapParts_QuestionCount' /></td>"+
-                              "<td><input type='number' min='0' step='0.5' name='MapParts_Cast' /></td>"+
+                    let row = "<tr><td><input type='number' min='1' name='counts' /></td>"+
+                              "<td><input type='number' min='0' step='0.5' name='casts' /></td>"+
                               "<td><button type='button' onclick='this.parentElement.parentElement.remove();'>Видалити</button></td></tr>";
                     document.getElementByTagName("tbody").insertAdjacentHTML("beforeEnd", row);
                 }

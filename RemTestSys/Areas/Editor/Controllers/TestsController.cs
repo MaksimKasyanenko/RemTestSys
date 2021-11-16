@@ -61,11 +61,20 @@ namespace RemTestSys.Areas.Editor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,QuestionsCount,Duration,MapParts")] Test test)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,QuestionsCount,Duration")] Test test, int[] counts, double[] casts)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(test);
+                await _context.SaveChangesAsync();
+                for (int i = 0; i < counts.Length || i < casts.Length; i++)
+                {
+                    _context.MapParts.Add(new Test.MapPart {
+                        TestId=test.Id,
+                        QuestionCount=counts[i],
+                        QuestionCast=casts[i]
+                    });
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -93,7 +102,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,QuestionsCount,Duration,MapParts")] Test test)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,QuestionsCount,Duration")] Test test, int[] counts, double[] casts)
         {
             if (id != test.Id)
             {
@@ -102,6 +111,17 @@ namespace RemTestSys.Areas.Editor.Controllers
 
             if (ModelState.IsValid)
             {
+                List<Test.MapPart> map = new List<Test.MapPart>();
+                for (int i = 0; i < counts.Length || i < casts.Length; i++)
+                {
+                    map.Add(new Test.MapPart
+                    {
+                        TestId = test.Id,
+                        QuestionCount = counts[i],
+                        QuestionCast = casts[i]
+                    });
+                }
+                test.MapParts = map;
                 try
                 {
                     _context.Update(test);
