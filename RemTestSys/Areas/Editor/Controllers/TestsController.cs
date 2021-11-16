@@ -50,7 +50,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             return View(test);
         }
 
-        // GET: Editor/Tests/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();

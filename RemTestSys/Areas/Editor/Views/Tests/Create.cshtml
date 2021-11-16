@@ -39,7 +39,6 @@
                     <tr>
                         <td><input type="number" min="1" name="counts" /></td>
                         <td><input type="number" min="0" step="0.5" name="casts" /></td>
-                        <td><button type="button" onclick="this.parentElement.parentElement.remove();">Видалити</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -48,8 +47,8 @@
                 function addMapPart(){
                     let row = "<tr><td><input type='number' min='1' name='counts' /></td>"+
                               "<td><input type='number' min='0' step='0.5' name='casts' /></td>"+
-                              "<td><button type='button' onclick='this.parentElement.parentElement.remove();'>Видалити</button></td></tr>";
-                    document.getElementByTagName("tbody").insertAdjacentHTML("beforeEnd", row);
+                        "<td><button type='button' onclick='this.parentElement.parentElement.remove();'>-</button></td></tr>";
+                    document.getElementsByTagName("tbody")[0].insertAdjacentHTML("beforeEnd", row);
                 }
             </script>
             <div class="form-group text-center">
