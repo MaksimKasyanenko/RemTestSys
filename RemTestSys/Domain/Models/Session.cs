@@ -12,7 +12,7 @@ namespace RemTestSys.Domain.Models
         public int TestId{get;set;}
         public Test Test { get; set; }
         public DateTime StartTime { get; set; }
-        public int RightAnswersCount { get; set; }
+        public double Scores { get; set; }
         public int? IdOfResult { get; set; }
 
         private bool _finished = false;
@@ -66,7 +66,7 @@ namespace RemTestSys.Domain.Models
         public int GetMark()
         {
             if (!Finished) throw new InvalidOperationException("You cannot find out the mark before the session ends");
-            return (int)(Test.ScoresPerRightAnswer * RightAnswersCount);
+            return Math.Ceiling(Scores);
         }
     }
 }

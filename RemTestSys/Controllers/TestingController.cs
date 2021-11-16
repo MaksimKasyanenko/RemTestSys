@@ -61,6 +61,7 @@ namespace RemTestSys.Controllers
                         TimeLeft = session.TimeLeft,
                         QuestionText = session.CurrentQuestion.Text,
                         QuestionSubText = session.CurrentQuestion.SubText,
+                        QuestionCast=session.CurrentQuestion.Cast,
                         AnswerType = session.CurrentQuestion.Answer.GetType().Name,
                         Addition = session.CurrentQuestion.Answer.GetAdditiveData()
                     };
@@ -94,7 +95,7 @@ namespace RemTestSys.Controllers
                     bool isRight = session.CurrentQuestion.Answer.IsMatch(answer.Data);
                     if (isRight)
                     {
-                        session.RightAnswersCount++;
+                        session.Scores+=session.CurrentQuestion.Cast;
                     }
                     AnswerResultViewModel ar = new AnswerResultViewModel
                     {

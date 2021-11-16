@@ -19,7 +19,7 @@ namespace RemTestSys.Domain.Models
             get
             {
                 if(MapParts==null)return 0;
-                return MapParts.Aggregate(0, (prev, next)=>prev+next.QuestionCount);
+                return MapParts.Sum(p=>p.QuestionCount);
             }
         }
         [NotMapped]
@@ -28,7 +28,7 @@ namespace RemTestSys.Domain.Models
             get
             {
                 if(MapParts==null)return 0;
-                return  MapParts.Aggregate(0.0, (prev,next)=>prev+next.QuestionCount*next.Cast);
+                return  MapParts.Sum(p=>p.QuestionCount*p.QuestionCast);
             }
         }
 

@@ -12,7 +12,7 @@ namespace RemTestSys.Domain.Models
         public Student Student { get; set; }
         public int TestId { get; set; }
         public Test Test { get; set; }
-        public int Mark { get; set; }
+        public double Mark { get; set; }
         public DateTime PassedAt { get; set; }
 
     }
