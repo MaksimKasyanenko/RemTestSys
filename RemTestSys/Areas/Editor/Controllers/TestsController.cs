@@ -61,24 +61,20 @@ namespace RemTestSys.Areas.Editor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,QuestionsCount,Duration")] Test test, int[] counts, double[] casts)
+        public async Task<IActionResult> Create(TestViewModel testViewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(test);
-                await _context.SaveChangesAsync();
-                for (int i = 0; i < counts.Length || i < casts.Length; i++)
-                {
-                    _context.MapParts.Add(new Test.MapPart {
-                        TestId=test.Id,
-                        QuestionCount=counts[i],
-                        QuestionCast=casts[i]
-                    });
-                }
+                _context.Add(new Test {
+                    Name = testViewModel.Name,
+                    Description = testViewModel.Description,
+                    Duration = testViewModel.Duration,
+                    MapParts = testViewModel.MapParts
+                });
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(test);
+            return View(testViewModel);
         }
 
         // GET: Editor/Tests/Edit/5

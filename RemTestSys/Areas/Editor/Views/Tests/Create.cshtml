@@ -1,4 +1,4 @@
-﻿@model RemTestSys.Domain.Models.Test
+﻿@model TestViewModel
 
 @{
     ViewData["Title"] = "Новий тест";
@@ -24,31 +24,31 @@
                 <input asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
+
             <h4>Розподіл питань</h4>
-            <hr />
-            <p class="text-warning">Порядок не має значення, в тесті питання відсортовуються по кiлькості балів від найменшого.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Кількість питань</th>
-                        <th>Бали за правильну відповідь</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="number" min="1" name="counts" /></td>
-                        <td><input type="number" min="0" step="0.5" name="casts" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button type="button" onclick="addMapPart();">+</button>
+            <span class="text-warning">Порядок не має значення, в тесті питання відсортовуються по кiлькості балів від найменшого.</span>
+            <div id="testMap">
+                <div class="form-group">
+                    <input type="number" min="1" asp-for="MapParts[0].QuestionCount" />
+                    <input type="number" min="0" step="0.5" asp-for="MapParts[0].QuestionCast" />
+                </div>
+            </div>
+            <button type="button" onclick="addMapPart();" class="btn btn-primary">+</button>
+            <button type="button" onclick="removeMapPart();" class="btn btn-danger">-</button>
             <script>
-                function addMapPart(){
-                    let row = "<tr><td><input type='number' min='1' name='counts' /></td>"+
-                              "<td><input type='number' min='0' step='0.5' name='casts' /></td>"+
-                        "<td><button type='button' onclick='this.parentElement.parentElement.remove();'>-</button></td></tr>";
-                    document.getElementsByTagName("tbody")[0].insertAdjacentHTML("beforeEnd", row);
+                let mapPartCounter = 0;
+                function addMapPart() {
+                    mapPartCounter++;
+                    let row = "<div class='form-group'>" +
+                        "<input type='number' min='1' name='MapParts[" + mapPartCounter + "].QuestionCount' />" +
+                        "<input type='number' min='0' step='0.5' name='MapParts[" + mapPartCounter + "].QuestionCast' />" +
+                        "</div>";
+                    document.getElementById("testMap").insertAdjacentHTML("beforeEnd", row);
+                }
+                function removeMapPart() {
+                    mapPartCounter--;
+                    let map = document.getElementById("testMap");
+                    map.removeChild(map.lastChild);
                 }
             </script>
             <div class="form-group text-center">
