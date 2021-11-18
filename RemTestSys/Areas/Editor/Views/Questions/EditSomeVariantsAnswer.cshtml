@@ -1,0 +1,87 @@
+﻿@model QuestionWithSomeVariantsAnswerViewModel
+@{
+    ViewData["Title"] = "Редагування";
+}
+
+<h2>Редагувати питання (Декілька варіантів)</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <form asp-action="EditSomeVariantsAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="QuestionId" />
+            @await Html.PartialAsync("_QuestionForm", Model)
+            <h4>Відповідь</h4>
+            <hr />
+            <div class="mb-4">
+                <label class="form-label">Правильні варіанти</label>
+                <div id="rightVariantsContainer" class="mb-2">
+                    @if (Model.RightVariants.Length > 0)
+                    {
+                        @foreach (var item in Model.RightVariants)
+                        {
+                            <input type="text" class="form-control mb-2" name="RightVariants" value="@item" />
+                        }
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control mb-2" name="RightVariants" />
+                    }
+                </div>
+                <div class="text-center mb-2">
+                    <button class="btn btn-danger" type="button" onclick="removeVariant('rightVariantsContainer');">-</button>&nbsp;
+                    <button class="btn btn-primary" type="button" onclick="addRightVariant();">+</button>
+                </div>
+                <label class="control-label">Неправильні варіанти</label>
+                <div id="fakeVariantsContainer" class="mb-2">
+                    @if (Model.FakeVariants.Length > 0)
+                    {
+                        @foreach (var item in Model.FakeVariants)
+                        {
+                            <input type="text" class="form-control mb-2" name="FakeVariants" value="@item" />
+                        }
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control mb-2" name="FakeVariants" />
+                    }
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-danger" type="button" onclick="removeVariant('fakeVariantsContainer');">-</button>&nbsp;
+                    <button class="btn btn-primary" type="button" onclick="addFakeVariant();">+</button>
+                </div>
+                <script>
+                    function addRightVariant() {
+                        let v = document.createElement("input");
+                        v.type = "text";
+                        v.classList.add("form-control");
+                        v.classList.add("mb-2");
+                        v.name = "RightVariants";
+                        document.getElementById("rightVariantsContainer").appendChild(v);
+                    }
+                    function addFakeVariant() {
+                        let v = document.createElement("input");
+                        v.type = "text";
+                        v.classList.add("form-control");
+                        v.classList.add("mb-2");
+                        v.name = "FakeVariants";
+                        document.getElementById("fakeVariantsContainer").appendChild(v);
+                    }
+                    function removeVariant(containerId) {
+                        let container = document.getElementById(containerId);
+                        if (container.children.length > 1) {
+                            container.removeChild(container.lastElementChild);
+                        }
+                    }
+                </script>
+
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Зберегти зміни" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@Model.TestId">Назад</a>
+</div>

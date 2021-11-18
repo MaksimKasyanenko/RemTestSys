@@ -138,17 +138,18 @@ namespace RemTestSys.Areas.Editor.Controllers
                 return View("EditOneOfFourAnswer", QuestionViewModel.CreateForOneOfFourAnswer(question));
             }else if(answerType == typeof(SomeVariantsAnswer))
             {
-                return View(QuestionViewModel.CreateForSomeVariantsAnswer(question));
+                return View("EditSomeVariantsAnswer", QuestionViewModel.CreateForSomeVariantsAnswer(question));
             }else if(answerType == typeof(SequenceAnswer))
             {
-                return View(QuestionViewModel.CreateForSequenceAnswer(question));
+                return View("EditSequenceAnswer", QuestionViewModel.CreateForSequenceAnswer(question));
             }
             else if(answerType == typeof(ConnectedPairsAnswer))
             {
-                return View(QuestionViewModel.CreateForConnectedPairAnswer(question));
+                return View("EditConnectedPairAnswer", QuestionViewModel.CreateForConnectedPairAnswer(question));
             }
             throw new NotImplementedException(answerType.FullName);
         }
+
         [HttpPost]
         public async Task<IActionResult> EditTextAnswer(QuestionWithTextAnswerViewModel vm){
             Question question = await dbContext.Questions
@@ -182,6 +183,70 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             return RedirectToAction("Details","Tests",new {id=vm.TestId});
         }
+        [HttpPost]
+        public async Task<IActionResult> EditSomeVariantsAnswer(QuestionWithSomeVariantsAnswerViewModel vm)
+        {
+            Question question = await dbContext.Questions
+                                         .Where(q => q.Id == vm.QuestionId)
+                                         .Include(q => q.Answer)
+                                         .SingleOrDefaultAsync();
+            if (question != null)
+            {
+                question.Text = vm.Text;
+                question.SubText = vm.SubText;
+                question.Cast = vm.Cast;
+                ((SomeVariantsAnswer)question.Answer).SetRightAnswers(vm.RightVariants);
+                ((SomeVariantsAnswer)question.Answer).SetFakes(vm.FakeVariants);
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction("Details", "Tests", new { id = vm.TestId });
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditSequenceAnswer(QuestionWithSequenceAnswerViewModel vm)
+        {
+            Question question = await dbContext.Questions
+                                         .Where(q => q.Id == vm.QuestionId)
+                                         .Include(q => q.Answer)
+                                         .SingleOrDefaultAsync();
+            if (question != null)
+            {
+                question.Text = vm.Text;
+                question.SubText = vm.SubText;
+                question.Cast = vm.Cast;
+                ((SequenceAnswer)question.Answer).SetSequence(vm.Sequence);
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction("Details", "Tests", new { id = vm.TestId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditConnectedPairAnswer(QuestionWithConnectedPairsAnswerViewModel vm)
+        {
+            Question question = await dbContext.Questions
+                                         .Where(q => q.Id == vm.QuestionId)
+                                         .Include(q => q.Answer)
+                                         .SingleOrDefaultAsync();
+            if (question != null)
+            {
+                question.Text = vm.Text;
+                question.SubText = vm.SubText;
+                question.Cast = vm.Cast;
+                ConnectedPairsAnswer.Pair[] pairs = new ConnectedPairsAnswer.Pair[vm.LeftList.Length];
+                for(int i =0; i < pairs.Length; i++)
+                {
+                    pairs[i] = new ConnectedPairsAnswer.Pair { Value1 = vm.LeftList[i], Value2 = vm.RightList[i] };
+                }
+                ((ConnectedPairsAnswer)question.Answer).SetPairs(pairs);
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction("Details", "Tests", new { id = vm.TestId });
+        }
+
+
+
+
+
+
         public async Task<IActionResult> Delete(int id)
         {
             Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q => q.Answer).SingleAsync();
