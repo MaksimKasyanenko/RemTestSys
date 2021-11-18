@@ -10,6 +10,7 @@
     <div class="col-md-6 mx-auto">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>@Html.ValidationSummary()</div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label">Назва</label>
                 <input asp-for="Name" class="form-control" />
@@ -19,38 +20,49 @@
                 <label asp-for="Description" class="control-label">Опис(необов'язково)</label>
                 <input asp-for="Description" class="form-control" />
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="Duration" class="control-label">Час на проходження тесту(сек.)</label>
                 <input asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
 
-            <h4>Розподіл питань</h4>
-            <span class="text-warning">Порядок не має значення, в тесті питання відсортовуються по кiлькості балів від найменшого.</span>
-            <div id="testMap">
-                <div class="row form-group">
-                    <div class="col-6"><input type="number" min="1" asp-for="MapParts[0].QuestionCount" placeholder="Кількість питань" class="form-control" /></div>
-                    <div class="col-6"><input type="number" min="0" step="0.5" asp-for="MapParts[0].QuestionCast" placeholder="Ціна питання" class="form-control" /></div>
+            <div class="p-2 border mb-2">
+                <h4>Розподіл питань</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Кількість питань</th>
+                            <th>Ціною</th>
+                        </tr>
+                    </thead>
+                    <tbody id="testMap">
+                        <tr>
+                            <td><input type="number" min="1" name="MapParts[0].QuestionCount" class="form-control" /></td>
+                            <td><input type="number" min="0.5" step="0.5" name="MapParts[0].QuestionCast" class="form-control" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <button type="button" onclick="addMapPart();" class="btn btn-primary">+</button>
+                    <button type="button" onclick="removeMapPart();" class="btn btn-danger">-</button>
                 </div>
+                <script>
+                    let mapPartCounter = 0;
+                    function addMapPart() {
+                        mapPartCounter++;
+                        let row = `<tr>
+                                                                    <td><input type="number" min="1" name="MapParts[${mapPartCounter}].QuestionCount" class="form-control" /></td>
+                                                                    <td><input type="number" min="0.5" step="0.5" name="MapParts[${mapPartCounter}].QuestionCast" class="form-control" /></td>
+                                                               </tr>`;
+                        document.getElementById("testMap").insertAdjacentHTML("beforeEnd", row);
+                    }
+                    function removeMapPart() {
+                        mapPartCounter--;
+                        let map = document.getElementById("testMap");
+                        map.removeChild(map.lastElementChild);
+                    }
+                </script>
             </div>
-            <button type="button" onclick="addMapPart();" class="btn btn-primary">+</button>
-            <button type="button" onclick="removeMapPart();" class="btn btn-danger">-</button>
-            <script>
-                let mapPartCounter = 0;
-                function addMapPart() {
-                    mapPartCounter++;
-                    let row = "<div class='row form-group'>" +
-                        "<div class='col-6'><input type='number' min='1' name='MapParts[" + mapPartCounter + "].QuestionCount' placeholder='Кількість питань' class='form-control' /></div>" +
-                        "<div class='col-6'><input type='number' min='0' step='0.5' name='MapParts[" + mapPartCounter + "].QuestionCast' placeholder='Ціна питання' class='form-control' /></div>" +
-                        "</div>";
-                    document.getElementById("testMap").insertAdjacentHTML("beforeEnd", row);
-                }
-                function removeMapPart() {
-                    mapPartCounter--;
-                    let map = document.getElementById("testMap");
-                    map.removeChild(map.lastChild);
-                }
-            </script>
             <div class="form-group text-center">
                 <input type="submit" value="Створити" class="btn btn-primary" />
             </div>
