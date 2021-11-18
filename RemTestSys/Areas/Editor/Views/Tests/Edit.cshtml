@@ -9,8 +9,8 @@
 <div class="row">
     <div class="col-md-6 mx-auto">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="TestId" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label">Назва</label>
                 <input asp-for="Name" class="form-control" />
@@ -42,8 +42,8 @@
                             @for(int i=0;i<Model.MapParts.Length;i++)
                             {
                                 <tr>
-                                    <td><input type="number" min="1" name="MapParts[@i].QuestionCount" class="form-control" value="@Model.MapParts[i].QuestionCount" /></td>
-                                    <td><input type="number" min="0.5" step="0.5" name="MapParts[@i].QuestionCast" class="form-control" value="@Model.MapParts[i].QuestionCast" /></td>
+                                    <td><input name="MapParts[@i].QuestionCount" class="form-control" value="@Model.MapParts[i].QuestionCount" /></td>
+                                    <td><input name="MapParts[@i].QuestionCast" class="form-control" value="@Model.MapParts[i].QuestionCast" /></td>
                                 </tr>
                             }
                         }
@@ -58,8 +58,8 @@
                     function addMapPart() {
                         mapPartCounter++;
                         let row = `<tr>
-                                                                    <td><input type="number" min="1" name="MapParts[${mapPartCounter}].QuestionCount" class="form-control" /></td>
-                                                                    <td><input type="number" min="0.5" step="0.5" asp-for="MapParts[${mapPartCounter}].QuestionCast" class="form-control" /></td>
+                                                                    <td><input name="MapParts[${mapPartCounter}].QuestionCount" class="form-control" /></td>
+                                                                    <td><input name="MapParts[${mapPartCounter}].QuestionCast" class="form-control" /></td>
                                                                </tr>`;
                         document.getElementById("testMap").insertAdjacentHTML("beforeEnd", row);
                     }

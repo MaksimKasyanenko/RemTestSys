@@ -23,6 +23,5 @@ namespace RemTestSys.Domain
         public DbSet<QuestionInSession> QuestionsInSessions { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<ResultOfTesting> ResultsOfTesting { get; set; }
-        public DbSet<TestViewModel> TestViewModel { get; set; }
     }
 }

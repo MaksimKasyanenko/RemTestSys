@@ -83,7 +83,7 @@ namespace RemTestSys.Areas.Editor.Controllers
                 return NotFound();
             }
             return View(new TestViewModel {
-                Id=test.Id,
+                TestId=test.Id,
                 Name=test.Name,
                 Description=test.Description,
                 Duration=test.Duration,
@@ -97,7 +97,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         {
             if (ModelState.IsValid)
             {
-                Test test = await _context.Tests.Where(t=>t.Id == testViewModel.Id).Include(t=>t.MapParts).SingleOrDefaultAsync();
+                Test test = await _context.Tests.Where(t=>t.Id == testViewModel.TestId).Include(t=>t.MapParts).SingleOrDefaultAsync();
                 if (test == null) return NotFound();
                 _context.MapParts.RemoveRange(test.MapParts.ToArray());
                 await _context.SaveChangesAsync();
