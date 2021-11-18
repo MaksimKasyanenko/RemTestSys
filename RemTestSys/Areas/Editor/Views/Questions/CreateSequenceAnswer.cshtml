@@ -16,6 +16,7 @@
                 <label class="control-label">Послідовність</label>
                 <div id="sequenceContainer" class="mb-2">
                     <input type="text" class="form-control mb-2" name="Sequence" />
+                    <input type="text" class="form-control mb-2" name="Sequence" />
                 </div>
                 <div class="text-center mb-2">
                     <button class="btn btn-danger" type="button" onclick="removeLastElement();">-</button>&nbsp;
@@ -33,7 +34,7 @@
                     }
                     function removeLastElement() {
                         let container = document.getElementById("sequenceContainer");
-                        if (container.children.length > 1) {
+                        if (container.children.length > 2) {
                             container.removeChild(container.lastElementChild);
                         }
                     }

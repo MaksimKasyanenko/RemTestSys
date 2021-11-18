@@ -1,1 +1,62 @@
-﻿
+﻿@model QuestionWithSequenceAnswerViewModel
+@{
+    ViewData["Title"] = "Редагування";
+}
+
+<h2>Редагувати питання (Послідовність)</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <form asp-action="EditSequenceAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="QuestionId" />
+            @await Html.PartialAsync("_QuestionForm", Model)
+            <h4>Відповідь</h4>
+            <hr />
+            <div class="mb-4">
+                <label class="control-label">Послідовність</label>
+                <div id="sequenceContainer" class="mb-2">
+                    @if (Model.Sequence.Length > 0)
+                    {
+                        @foreach (var item in Model.Sequence)
+                        {
+                            <input type="text" class="form-control mb-2" name="Sequence" value="@item" />
+                        }
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control mb-2" name="Sequence" />
+                        <input type="text" class="form-control mb-2" name="Sequence" />
+                    }
+                </div>
+                <div class="text-center mb-2">
+                    <button class="btn btn-danger" type="button" onclick="removeLastElement();">-</button>&nbsp;
+                    <button class="btn btn-primary" type="button" onclick="addElement();">+</button>
+                </div>
+                <hr />
+                <script>
+                    function addElement() {
+                        let v = document.createElement("input");
+                        v.type = "text";
+                        v.classList.add("form-control");
+                        v.classList.add("mb-2");
+                        v.name = "Sequence";
+                        document.getElementById("sequenceContainer").appendChild(v);
+                    }
+                    function removeLastElement() {
+                        let container = document.getElementById("sequenceContainer");
+                        if (container.children.length > 2) {
+                            container.removeChild(container.lastElementChild);
+                        }
+                    }
+                </script>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Зберегти зміни" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@Model.TestId">Назад</a>
+</div>
