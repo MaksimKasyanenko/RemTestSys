@@ -39,14 +39,16 @@ namespace RemTestSys.Domain
         {
             Question[] resultSet = new Question[test.QuestionsCount];
             int cursor=0;
+            int oldCursor = 0;
             foreach(var part in test.MapParts.OrderBy(mp=>mp.QuestionCast))
             {
                 Question[] questions = test.Questions.Where(q=>q.Cast==part.QuestionCast).ToArray();
                 RandomSequence sequence = new RandomSequence(0, questions.Length);
-                for(; cursor < cursor+part.QuestionCount; cursor++)
+                for(; cursor < oldCursor+part.QuestionCount; cursor++)
                 {
                     resultSet[cursor] = questions[sequence.GetNext()];
                 }
+                oldCursor = cursor;
             }
             return resultSet;
         }

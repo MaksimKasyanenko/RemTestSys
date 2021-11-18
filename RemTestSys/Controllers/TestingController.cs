@@ -30,6 +30,7 @@ namespace RemTestSys.Controllers
             Session session = await dbContext.Sessions
                                                 .Where(s => s.Id == sessionId && s.Student.LogId == logId)
                                                 .Include(s=>s.Test)
+                                                .ThenInclude(t=>t.MapParts)
                                                 .Include(s=>s.Student)
                                                 .Include(s=>s.Questions)
                                                 .ThenInclude(q=>q.Question)
@@ -89,6 +90,7 @@ namespace RemTestSys.Controllers
                                                           .ThenInclude(q=>q.Answer)
                                                           .Include(s=>s.Student)
                                                           .Include(s=>s.Test)
+                                                          .ThenInclude(t=>t.MapParts)
                                                           .SingleOrDefaultAsync();
                 if (session != null)
                 {

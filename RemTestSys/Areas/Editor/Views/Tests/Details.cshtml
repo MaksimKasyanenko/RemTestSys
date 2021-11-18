@@ -5,8 +5,8 @@
 }
 <h4>Деталі по тесту '@Model.Name' </h4>
 <hr />
-<div>
-    <dl class="row">
+<div class="mb-4">
+    <dl class="row mb-4">
         <dt class="col-sm-2">
             Опис
         </dt>
@@ -34,7 +34,7 @@
     </dl>
     <h4>Розподіл питань</h4>
     <hr />
-    <div>
+    <div class="mb-4">
         @foreach(var part in Model.MapParts)
         {
             <p>@($"{part.QuestionCount} питань по {part.QuestionCast} балів")</p>
@@ -42,7 +42,7 @@
     </div>
     <h4>Доступ</h4>
     <hr />
-        <div>
+        <div class="mb-4">
             <a asp-action="OpenAccessToTestForAll" asp-controller="Accesses" asp-route-id="@Model.Id">Відкрити для всіх</a> | 
             <a asp-action="OpenAccessToTestForGroup" asp-controller="Accesses" asp-route-id="@Model.Id">Відкрити для групи</a> | 
             <a asp-action="OpenAccessToTestForStudent" asp-controller="Accesses" asp-route-id="@Model.Id">Відкрити для учня</a>
@@ -88,14 +88,13 @@
             {
                 <p class="text-center">В данному тесті немає жодного запитання</p>
             }
-            <div class="border p-4 mb-2">
-                <h5>Створити питання</h5>
-                <hr />
-                <a class="" asp-action="CreateTextAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Текст</a> |
-                <a class="" asp-action="CreateOneOfFourAnswer" asp-controller="Questions" asp-route-id="@Model.Id">1 з 4</a> |
-                <a class="" asp-action="CreateSomeAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Декілька варіантів</a> |
-                <a class="" asp-action="CreateSequenceAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Послідовність</a> |
-                <a class="" asp-action="CreateConnectedPairsAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Пари</a>
+            <div class="border p-1">
+                <span class="text-primary fw-bold">Створити питання : </span>
+                <a class="link-secondary" asp-action="CreateTextAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Текст</a> |
+                <a class="link-secondary" asp-action="CreateOneOfFourAnswer" asp-controller="Questions" asp-route-id="@Model.Id">1 з 4</a> |
+                <a class="link-secondary" asp-action="CreateSomeAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Декілька варіантів</a> |
+                <a class="link-secondary" asp-action="CreateSequenceAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Послідовність</a> |
+                <a class="link-secondary" asp-action="CreateConnectedPairsAnswer" asp-controller="Questions" asp-route-id="@Model.Id">Пари</a>
             </div>
 </div>
 <div>

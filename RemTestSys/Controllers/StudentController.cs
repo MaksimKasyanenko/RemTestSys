@@ -34,14 +34,17 @@ namespace RemTestSys.Controllers
             SetStudentNameToView(student);
 
             var tests = await dbContext.AccessesToTestForAll
+                                       .Include(a=>a.Test.MapParts)
                                        .Select(at => at.Test)
                                        .ToListAsync();
             tests.AddRange(await dbContext.AccessesToTestForGroup
                                           .Where(a => a.GroupId == student.GroupId)
+                                          .Include(a=>a.Test.MapParts)
                                           .Select(a => a.Test)
                                           .ToArrayAsync());
             tests.AddRange(await dbContext.AccessesToTestForStudent
                                           .Where(a => a.StudentId == student.Id)
+                                          .Include(a=>a.Test.MapParts)
                                           .Select(a => a.Test)
                                           .ToArrayAsync());
 
@@ -118,7 +121,7 @@ namespace RemTestSys.Controllers
 
             Session session = await dbContext.Sessions
                                              .Include(s => s.Test)
-                                             .ThenInclude(t => t.Questions)
+                                             .ThenInclude(t=>t.MapParts)
                                              .SingleOrDefaultAsync(s => s.Student.Id == student.Id && s.Test.Id == id);
             if (session != null && session.Finished)
             {
@@ -131,6 +134,7 @@ namespace RemTestSys.Controllers
                 Test test = await dbContext.Tests
                                        .Where(t => t.Id == id)
                                        .Include(t => t.Questions)
+                                       .Include(t=>t.MapParts)
                                        .SingleAsync();
                 session = sessionBuilder.Build(test, student);
                 session.StartTime = DateTime.Now;
