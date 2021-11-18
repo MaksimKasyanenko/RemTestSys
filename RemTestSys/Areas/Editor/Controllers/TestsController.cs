@@ -26,7 +26,8 @@ namespace RemTestSys.Areas.Editor.Controllers
         // GET: Editor/Tests
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tests.Include(t=>t.MapParts).ToListAsync());
+            IEnumerable<Test> tests = await _context.Tests.Include(t=>t.MapParts).ToListAsync();
+            return View(tests);
         }
 
         // GET: Editor/Tests/Details/5
