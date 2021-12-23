@@ -12,7 +12,7 @@ using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Services;
 using RemTestSys.Domain.Politics;
 
-namespace RTS
+namespace RemTestSys
 {
     public class Startup
     {
@@ -28,8 +28,8 @@ namespace RTS
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
             services.AddTransient<ISessionBuilder, SessionBuilder>();
-            services.AddSingleton<IStudentService, StudentService>();
-            services.AddSingleton<IGroupService, GroupService>();
+            services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<IGroupService, GroupService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(
