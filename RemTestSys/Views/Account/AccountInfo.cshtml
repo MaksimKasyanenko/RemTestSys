@@ -1,4 +1,4 @@
-﻿@model StudentInfoViewModel
+﻿@model RemTestSys.Domain.ViewModels.StudentVM;
 @{
     ViewData["Title"] = "Інформація про аккаунт";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,9 +8,9 @@
     <h2>Аккаунт</h2>
 </header>
 <div class="account-info">
-    <p>Студент: @Model.FullName</p>
+    <p>Студент: @Model.FirstName @Model.LastName</p>
     <p>Група: @Model.GroupName</p>
-    <p>Дата реєстрації: @Model.RegDate</p>
+    <p>Дата реєстрації: @Model.RegistrationDate.ToString()</p>
     <a asp-action="LogOut" asp-controller="Account">Вийти з системи</a>
 </div>
 

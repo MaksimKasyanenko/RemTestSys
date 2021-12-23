@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RemTestSys.Domain.Models;
-using RemTestSys.ViewModel;
+using RemTestSys.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,39 +17,27 @@ namespace RemTestSys.Controllers
 {
     public class AccountController : Controller
     {
-        public AccountController(AppDbContext dbContext)
+        public AccountController(IStudentService studentService, IGroupService groupService)
         {
-            if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
-            this.dbContext = dbContext;
+            this.studentService = studentService ?? throw new ArgumentNullReferenceException(nameof(studentService));
+            thi.sgroupService = groupService ?? throw new ArgumentNullReferenceException(nameof(groupService));
         }
-        private readonly AppDbContext dbContext;
+        private readonly IStudentService studentService;
+        private readonly IGroupService groupService;
         [HttpGet]
         public async Task<IActionResult> Registration()
         {
-            var groupList = await dbContext.Groups.Select(g => g.Name).ToArrayAsync();
-            var regData = new RegistrationViewModel{
-                GroupNameList=groupList
-            };
-            return View(regData);
+            ViewData["Groups"] = await groupService.GetGroupListAsync();
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registration(RegistrationViewModel regData)
+        public async Task<IActionResult> Registration(StudentRegistrationVM studentData)
         {
             if (ModelState.IsValid)
             {
-                Student student = new Student {
-                    FirstName = regData.FirstName,
-                    LastName = regData.LastName,
-                    RegistrationDate = DateTime.Now
-                };
-                Group group = await dbContext.Groups.FirstOrDefaultAsync(g=>g.Name == regData.GroupName);
-                student.Group = group;
-                student.LogId = await RandomLogId();
-                dbContext.Students.Add(student);
-                await dbContext.SaveChangesAsync();
-
+                Student student = await studentService.RegisterNewStudentAsync(studentData);
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 claimsIdentity.AddClaim(new Claim("StudentLogId", student.LogId));
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -65,7 +52,7 @@ namespace RemTestSys.Controllers
             {
                 ModelState.AddModelError("", "Необхідно вказати ім'я, прізвище, та групу(класс)");
             }
-            regData.GroupNameList = await dbContext.Groups.Select(g => g.Name).ToArrayAsync();
+            ViewData["Groups"] = await groupService.GetGroupListAsync();
             return View(regData);
         }
 
@@ -83,32 +70,9 @@ namespace RemTestSys.Controllers
             string logId;
             Student student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
-            if (student == null) return RedirectToAction("Registration", "Account");
-
-            return View(new StudentInfoViewModel {
-                FullName = $"{student.FirstName} {student.LastName}",
-                GroupName = student.Group.Name,
-                RegDate = student.RegistrationDate.ToString()
-            });
-        }
-
-        private async Task<string> RandomLogId()
-        {
-            StringBuilder sb = new StringBuilder();
-            Random rnd = new Random();
-            int counter = 0;
-            do
-            {
-                counter++;
-                if (counter > 50) throw new InvalidOperationException("LogId cannot be generated");
-                sb.Clear();
-                for (int i = 0; i < 8; i++)
-                {
-                    sb.Append(rnd.Next(0, 10));
-                }
-            } while (await dbContext.Students.AnyAsync(s => s.LogId == sb.ToString()));
-            return sb.ToString();
+                student = await studentService.FindStudentAsync(logId);
+            if (student == null) throw new NullReferenceException(nameof(student));
+            return View(student);
         }
     }
 }
