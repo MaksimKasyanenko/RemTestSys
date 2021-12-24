@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace RemTestSys.Domain.ViewModels{
     public class StudentVM{
         [Required]

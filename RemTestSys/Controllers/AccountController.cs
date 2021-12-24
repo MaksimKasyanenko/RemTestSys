@@ -2,16 +2,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RemTestSys.Domain.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using RemTestSys.Extensions;
-using RemTestSys.Domain;
+using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Controllers
 {
@@ -19,8 +15,8 @@ namespace RemTestSys.Controllers
     {
         public AccountController(IStudentService studentService, IGroupService groupService)
         {
-            this.studentService = studentService ?? throw new ArgumentNullReferenceException(nameof(studentService));
-            thi.sgroupService = groupService ?? throw new ArgumentNullReferenceException(nameof(groupService));
+            this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
+            this.groupService = groupService ?? throw new ArgumentNullException(nameof(groupService));
         }
         private readonly IStudentService studentService;
         private readonly IGroupService groupService;
@@ -33,13 +29,13 @@ namespace RemTestSys.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registration(StudentRegistrationVM studentData)
+        public async Task<IActionResult> Registration(StudentVM studentData)
         {
             if (ModelState.IsValid)
             {
-                Student student = await studentService.RegisterNewStudentAsync(studentData);
+                string logId = await studentService.RegisterNewStudentAsync(studentData);
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                claimsIdentity.AddClaim(new Claim("StudentLogId", student.LogId));
+                claimsIdentity.AddClaim(new Claim("StudentLogId", logId));
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                 var authProperties = new AuthenticationProperties
                 {
@@ -53,7 +49,7 @@ namespace RemTestSys.Controllers
                 ModelState.AddModelError("", "Необхідно вказати ім'я, прізвище, та групу(класс)");
             }
             ViewData["Groups"] = await groupService.GetGroupListAsync();
-            return View(regData);
+            return View(studentData);
         }
 
         [HttpGet]
@@ -68,7 +64,7 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> AccountInfo()
         {
             string logId;
-            Student student = null;
+            StudentVM student = null;
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await studentService.FindStudentAsync(logId);
             if (student == null) throw new NullReferenceException(nameof(student));

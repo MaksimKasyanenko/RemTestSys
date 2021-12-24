@@ -1,4 +1,5 @@
-﻿@model RemTestSys.Domain.ViewModels.StudentVM;
+﻿@using RemTestSys.Domain.ViewModels
+@model RemTestSys.Domain.ViewModels.StudentVM;
 @{
     ViewData["Title"] = "Вхід до системи";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,7 +14,7 @@
             <input type="text" asp-for="FirstName" placeholder="Ім'я" /><br />
             <input type="text" asp-for="LastName" placeholder="Прізвище" /><br />
             <select asp-for="GroupId">
-                @foreach (var g in ViewData["Groups"])
+                @foreach (var g in (List<GroupVM>)ViewData["Groups"])
                 {
                     <option value="@g.Id">@g.Name</option>
                 }

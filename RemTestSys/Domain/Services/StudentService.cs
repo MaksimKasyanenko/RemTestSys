@@ -3,17 +3,21 @@ using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain;
 using RemTestSys.Domain.Models;
 using RemTestSys.Domain.ViewModels;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Text;
 
 namespace RemTestSys.Domain.Services{
     public class StudentService : IStudentService{
 
         public StudentService(AppDbContext dbContext){
-            this.dbContext = dbContext ?? throw new ArgumentNullReferenceException(nameof(dbContext));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         private readonly AppDbContext dbContext;
 
-        public Task RegisterNewStudentAsync(StudentVM studentData){
+        public async Task<string> RegisterNewStudentAsync(StudentVM studentData){
             Student student = new Student {
                     FirstName = studentData.FirstName,
                     LastName = studentData.LastName,
@@ -24,6 +28,7 @@ namespace RemTestSys.Domain.Services{
             student.LogId = await RandomLogId();
             dbContext.Students.Add(student);
             await dbContext.SaveChangesAsync();
+            return student.LogId;
         }
 
         public async Task<StudentVM> FindStudentAsync(string logId){
@@ -39,7 +44,10 @@ namespace RemTestSys.Domain.Services{
                                   })
                                   .SingleOrDefaultAsync();
         }
-
+        public async Task<bool> DoesStudentExistAsync(string logId)
+        {
+            return await dbContext.Students.AnyAsync(s => s.LogId == logId);
+        }
         private async Task<string> RandomLogId()
         {
             StringBuilder sb = new StringBuilder();

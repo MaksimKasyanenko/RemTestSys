@@ -1,6 +1,11 @@
 using RemTestSys.Domain.ViewModels;
+using System.Threading.Tasks;
 
-public interface IStudentService{
-    Task RegisterNewStudentAsync(StudentRegistrationVM studentData);
-    Task<StudentVM> FindStudentAsync(string logId);
+namespace RemTestSys.Domain.Interfaces{
+    public interface IStudentService
+    {
+        Task<string> RegisterNewStudentAsync(StudentVM studentData);
+        Task<StudentVM> FindStudentAsync(string logId);
+        Task<bool> DoesStudentExistAsync(string logId);
+    }
 }

@@ -1,5 +1,5 @@
 namespace RemTestSys.Domain.ViewModels{
-    public class GruopVM{
+    public class GroupVM{
         public int Id{get;set;}
         public string Name{get;set;}
     }
