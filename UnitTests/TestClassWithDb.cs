@@ -7,13 +7,13 @@ namespace UnitTests
     public class TestClassWithDb
     {
         public TestClassWithDb(DbContextOptions<AppDbContext> options){
-            contextOptions = options;
+            ContextOptions = options;
         }
 
-        private readonly DbContextOptions<AppDbContext> contextOptions;
+        protected readonly DbContextOptions<AppDbContext> ContextOptions;
 
         protected void SeedDb(Action<AppDbContext> seed){
-            using (var context = new AppDbContext(contextOptions)){
+            using (var context = new AppDbContext(ContextOptions)){
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
                 seed.Invoke(context);
