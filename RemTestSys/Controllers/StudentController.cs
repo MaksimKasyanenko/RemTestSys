@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using RemTestSys.Domain;
 using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using RemTestSys.Domain;
-using RemTestSys.RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Controllers
 {
@@ -34,7 +34,7 @@ namespace RemTestSys.Controllers
             string logId;
             StudentVM student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await studentService.FindStudentAsync();
+                student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
             return View(await examService.GetAvailableExamsForAsync(student.Id));
