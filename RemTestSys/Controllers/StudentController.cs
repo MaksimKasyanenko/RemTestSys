@@ -44,39 +44,21 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> Results()
         {
             string logId;
-            Student student = null;
+            StudentVM student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await dbContext.Students.Where(s => s.LogId == logId).SingleOrDefaultAsync();
+                student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
-            var results = await dbContext.ResultsOfTesting
-                                         .Where(r => r.Student.Id == student.Id)
-                                         .OrderByDescending(r => r.PassedAt)
-                                         .Take(10)
-                                         .Include(r => r.Test)
-                                         .ToArrayAsync();
-            List<ResultOfTestingViewModel> resViewList = new List<ResultOfTestingViewModel>(results.Length);
-            foreach (var res in results)
-            {
-                resViewList.Add(
-                        new ResultOfTestingViewModel
-                        {
-                            TestName = res.Test.Name,
-                            Mark = res.Mark.ToString(),
-                            PassedAt = res.PassedAt
-                        }
-                    );
-            }
-            return View(resViewList);
+            return View(await examService.GetResultsForAsync(student.Id));
         }
 
         [Authorize]
         public async Task<IActionResult> Testing(int id)
         {
             string logId;
-            Student student = null;
+            StudentVM student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
+                student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
 
@@ -146,10 +128,10 @@ namespace RemTestSys.Controllers
         }
 
 
-        private bool HasAccess(Student student, int testId)
+        private bool HasAccess(StudentVM student, int testId)
         {
             return dbContext.AccessesToTestForAll.Any(a => a.Test.Id == testId)
-                || dbContext.AccessesToTestForGroup.Any(a => a.Test.Id == testId && a.GroupId == student.Group.Id)
+                || dbContext.AccessesToTestForGroup.Any(a => a.Test.Id == testId && a.GroupId == student.GroupId)
                 || dbContext.AccessesToTestForStudent.Any(a => a.Test.Id == testId && a.StudentId == student.Id);
         }
         private void SetStudentNameToView(StudentVM student)

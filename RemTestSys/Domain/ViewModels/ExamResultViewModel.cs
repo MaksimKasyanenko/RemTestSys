@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
-namespace RemTestSys.ViewModel
+namespace RemTestSys.Domain.ViewModels
 {
-    public class ResultOfTestingViewModel
+    public class ExamResultViewModel
     {
         public int Id { get; set; }
         public string TestName { get; set; }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
+using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Domain.Services
 {
@@ -58,6 +59,28 @@ namespace RemTestSys.Domain.Services
                 vmList.Add(tstInfo);
             }
             return vmList;
+        }
+
+        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId){
+            var results = await dbContext.ResultsOfTesting
+                                         .Where(r => r.Student.Id == studentId)
+                                         .OrderByDescending(r => r.PassedAt)
+                                         .Take(20)
+                                         .Include(r => r.Test)
+                                         .ToArrayAsync();
+            var resViewList = new List<ExamResultViewModel>(results.Length);
+            foreach (var res in results)
+            {
+                resViewList.Add(
+                        new ExamResultViewModel
+                        {
+                            TestName = res.Test.Name,
+                            Mark = res.Mark.ToString(),
+                            PassedAt = res.PassedAt
+                        }
+                    );
+            }
+            return resViewList;
         }
     }
 }
