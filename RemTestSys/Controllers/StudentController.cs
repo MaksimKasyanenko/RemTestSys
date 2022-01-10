@@ -10,68 +10,34 @@ using RemTestSys.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using RemTestSys.Domain;
+using RemTestSys.RemTestSys.Domain.Interfaces;
 
 namespace RemTestSys.Controllers
 {
     public class StudentController : Controller
     {
-        public StudentController(AppDbContext appDbContext, ISessionBuilder sessionBuilder)
+        public StudentController(IExamService examService, IStudentService studentService, AppDbContext appDbContext, ISessionBuilder sessionBuilder)
         {
             dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
             this.sessionBuilder = sessionBuilder ?? throw new ArgumentNullException(nameof(sessionBuilder));
+            this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
+            this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
         }
         private readonly AppDbContext dbContext;
         private readonly ISessionBuilder sessionBuilder;
+        private readonly IExamService examService;
+        private readonly IStudentService studentService;
 
         [Authorize]
         public async Task<IActionResult> AvailableTests()
         {
             string logId;
-            Student student = null;
+            StudentVM student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
+                student = await studentService.FindStudentAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
-
-            var tests = await dbContext.AccessesToTestForAll
-                                       .Include(a=>a.Test.MapParts)
-                                       .Select(at => at.Test)
-                                       .ToListAsync();
-            tests.AddRange(await dbContext.AccessesToTestForGroup
-                                          .Where(a => a.GroupId == student.GroupId)
-                                          .Include(a=>a.Test.MapParts)
-                                          .Select(a => a.Test)
-                                          .ToArrayAsync());
-            tests.AddRange(await dbContext.AccessesToTestForStudent
-                                          .Where(a => a.StudentId == student.Id)
-                                          .Include(a=>a.Test.MapParts)
-                                          .Select(a => a.Test)
-                                          .ToArrayAsync());
-
-            var vmList = new List<TestInfoViewModel>();
-            foreach (var tst in tests)
-            {
-                string lastMark = "-";
-                ResultOfTesting lastRes = await dbContext.ResultsOfTesting
-                                                         .Where(r => r.Student.Id == student.Id && r.Test.Id == tst.Id)
-                                                         .OrderByDescending(r => r.PassedAt)
-                                                         .FirstOrDefaultAsync();
-                if (lastRes != null)
-                {
-                    lastMark = lastRes.Mark.ToString();
-                }
-                var tstInfo = new TestInfoViewModel
-                {
-                    TestId = tst.Id,
-                    TestName = tst.Name,
-                    TestDescription = tst.Description,
-                    CountOfQuestions = tst.QuestionsCount,
-                    Duration = tst.Duration,
-                    LastMark = lastMark
-                };
-                vmList.Add(tstInfo);
-            }
-            return View(vmList);
+            return View(await examService.GetAvailableExamsForAsync(student.Id));
         }
 
         [Authorize]
@@ -186,7 +152,7 @@ namespace RemTestSys.Controllers
                 || dbContext.AccessesToTestForGroup.Any(a => a.Test.Id == testId && a.GroupId == student.Group.Id)
                 || dbContext.AccessesToTestForStudent.Any(a => a.Test.Id == testId && a.StudentId == student.Id);
         }
-        private void SetStudentNameToView(Student student)
+        private void SetStudentNameToView(StudentVM student)
         {
             ViewBag.StudentFullName = $"{student.FirstName} {student.LastName}";
         }

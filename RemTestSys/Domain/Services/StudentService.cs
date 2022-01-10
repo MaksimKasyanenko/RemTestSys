@@ -36,6 +36,7 @@ namespace RemTestSys.Domain.Services{
                                   .Where(s => s.LogId == logId)
                                   .Include(s => s.Group)
                                   .Select(s => new StudentVM{
+                                      Id = s.Id,
                                       FirstName = s.FirstName,
                                       LastName = s.LastName,
                                       GroupId = s.Group.Id,
