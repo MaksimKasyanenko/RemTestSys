@@ -82,5 +82,12 @@ namespace RemTestSys.Domain.Services
             }
             return resViewList;
         }
+
+        public async Task<bool> HasAccessTo(int studentId, int examId){
+            Student student = await dbContext.Students.SingleAsync(s => s.Id == studentId);
+            return await dbContext.AccessesToTestForAll.AnyAsync(a => a.Test.Id == examId)
+                || await dbContext.AccessesToTestForGroup.AnyAsync(a => a.Test.Id == examId && a.GroupId == student.GroupId)
+                || await dbContext.AccessesToTestForStudent.AnyAsync(a => a.Test.Id == examId && a.StudentId == student.Id);
+        }
     }
 }

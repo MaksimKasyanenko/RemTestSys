@@ -62,11 +62,11 @@ namespace RemTestSys.Controllers
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
 
-            if (!HasAccess(student, id))
+            if (!await examService.HasAccessTo(student.Id, id))
             {
                 return View("Error");
             }
-
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             Session session = await dbContext.Sessions
                                              .Include(s => s.Test)
                                              .ThenInclude(t=>t.MapParts)
@@ -127,13 +127,6 @@ namespace RemTestSys.Controllers
             }
         }
 
-
-        private bool HasAccess(StudentVM student, int testId)
-        {
-            return dbContext.AccessesToTestForAll.Any(a => a.Test.Id == testId)
-                || dbContext.AccessesToTestForGroup.Any(a => a.Test.Id == testId && a.GroupId == student.GroupId)
-                || dbContext.AccessesToTestForStudent.Any(a => a.Test.Id == testId && a.StudentId == student.Id);
-        }
         private void SetStudentNameToView(StudentVM student)
         {
             ViewBag.StudentFullName = $"{student.FirstName} {student.LastName}";
