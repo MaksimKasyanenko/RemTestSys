@@ -16,8 +16,8 @@ namespace RemTestSys.Domain.Services{
 
         private readonly AppDbContext dbContext;
 
-        public async Task<List<GroupVM>> GetGroupListAsync(){
-            return await dbContext.Groups.Select(g => new GroupVM{Id=g.Id, Name = g.Name}).ToListAsync();
+        public async Task<List<GroupViewModel>> GetGroupListAsync(){
+            return await dbContext.Groups.Select(g => new GroupViewModel{Id=g.Id, Name = g.Name}).ToListAsync();
         }
     }
 }

@@ -4,6 +4,6 @@ using System.Threading.Tasks;
 
 namespace RemTestSys.Domain.Interfaces{
     public interface IGroupService{
-        Task<List<GroupVM>> GetGroupListAsync();
+        Task<List<GroupViewModel>> GetGroupListAsync();
     }
 }

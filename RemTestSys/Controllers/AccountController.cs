@@ -29,7 +29,7 @@ namespace RemTestSys.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registration(StudentVM studentData)
+        public async Task<IActionResult> Registration(StudentViewModel studentData)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +64,7 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> AccountInfo()
         {
             string logId;
-            StudentVM student = null;
+            StudentViewModel student = null;
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await studentService.FindStudentAsync(logId);
             if (student == null) throw new NullReferenceException(nameof(student));

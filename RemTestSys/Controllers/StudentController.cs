@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using RemTestSys.Domain;
-using RemTestSys.ViewModel;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
@@ -32,7 +31,7 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> AvailableTests()
         {
             string logId;
-            StudentVM student = null;
+            StudentViewModel student = null;
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
@@ -44,7 +43,7 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> Results()
         {
             string logId;
-            StudentVM student = null;
+            StudentViewModel student = null;
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
@@ -56,17 +55,22 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> Testing(int id)
         {
             string logId;
-            StudentVM student = null;
+            StudentViewModel student = null;
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
-
-            if (!await examService.HasAccessTo(student.Id, id))
-            {
+            ExamSessionViewModel session;
+            try{
+                session = await examService.Examine(student.Id, id);
+            }catch(AccessToTestException ex){
                 return View("Error");
             }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            return View(session);
+            /*if (!await examService.HasAccessTo(student.Id, id))
+            {
+                
+            }
             Session session = await dbContext.Sessions
                                              .Include(s => s.Test)
                                              .ThenInclude(t=>t.MapParts)
@@ -94,7 +98,7 @@ namespace RemTestSys.Controllers
                 SessionId = session.Id,
                 QuestionsCount = session.Test.QuestionsCount,
                 TestName = session.Test.Name
-            });
+            });*/
         }
 
         [Authorize]
@@ -102,7 +106,7 @@ namespace RemTestSys.Controllers
         {
             if (id == null) return RedirectToAction("AvailableTests");
             string logId;
-            Student student = null;
+            StudentViewModel student = null;
             if (this.TryGetLogIdFromCookie(out logId))
                 student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
             if (student == null) return RedirectToAction("Registration", "Account");
@@ -127,7 +131,7 @@ namespace RemTestSys.Controllers
             }
         }
 
-        private void SetStudentNameToView(StudentVM student)
+        private void SetStudentNameToView(StudentViewModel student)
         {
             ViewBag.StudentFullName = $"{student.FirstName} {student.LastName}";
         }

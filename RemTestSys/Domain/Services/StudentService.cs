@@ -17,7 +17,7 @@ namespace RemTestSys.Domain.Services{
 
         private readonly AppDbContext dbContext;
 
-        public async Task<string> RegisterNewStudentAsync(StudentVM studentData){
+        public async Task<string> RegisterNewStudentAsync(StudentViewModel studentData){
             Student student = new Student {
                     FirstName = studentData.FirstName,
                     LastName = studentData.LastName,
@@ -31,11 +31,11 @@ namespace RemTestSys.Domain.Services{
             return student.LogId;
         }
 
-        public async Task<StudentVM> FindStudentAsync(string logId){
+        public async Task<StudentViewModel> FindStudentAsync(string logId){
             return await dbContext.Students
                                   .Where(s => s.LogId == logId)
                                   .Include(s => s.Group)
-                                  .Select(s => new StudentVM{
+                                  .Select(s => new StudentViewModel{
                                       Id = s.Id,
                                       FirstName = s.FirstName,
                                       LastName = s.LastName,
