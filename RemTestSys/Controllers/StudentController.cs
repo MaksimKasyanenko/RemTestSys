@@ -15,15 +15,13 @@ namespace RemTestSys.Controllers
 {
     public class StudentController : Controller
     {
-        public StudentController(IExamService examService, IStudentService studentService, AppDbContext appDbContext, ISessionBuilder sessionBuilder)
+        public StudentController(IExamService examService, IStudentService studentService, AppDbContext appDbContext)
         {
             dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
-            this.sessionBuilder = sessionBuilder ?? throw new ArgumentNullException(nameof(sessionBuilder));
             this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
         }
         private readonly AppDbContext dbContext;
-        private readonly ISessionBuilder sessionBuilder;
         private readonly IExamService examService;
         private readonly IStudentService studentService;
 
@@ -76,11 +74,11 @@ namespace RemTestSys.Controllers
             string logId;
             StudentViewModel student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await dbContext.Students.Where(s => s.LogId == logId).Include(s => s.Group).SingleOrDefaultAsync();
+                student = await studentService.Find(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
 
-            ResultOfTesting result = await dbContext.ResultsOfTesting
+            /*ResultOfTesting result = await dbContext.ResultsOfTesting
                                                     .Where(r => r.Id == id && r.Student.Id == student.Id)
                                                     .Include(r => r.Test)
                                                     .SingleOrDefaultAsync();
@@ -96,6 +94,14 @@ namespace RemTestSys.Controllers
             else
             {
                 return RedirectToAction("AvailableTests");
+            }*/
+            ExamResultViewModel result;
+            try{
+                result = examService.GetResultAsync(id, student.Id);
+                if(result == null)return View("AvailableTests");
+                return View(result);
+            }catch(AccessToResultException ex){
+                return View("Error");
             }
         }
 
