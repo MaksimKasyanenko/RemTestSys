@@ -83,11 +83,45 @@ namespace RemTestSys.Domain.Services
             return resViewList;
         }
 
-        public async Task<bool> HasAccessTo(int studentId, int examId){
+        public async Task<bool> HasAccessToAsync(int studentId, int examId){
             Student student = await dbContext.Students.SingleAsync(s => s.Id == studentId);
             return await dbContext.AccessesToTestForAll.AnyAsync(a => a.Test.Id == examId)
                 || await dbContext.AccessesToTestForGroup.AnyAsync(a => a.Test.Id == examId && a.GroupId == student.GroupId)
                 || await dbContext.AccessesToTestForStudent.AnyAsync(a => a.Test.Id == examId && a.StudentId == student.Id);
+        }
+
+        public async Task<ExamSessionViewModel> ExamineAsync(int studentId, int examId)
+        {
+            if (!await examService.HasAccessTo(studentId, id))
+                throw new AccessToExamException($"Student {studentId} hasn't got access to the exam {examId}");
+            Session session = await dbContext.Sessions
+                                             .Include(s => s.Test)
+                                             .ThenInclude(t=>t.MapParts)
+                                             .SingleOrDefaultAsync(s => s.Student.Id == studentId && s.Test.Id == examId);
+            if (session != null && session.Finished)
+            {
+                dbContext.Sessions.Remove(session);
+                await dbContext.SaveChangesAsync();
+                session = null;
+            }
+            if (session == null)
+            {
+                Test test = await dbContext.Tests
+                                       .Where(t => t.Id == examId)
+                                       .Include(t => t.Questions)
+                                       .Include(t=>t.MapParts)
+                                       .SingleAsync();
+                session = sessionBuilder.Build(test, student);
+                session.StartTime = DateTime.Now;
+                dbContext.Sessions.Add(session);
+                await dbContext.SaveChangesAsync();
+            }
+            return new ExamSessionViewModel
+            {
+                SessionId = session.Id,
+                QuestionsCount = session.Test.QuestionsCount,
+                TestName = session.Test.Name
+            };
         }
     }
 }

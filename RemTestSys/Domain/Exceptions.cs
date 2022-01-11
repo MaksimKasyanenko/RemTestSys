@@ -2,8 +2,8 @@ using System;
 
 namespace RemTestSys.Domain
 {
-    public class AccessToTestException : Exception
+    public class AccessToExamException : Exception
     {
-        public AccessToTestException(string message) : base(message){}
+        public AccessToExamException(string message) : base(message){}
     }
 }

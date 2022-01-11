@@ -6,7 +6,7 @@ namespace RemTestSys.Domain.Interfaces{
     public interface IExamService{
         Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId);
         Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId);
-        Task<bool> HasAccessTo(int sudentId, int examId);
-        Task<ExamSessionViewModel> Examine(int studentId, int examId);
+        Task<bool> HasAccessToAsync(int sudentId, int examId);
+        Task<ExamSessionViewModel> ExamineAsync(int studentId, int examId);
     }
 }

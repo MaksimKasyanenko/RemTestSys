@@ -62,43 +62,11 @@ namespace RemTestSys.Controllers
             SetStudentNameToView(student);
             ExamSessionViewModel session;
             try{
-                session = await examService.Examine(student.Id, id);
-            }catch(AccessToTestException ex){
+                session = await examService.ExamineAsync(student.Id, id);
+            }catch(AccessToExamException ex){
                 return View("Error");
             }
             return View(session);
-            /*if (!await examService.HasAccessTo(student.Id, id))
-            {
-                
-            }
-            Session session = await dbContext.Sessions
-                                             .Include(s => s.Test)
-                                             .ThenInclude(t=>t.MapParts)
-                                             .SingleOrDefaultAsync(s => s.Student.Id == student.Id && s.Test.Id == id);
-            if (session != null && session.Finished)
-            {
-                dbContext.Sessions.Remove(session);
-                await dbContext.SaveChangesAsync();
-                session = null;
-            }
-            if (session == null)
-            {
-                Test test = await dbContext.Tests
-                                       .Where(t => t.Id == id)
-                                       .Include(t => t.Questions)
-                                       .Include(t=>t.MapParts)
-                                       .SingleAsync();
-                session = sessionBuilder.Build(test, student);
-                session.StartTime = DateTime.Now;
-                dbContext.Sessions.Add(session);
-                await dbContext.SaveChangesAsync();
-            }
-            return View(new TestingViewModel
-            {
-                SessionId = session.Id,
-                QuestionsCount = session.Test.QuestionsCount,
-                TestName = session.Test.Name
-            });*/
         }
 
         [Authorize]
