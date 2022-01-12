@@ -9,6 +9,7 @@ using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Controllers
 {
+    [Authorize]
     public class StudentController : Controller
     {
         public StudentController(IExamService examService, IStudentService studentService)
@@ -19,7 +20,6 @@ namespace RemTestSys.Controllers
         private readonly IExamService examService;
         private readonly IStudentService studentService;
 
-        [Authorize]
         public async Task<IActionResult> AvailableTests()
         {
             var student = InitStudent(studentService);
@@ -27,7 +27,6 @@ namespace RemTestSys.Controllers
             return View(await examService.GetAvailableExamsForAsync(student.Id));
         }
 
-        [Authorize]
         public async Task<IActionResult> Results()
         {
             var student = InitStudent(studentService);
@@ -35,7 +34,6 @@ namespace RemTestSys.Controllers
             return View(await examService.GetResultsForAsync(student.Id));
         }
 
-        [Authorize]
         public async Task<IActionResult> Testing(int id)
         {
             var student = InitStudent(studentService);
@@ -49,7 +47,6 @@ namespace RemTestSys.Controllers
             return View(session);
         }
 
-        [Authorize]
         public async Task<IActionResult> ResultOfTesting(int? id)
         {
             if (id == null) return RedirectToAction("AvailableTests");
