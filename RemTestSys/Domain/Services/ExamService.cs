@@ -11,11 +11,13 @@ namespace RemTestSys.Domain.Services
 {
     public class ExamService : IExamService
     {
-        public ExamService(AppDbContext dbContext)
+        public ExamService(AppDbContext dbContext, ISessionBuilder sessionBuilder)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.sessionBuilder = sessionBuilder ?? throw new ArgumentNullException(nameof(sessionBuilder));
         }
         private readonly AppDbContext dbContext;
+        private readonly ISessionBuilder sessionBuilder;
 
         public async Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId)
         {
@@ -92,7 +94,7 @@ namespace RemTestSys.Domain.Services
 
         public async Task<ExamSessionViewModel> ExamineAsync(int studentId, int examId)
         {
-            if (!await examService.HasAccessTo(studentId, id))
+            if (!await HasAccessToAsync(studentId, examId))
                 throw new AccessToExamException($"Student {studentId} hasn't got access to the exam {examId}");
             Session session = await dbContext.Sessions
                                              .Include(s => s.Test)
@@ -111,6 +113,8 @@ namespace RemTestSys.Domain.Services
                                        .Include(t => t.Questions)
                                        .Include(t=>t.MapParts)
                                        .SingleAsync();
+                Student student = await dbContext.Students
+                                            .SingleAsync(s => s.Id == studentId);
                 session = sessionBuilder.Build(test, student);
                 session.StartTime = DateTime.Now;
                 dbContext.Sessions.Add(session);
@@ -122,6 +126,31 @@ namespace RemTestSys.Domain.Services
                 QuestionsCount = session.Test.QuestionsCount,
                 TestName = session.Test.Name
             };
+        }
+
+        public async Task<ExamResultViewModel> GetResultForAsync(int resultId, int studentId)
+        {
+            ResultOfTesting result = await dbContext.ResultsOfTesting
+                                                    .Where(r => r.Id == resultId)
+                                                    .Include(r => r.Test)
+                                                    .SingleOrDefaultAsync();
+            if (result != null)
+            {
+                if(result.StudentId != studentId)
+                    throw new AccessToResultException($"Student {studentId} don't have access to result {resultId} as one isn't owner of it");
+                ExamResultViewModel resVM = new ExamResultViewModel
+                {
+                    TestName = result.Test.Name,
+                    Mark = result.Mark.ToString(), 
+                    PassedAt = result.PassedAt,
+                    Id = result.Id
+                };
+                return resVM;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

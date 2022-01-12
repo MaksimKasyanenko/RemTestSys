@@ -74,35 +74,18 @@ namespace RemTestSys.Controllers
             string logId;
             StudentViewModel student = null;
             if (this.TryGetLogIdFromCookie(out logId))
-                student = await studentService.Find(logId);
+                student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
-
-            /*ResultOfTesting result = await dbContext.ResultsOfTesting
-                                                    .Where(r => r.Id == id && r.Student.Id == student.Id)
-                                                    .Include(r => r.Test)
-                                                    .SingleOrDefaultAsync();
-            if (result != null)
-            {
-                ResultOfTestingViewModel vm = new ResultOfTestingViewModel
-                {
-                    TestName = result.Test.Name,
-                    Mark = result.Mark.ToString()
-                };
-                return View(vm);
-            }
-            else
-            {
-                return RedirectToAction("AvailableTests");
-            }*/
             ExamResultViewModel result;
             try{
-                result = examService.GetResultAsync(id, student.Id);
-                if(result == null)return View("AvailableTests");
-                return View(result);
+                result = await examService.GetResultForAsync((int)id, student.Id);
             }catch(AccessToResultException ex){
                 return View("Error");
             }
+            if(result == null)
+                return View("AvailableTests");
+            return View(result);
         }
 
         private void SetStudentNameToView(StudentViewModel student)

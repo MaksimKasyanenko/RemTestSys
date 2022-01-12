@@ -6,4 +6,8 @@ namespace RemTestSys.Domain
     {
         public AccessToExamException(string message) : base(message){}
     }
+    public class AccessToResultException : Exception
+    {
+        public AccessToResultException(string message) : base(message){}
+    }
 }
