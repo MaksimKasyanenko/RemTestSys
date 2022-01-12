@@ -11,5 +11,9 @@ namespace RemTestSys.Domain.ViewModels{
         public int GroupId { get; set; }
         public string GroupName{get;set;}
         public DateTime RegistrationDate{get;set;}
+        public string FullName
+        {
+            get => $"{FirstName} {LastName}";
+        }
     }
 }

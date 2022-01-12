@@ -1,37 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using RemTestSys.Domain;
 using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
-using RemTestSys.Domain.Models;
 using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Controllers
 {
     public class StudentController : Controller
     {
-        public StudentController(IExamService examService, IStudentService studentService, AppDbContext appDbContext)
+        public StudentController(IExamService examService, IStudentService studentService)
         {
-            dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
             this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
         }
-        private readonly AppDbContext dbContext;
         private readonly IExamService examService;
         private readonly IStudentService studentService;
 
         [Authorize]
         public async Task<IActionResult> AvailableTests()
         {
-            string logId;
-            StudentViewModel student = null;
-            if (this.TryGetLogIdFromCookie(out logId))
-                student = await studentService.FindStudentAsync(logId);
             if (student == null) return RedirectToAction("Registration", "Account");
             SetStudentNameToView(student);
             return View(await examService.GetAvailableExamsForAsync(student.Id));
@@ -90,7 +81,15 @@ namespace RemTestSys.Controllers
 
         private void SetStudentNameToView(StudentViewModel student)
         {
-            ViewBag.StudentFullName = $"{student.FirstName} {student.LastName}";
+            
+        }
+        private async Task<bool> InitStudent(){
+            string logId = this.HttpContext.User.FindFirstValue("StudentLogId");
+            if(logId == null)return false;
+            StudentViewModel student = await studentService.FindStudentAsync(logId);
+            if(student == null)throw new WrongLogIdInCoockieException($"LogId which specified in cookie is wrong! Perhaps the student has been deleted.");
+            ViewBag.StudentFullName = student.FullName;
+            return true;
         }
     }
 }
