@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.ViewModels;
 

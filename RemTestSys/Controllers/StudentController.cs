@@ -4,7 +4,6 @@ using System.Security.Claims;
 using System;
 using System.Threading.Tasks;
 using RemTestSys.Domain;
-using RemTestSys.Extensions;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.ViewModels;
 
@@ -23,32 +22,24 @@ namespace RemTestSys.Controllers
         [Authorize]
         public async Task<IActionResult> AvailableTests()
         {
+            var student = InitStudent();
             if (student == null) return RedirectToAction("Registration", "Account");
-            SetStudentNameToView(student);
             return View(await examService.GetAvailableExamsForAsync(student.Id));
         }
 
         [Authorize]
         public async Task<IActionResult> Results()
         {
-            string logId;
-            StudentViewModel student = null;
-            if (this.TryGetLogIdFromCookie(out logId))
-                student = await studentService.FindStudentAsync(logId);
+            var student = InitStudent();
             if (student == null) return RedirectToAction("Registration", "Account");
-            SetStudentNameToView(student);
             return View(await examService.GetResultsForAsync(student.Id));
         }
 
         [Authorize]
         public async Task<IActionResult> Testing(int id)
         {
-            string logId;
-            StudentViewModel student = null;
-            if (this.TryGetLogIdFromCookie(out logId))
-                student = await studentService.FindStudentAsync(logId);
+            var student = InitStudent();
             if (student == null) return RedirectToAction("Registration", "Account");
-            SetStudentNameToView(student);
             ExamSessionViewModel session;
             try{
                 session = await examService.ExamineAsync(student.Id, id);
@@ -62,12 +53,8 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> ResultOfTesting(int? id)
         {
             if (id == null) return RedirectToAction("AvailableTests");
-            string logId;
-            StudentViewModel student = null;
-            if (this.TryGetLogIdFromCookie(out logId))
-                student = await studentService.FindStudentAsync(logId);
+            var student = InitStudent();
             if (student == null) return RedirectToAction("Registration", "Account");
-            SetStudentNameToView(student);
             ExamResultViewModel result;
             try{
                 result = await examService.GetResultForAsync((int)id, student.Id);
@@ -79,17 +66,13 @@ namespace RemTestSys.Controllers
             return View(result);
         }
 
-        private void SetStudentNameToView(StudentViewModel student)
-        {
-            
-        }
-        private async Task<bool> InitStudent(){
+        private async Task<StudentViewModel> InitStudent(){
             string logId = this.HttpContext.User.FindFirstValue("StudentLogId");
-            if(logId == null)return false;
+            if(logId == null)return null;
             StudentViewModel student = await studentService.FindStudentAsync(logId);
-            if(student == null)throw new WrongLogIdInCoockieException($"LogId which specified in cookie is wrong! Perhaps the student has been deleted.");
+            if(student == null)return null;
             ViewBag.StudentFullName = student.FullName;
-            return true;
+            return student;
         }
     }
 }
