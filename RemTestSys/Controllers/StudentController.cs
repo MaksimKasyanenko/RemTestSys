@@ -22,7 +22,7 @@ namespace RemTestSys.Controllers
         [Authorize]
         public async Task<IActionResult> AvailableTests()
         {
-            var student = InitStudent();
+            var student = InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             return View(await examService.GetAvailableExamsForAsync(student.Id));
         }
@@ -30,7 +30,7 @@ namespace RemTestSys.Controllers
         [Authorize]
         public async Task<IActionResult> Results()
         {
-            var student = InitStudent();
+            var student = InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             return View(await examService.GetResultsForAsync(student.Id));
         }
@@ -38,7 +38,7 @@ namespace RemTestSys.Controllers
         [Authorize]
         public async Task<IActionResult> Testing(int id)
         {
-            var student = InitStudent();
+            var student = InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             ExamSessionViewModel session;
             try{
@@ -53,7 +53,7 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> ResultOfTesting(int? id)
         {
             if (id == null) return RedirectToAction("AvailableTests");
-            var student = InitStudent();
+            var student = InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             ExamResultViewModel result;
             try{
@@ -64,15 +64,6 @@ namespace RemTestSys.Controllers
             if(result == null)
                 return View("AvailableTests");
             return View(result);
-        }
-
-        private async Task<StudentViewModel> InitStudent(){
-            string logId = this.HttpContext.User.FindFirstValue("StudentLogId");
-            if(logId == null)return null;
-            StudentViewModel student = await studentService.FindStudentAsync(logId);
-            if(student == null)return null;
-            ViewBag.StudentFullName = student.FullName;
-            return student;
         }
     }
 }

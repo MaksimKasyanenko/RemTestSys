@@ -62,11 +62,8 @@ namespace RemTestSys.Controllers
         [Authorize]
         public async Task<IActionResult> AccountInfo()
         {
-            string logId;
-            StudentViewModel student = null;
-            if (this.TryGetLogIdFromCookie(out logId))
-                student = await studentService.FindStudentAsync(logId);
-            if (student == null) throw new NullReferenceException(nameof(student));
+            var student = InitStudent(studentService);
+            if (student == null) return RedirectToAction("Registration", "Account");
             return View(student);
         }
     }
