@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using RemTestSys.Domain;
+using RemTestSys.Domain.Interfaces;
 
 namespace RemTestSys.Controllers
 {
@@ -14,20 +15,22 @@ namespace RemTestSys.Controllers
     [Route("api/[controller]/{sessionId?}")]
     public class TestingController : ControllerBase
     {
-        public TestingController(AppDbContext appDbContext)
+        public TestingController(IStudentService studentService, AppDbContext appDbContext)
         {
             this.dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
+            this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
         }
         private readonly AppDbContext dbContext;
+        private readonly IStudentService studentService;
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetState(int sessionId)
         {
-            string logId;
-            if (!this.TryGetLogIdFromCookie(out logId)) return BadRequest("Specified LogId is not valid");
+            var student = await this.InitStudent(studentService);
+            if (student == null) return BadRequest("Cookie don't contains nessesary data or one is invalid");
             Session session = await dbContext.Sessions
-                                                .Where(s => s.Id == sessionId && s.Student.LogId == logId)
+                                                .Where(s => s.Id == sessionId && s.Student.Id == student.Id)
                                                 .Include(s=>s.Test)
                                                 .ThenInclude(t=>t.MapParts)
                                                 .Include(s=>s.Student)
@@ -81,7 +84,7 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> Answer([FromRoute]int sessionId, [FromBody]AnswerViewModel answer)
         {
             string logId;
-            if (this.TryGetLogIdFromCookie(out logId))
+            if (this.TryGetLogIdFromCookie(studentService, out logId))
             {
                 Session session = await dbContext.Sessions.Where(s => s.Id == sessionId && s.Student.LogId == logId)
                                                           .Include(s=>s.Questions)
