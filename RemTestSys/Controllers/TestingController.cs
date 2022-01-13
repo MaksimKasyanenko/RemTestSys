@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using RemTestSys.ViewModel;
-using RemTestSys.Extensions;
 using RemTestSys.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;

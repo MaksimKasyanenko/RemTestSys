@@ -62,7 +62,7 @@ namespace RemTestSys.Controllers
         [Authorize]
         public async Task<IActionResult> AccountInfo()
         {
-            var student = InitStudent(studentService);
+            var student = this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             return View(student);
         }
