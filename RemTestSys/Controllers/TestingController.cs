@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using RemTestSys.Domain;
 using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Controllers
 {
@@ -15,12 +16,14 @@ namespace RemTestSys.Controllers
     [Route("api/[controller]/{sessionId?}")]
     public class TestingController : ControllerBase
     {
-        public TestingController(IStudentService studentService, AppDbContext appDbContext)
+        public TestingController(IStudentService studentService, IExamService examService, AppDbContext appDbContext)
         {
             this.dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
+            this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
         }
         private readonly AppDbContext dbContext;
+        private readonly IExamService examService;
         private readonly IStudentService studentService;
 
         [Authorize]
@@ -28,55 +31,11 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> GetState(int sessionId)
         {
             var student = await this.InitStudent(studentService);
-            if (student == null) return BadRequest("Cookie don't contains nessesary data or one is invalid");
-            Session session = await dbContext.Sessions
-                                                .Where(s => s.Id == sessionId && s.Student.Id == student.Id)
-                                                .Include(s=>s.Test)
-                                                .ThenInclude(t=>t.MapParts)
-                                                .Include(s=>s.Student)
-                                                .Include(s=>s.Questions)
-                                                .ThenInclude(q=>q.Question)
-                                                .ThenInclude(q=>q.Answer)
-                                                .SingleOrDefaultAsync();
-            if(session != null)
-            {
-                TestingViewModel vm;
-                if (session.Finished)
-                {
-                    vm = new TestingViewModel
-                    {
-                        SessionId = session.Id,
-                        Finished = session.Finished,
-                        QuestionNum = session.QuestionNum,
-                        TimeLeft = session.TimeLeft,
-                        ResultId = session.IdOfResult
-                    };
-                }
-                else
-                {
-                    vm = new TestingViewModel
-                    {
-                        SessionId = session.Id,
-                        TestName = session.Test.Name,
-                        QuestionsCount = session.Test.QuestionsCount,
-                        Finished = session.Finished,
-                        QuestionNum = session.QuestionNum,
-                        TimeLeft = session.TimeLeft,
-                        QuestionText = session.CurrentQuestion.Text,
-                        QuestionSubText = session.CurrentQuestion.SubText,
-                        QuestionCast=session.CurrentQuestion.Cast,
-                        AnswerType = session.CurrentQuestion.Answer.GetType().Name,
-                        Addition = session.CurrentQuestion.Answer.GetAdditiveData()
-                    };
-                }
-                return new ObjectResult(vm);
-            }
-            else
-            {
-
-                return BadRequest($"Specified student haven't got an access to session({sessionId})");
-            }
-            
+            if (student == null) return BadRequest("Cookie doesn't contain nessesary data or one is invalid");
+            ExamSessionViewModel state = await examService.GetSessionStateForAsync(sessionId, student.Id);
+            if(state == null)
+                return BadRequest($"Session doesn't exist or user doesn't have an access to it");
+            return new ObjectResult(state);
         }
 
         [Authorize]

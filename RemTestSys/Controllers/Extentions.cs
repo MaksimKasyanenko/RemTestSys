@@ -14,7 +14,7 @@ namespace RemTestSys.Controllers
             if(!controller.TryGetLogIdFromCookie(studentService, out logId))return null;
             StudentViewModel student = await studentService.FindStudentAsync(logId);
             if(student == null)return null;
-            controller.ViewBag.StudentFullName = student.FullName;
+            if(controller is Controller)((Controller)controller).ViewBag.StudentFullName = student.FullName;
             return student;
         }
 

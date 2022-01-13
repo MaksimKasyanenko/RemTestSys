@@ -22,18 +22,18 @@ namespace RemTestSys.Domain.Services
         public async Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId)
         {
             var tests = await dbContext.AccessesToTestForAll
-                                       .Include(a=>a.Test.MapParts)
+                                       .Include(a => a.Test.MapParts)
                                        .Select(at => at.Test)
                                        .ToListAsync();
             int groupId = (await dbContext.Students.SingleAsync(s => s.Id == studentId)).GroupId;
             tests.AddRange(await dbContext.AccessesToTestForGroup
                                           .Where(a => a.GroupId == groupId)
-                                          .Include(a=>a.Test.MapParts)
+                                          .Include(a => a.Test.MapParts)
                                           .Select(a => a.Test)
                                           .ToArrayAsync());
             tests.AddRange(await dbContext.AccessesToTestForStudent
                                           .Where(a => a.StudentId == studentId)
-                                          .Include(a=>a.Test.MapParts)
+                                          .Include(a => a.Test.MapParts)
                                           .Select(a => a.Test)
                                           .ToArrayAsync());
 
@@ -63,7 +63,8 @@ namespace RemTestSys.Domain.Services
             return vmList;
         }
 
-        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId){
+        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId)
+        {
             var results = await dbContext.ResultsOfTesting
                                          .Where(r => r.Student.Id == studentId)
                                          .OrderByDescending(r => r.PassedAt)
@@ -85,7 +86,8 @@ namespace RemTestSys.Domain.Services
             return resViewList;
         }
 
-        public async Task<bool> HasAccessToAsync(int studentId, int examId){
+        public async Task<bool> HasAccessToAsync(int studentId, int examId)
+        {
             Student student = await dbContext.Students.SingleAsync(s => s.Id == studentId);
             return await dbContext.AccessesToTestForAll.AnyAsync(a => a.Test.Id == examId)
                 || await dbContext.AccessesToTestForGroup.AnyAsync(a => a.Test.Id == examId && a.GroupId == student.GroupId)
@@ -98,7 +100,7 @@ namespace RemTestSys.Domain.Services
                 throw new AccessToExamException($"Student {studentId} hasn't got access to the exam {examId}");
             Session session = await dbContext.Sessions
                                              .Include(s => s.Test)
-                                             .ThenInclude(t=>t.MapParts)
+                                             .ThenInclude(t => t.MapParts)
                                              .SingleOrDefaultAsync(s => s.Student.Id == studentId && s.Test.Id == examId);
             if (session != null && session.Finished)
             {
@@ -111,7 +113,7 @@ namespace RemTestSys.Domain.Services
                 Test test = await dbContext.Tests
                                        .Where(t => t.Id == examId)
                                        .Include(t => t.Questions)
-                                       .Include(t=>t.MapParts)
+                                       .Include(t => t.MapParts)
                                        .SingleAsync();
                 Student student = await dbContext.Students
                                             .SingleAsync(s => s.Id == studentId);
@@ -136,12 +138,12 @@ namespace RemTestSys.Domain.Services
                                                     .SingleOrDefaultAsync();
             if (result != null)
             {
-                if(result.StudentId != studentId)
+                if (result.StudentId != studentId)
                     throw new AccessToResultException($"Student {studentId} don't have access to result {resultId} as one isn't owner of it");
                 ExamResultViewModel resVM = new ExamResultViewModel
                 {
                     TestName = result.Test.Name,
-                    Mark = result.Mark.ToString(), 
+                    Mark = result.Mark.ToString(),
                     PassedAt = result.PassedAt,
                     Id = result.Id
                 };
@@ -151,6 +153,45 @@ namespace RemTestSys.Domain.Services
             {
                 return null;
             }
+        }
+
+        public async Task<ExamSessionViewModel> GetSessionStateForAsync(int sessionId, int studentId)
+        {
+            Session session = await dbContext.Sessions
+                                                .Where(s => s.Id == sessionId && s.Student.Id == studentId)
+                                                .Include(s => s.Test)
+                                                .ThenInclude(t => t.MapParts)
+                                                .Include(s => s.Student)
+                                                .Include(s => s.Questions)
+                                                .ThenInclude(q => q.Question)
+                                                .ThenInclude(q => q.Answer)
+                                                .SingleOrDefaultAsync();
+            ExamSessionViewModel state = null;
+            if (session != null)
+            {
+                state = new ExamSessionViewModel
+                {
+                    SessionId = session.Id,
+                    TestName = session.Test.Name,
+                    Finished = session.Finished,
+                    QuestionsCount = session.Test.QuestionsCount,
+                    QuestionNum = session.QuestionNum,
+                    TimeLeft = session.TimeLeft
+                };
+                if (session.Finished)
+                {
+                    state.ResultId = session.IdOfResult;
+                }
+                else
+                {
+                    state.QuestionText = session.CurrentQuestion.Text;
+                    state.QuestionSubText = session.CurrentQuestion.SubText;
+                    state.QuestionCost = session.CurrentQuestion.Cast;
+                    state.AnswerType = session.CurrentQuestion.Answer.GetType().Name;
+                    state.Addition = session.CurrentQuestion.Answer.GetAdditiveData();
+                }
+            }
+            return state;
         }
     }
 }

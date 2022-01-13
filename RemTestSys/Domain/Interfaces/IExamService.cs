@@ -8,6 +8,7 @@ namespace RemTestSys.Domain.Interfaces{
         Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId);
         Task<bool> HasAccessToAsync(int sudentId, int examId);
         Task<ExamSessionViewModel> ExamineAsync(int studentId, int examId);
+        Task<ExamSessionViewModel> GetSessionStateForAsync(int sessionId, int studentId);
         Task<ExamResultViewModel> GetResultForAsync(int resultId, int studentId);
     }
 }

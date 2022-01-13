@@ -22,21 +22,21 @@ namespace RemTestSys.Controllers
 
         public async Task<IActionResult> AvailableTests()
         {
-            var student = this.InitStudent(studentService);
+            StudentViewModel student = await this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             return View(await examService.GetAvailableExamsForAsync(student.Id));
         }
 
         public async Task<IActionResult> Results()
         {
-            var student = this.InitStudent(studentService);
+            StudentViewModel student = await this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             return View(await examService.GetResultsForAsync(student.Id));
         }
 
         public async Task<IActionResult> Testing(int id)
         {
-            var student = this.InitStudent(studentService);
+            StudentViewModel student = await this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             ExamSessionViewModel session;
             try{
@@ -50,7 +50,7 @@ namespace RemTestSys.Controllers
         public async Task<IActionResult> ResultOfTesting(int? id)
         {
             if (id == null) return RedirectToAction("AvailableTests");
-            var student = this.InitStudent(studentService);
+            StudentViewModel student = await this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
             ExamResultViewModel result;
             try{
