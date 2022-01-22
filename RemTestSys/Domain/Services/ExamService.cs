@@ -193,5 +193,45 @@ namespace RemTestSys.Domain.Services
             }
             return state;
         }
+
+        public async Task<AnswerResultViewModel> AnswerQuestionAsync(int sessionId, AnswerViewModel answer, StudentViewModel answerer)
+        {
+            Session session = await dbContext.Sessions.Where(s => s.Id == sessionId && s.Student.LogId == answerer.logId)
+                                                          .Include(s=>s.Questions)
+                                                          .ThenInclude(qs=>qs.Question)
+                                                          .ThenInclude(q=>q.Answer)
+                                                          .Include(s=>s.Student)
+                                                          .Include(s=>s.Test)
+                                                          .ThenInclude(t=>t.MapParts)
+                                                          .SingleOrDefaultAsync();
+            if (session == null)throw new NullReferenceException($"Session({sessionId}) not exists or student({answerer.Id}) doesn't have access to this one");
+                
+            bool isRight = session.CurrentQuestion.Answer.IsMatch(answer.Data);
+            if (isRight)
+            {
+                session.Scores+=session.CurrentQuestion.Cast;
+            }
+            AnswerResultViewModel ar = new AnswerResultViewModel
+            {
+                IsRight = isRight,
+                RightText = isRight ? null : session.CurrentQuestion.Answer.RightText
+            };
+            if (!session.NextQuestion())
+            {
+                session.Finished = true;
+                ResultOfTesting resultOfTesting = new ResultOfTesting
+                {
+                    Student = session.Student,
+                    Test = session.Test,
+                    Mark = session.GetMark(),
+                    PassedAt = DateTime.Now
+                };
+                dbContext.ResultsOfTesting.Add(resultOfTesting);
+                await dbContext.SaveChangesAsync();
+                session.IdOfResult = resultOfTesting.Id;
+            }
+            await dbContext.SaveChangesAsync();
+            return ar;
+        }
     }
 }
