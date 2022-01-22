@@ -1,4 +1,4 @@
-﻿namespace RemTestSys.ViewModel
+﻿namespace RemTestSys.Domain.ViewModels
 {
     public class AnswerViewModel
     {

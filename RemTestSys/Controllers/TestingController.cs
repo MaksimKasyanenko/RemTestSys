@@ -1,12 +1,10 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using RemTestSys.ViewModel;
 using RemTestSys.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using RemTestSys.Domain;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.ViewModels;
 
@@ -16,13 +14,11 @@ namespace RemTestSys.Controllers
     [Route("api/[controller]/{sessionId?}")]
     public class TestingController : ControllerBase
     {
-        public TestingController(IStudentService studentService, IExamService examService, AppDbContext appDbContext)
+        public TestingController(IStudentService studentService, IExamService examService)
         {
-            this.dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
             this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
         }
-        private readonly AppDbContext dbContext;
         private readonly IExamService examService;
         private readonly IStudentService studentService;
 
