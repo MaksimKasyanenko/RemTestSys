@@ -1,4 +1,4 @@
-﻿@model List<ResultOfTestingViewModel>
+﻿@model List<ExamResultViewModel>
 @{
     ViewData["Title"] = "Результати тестів";
     ViewData["Page"] = "Results";
@@ -17,7 +17,7 @@
                 <th>Дата проходження</th>
                 <th>Оцінка</th>
             </tr>
-            @foreach (ResultOfTestingViewModel res in Model)
+            @foreach (ExamResultViewModel res in Model)
             {
                 <tr>
                     <td>@res.TestName</td>

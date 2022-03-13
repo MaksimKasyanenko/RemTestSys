@@ -194,9 +194,9 @@ namespace RemTestSys.Domain.Services
             return state;
         }
 
-        public async Task<AnswerResultViewModel> AnswerQuestionAsync(int sessionId, AnswerViewModel answer, StudentViewModel answerer)
+        public async Task<AnswerResultViewModel> AnswerQuestionAsync(int sessionId, int answererId, AnswerViewModel answer)
         {
-            Session session = await dbContext.Sessions.Where(s => s.Id == sessionId && s.Student.LogId == answerer.logId)
+            Session session = await dbContext.Sessions.Where(s => s.Id == sessionId)
                                                           .Include(s=>s.Questions)
                                                           .ThenInclude(qs=>qs.Question)
                                                           .ThenInclude(q=>q.Answer)
@@ -204,7 +204,8 @@ namespace RemTestSys.Domain.Services
                                                           .Include(s=>s.Test)
                                                           .ThenInclude(t=>t.MapParts)
                                                           .SingleOrDefaultAsync();
-            if (session == null)throw new NullReferenceException($"Session({sessionId}) not exists or student({answerer.Id}) doesn't have access to this one");
+            if (session == null)throw new NullReferenceException($"Session({sessionId}) not exists");
+            if(session.Student.Id != answererId)throw new AccessToSessionException($"Specified student({answererId}) don't have access to session({session.Id})");
                 
             bool isRight = session.CurrentQuestion.Answer.IsMatch(answer.Data);
             if (isRight)

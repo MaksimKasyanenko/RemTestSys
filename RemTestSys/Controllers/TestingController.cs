@@ -40,7 +40,7 @@ namespace RemTestSys.Controllers
         {
             var student = await this.InitStudent(studentService);
             if (student == null) return BadRequest("Cookie doesn't contain nessesary data or one is invalid");
-            return new ObjectResult(await examService.AnswerQuestionAsync(sessionId, answer, student));
+            return new ObjectResult(await examService.AnswerQuestionAsync(sessionId, student.Id, answer));
         }
     }
 }
