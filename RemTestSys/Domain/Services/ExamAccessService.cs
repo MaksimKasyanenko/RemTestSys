@@ -75,4 +75,50 @@ public class ExamAccessService : IExamAccessService
         dbContext.AccessesToTestForGroup.Add(acc);
         await dbContext.SaveChangesAsync();
     }
+    public async Task OpenPersonAccessAsync(int studentId, int examId)
+    {
+        if(!await dbContext.Students.AnyAsync(s => s.Id == studentId))
+            throw new ArgumentException("Student with specified Id doesn't exist");
+        if(!await dbContext.Tests.AnyAsync(e => e.Id == examId))
+            throw new ArgumentException("Exam with specified Id doesn't exist");
+        AccessToTestForStudent acc = new AccessToTestForStudent();
+        acc.StudentId = studentId;
+        acc.TestId = examId;
+        dbContext.AccessesToTestForStudent.Add(acc);
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task CloseAllAccessesAsync()
+    {
+        dbContext.AccessesToTestForAll.RemoveRange(dbContext.AccessesToTestForAll);
+        dbContext.AccessesToTestForGroup.RemoveRange(dbContext.AccessesToTestForGroup);
+        dbContext.AccessesToTestForStudent.RemoveRange(dbContext.AccessesToTestForStudent);
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task CloseCommonAccessAsync(int accessId)
+    {
+        AccessToTestForAll acc = await dbContext.AccessesToTestForAll.SingleAsync(acc => acc.Id == accessId);
+        if(acc != null)
+        {
+            dbContext.AccessesToTestForAll.Remove(acc);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+    public async Task CloseGroupAccessAsync(int accessId)
+    {
+        AccessToTestForGroup acc = await dbContext.AccessesToTestForGroup.SingleAsync(acc => acc.Id == accessId);
+        if(acc!=null)
+        {
+            dbContext.AccessesToTestForGroup.Remove(acc);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+    public async Task ClosePersonAccessAsync(int accessId)
+    {
+        AccessToTestForStudent acc = await dbContext.AccessesToTestForStudent.SingleAsync(acc => acc.Id == accessId);
+        if(acc!=null)
+        {
+            dbContext.AccessesToTestForStudent.Remove(acc);
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }
