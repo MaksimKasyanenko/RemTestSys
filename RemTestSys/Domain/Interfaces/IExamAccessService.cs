@@ -7,9 +7,9 @@ namespace RemTestSys.Domain.Interfaces;
 public interface IExamAccessService
 {
     Task<List<AccessToExamViewModel>> GetAccessListAsync();
-    Task OpenCommonAccessAsync(int testId);
-    Task OpenGroupAccessAsync(int groupId, int testId);
-    Task OpenPersonAccessAsync(int studentId, int testId);
+    Task OpenCommonAccessAsync(int examId);
+    Task OpenGroupAccessAsync(int groupId, int examId);
+    Task OpenPersonAccessAsync(int studentId, int examId);
     Task CloseAllAccessesAsync();
     Task CloseCommonAccessAsync(int accessId);
     Task CloseGroupAccessAsync(int accessId);
