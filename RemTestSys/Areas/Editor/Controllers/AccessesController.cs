@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Areas.Editor.ViewModel;
 using RemTestSys.Domain;
+using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -15,18 +16,16 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles = "Editor")]
     public class AccessesController : Controller
     {
-        public AccessesController(AppDbContext dbContext)
+        public AccessesController(IExamAccessService accessService, AppDbContext dbContext)
         {
+            this.accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
             this.dbContext = dbContext;
         }
         private readonly AppDbContext dbContext;
+        private readonly IExamAccessService accessService;
         public async Task<IActionResult> Index()
         {
-            AccessesViewModel accesses = new AccessesViewModel();
-            accesses.AccessesForAll = await dbContext.AccessesToTestForAll.Include(a => a.Test).ToListAsync();
-            accesses.AccessesForGroups = await dbContext.AccessesToTestForGroup.Include(a => a.Test).Include(a => a.Group).ToListAsync();
-            accesses.AccessesForStudents = await dbContext.AccessesToTestForStudent.Include(a => a.Test).Include(a => a.Student).ToListAsync();
-            return View(accesses);
+            return View(await accessService.GetAllAccessesAsync());
         }
         public async Task<IActionResult> OpenAccessToTestForAll(int id)
         {
