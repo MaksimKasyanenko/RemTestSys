@@ -6,14 +6,14 @@
 
 <h2>Доступ до тестів</h2>
 <hr />
-@if (Model.AccessesForAll.Count() > 0 || Model.AccessesForGroups.Count() > 0 || Model.AccessesForStudents.Count() > 0)
+@if (Model.Count() > 0)
 {
     <div class="text-end">
-        <a asp-action="ClearAll" class="btn btn-danger">Закрити доступ всім</a>
+        <a asp-action="ClearAll" class="btn btn-danger">Закрити всі доступи</a>
     </div>
-    @if (Model.AccessesForAll.Count() > 0)
+    @if (Model.Where(ac => ac.ForAll==true).Count() > 0)
     {
-        <h3>Для всіх</h3>
+        <h3>Екзамени для всіх</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -22,10 +22,10 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.AccessesForAll)
+                @foreach (var item in Model.Where(ac => ac.ForAll==true))
                 {
                     <tr>
-                        <td>@item.Test.Name</td>
+                        <td>@item.ExamName</td>
                         <td><a asp-action="DeleteForAll" asp-controller="Accesses" asp-route-id="@item.Id">Закрити доступ</a></td>
                     </tr>
                 }
@@ -33,9 +33,9 @@
         </table>
     }
 
-    @if (Model.AccessesForGroups.Count() > 0)
+    @if (Model.Where(ac => ac.ForGroup).Count() > 0)
     {
-        <h3>Для груп</h3>
+        <h3>Екзамени для груп</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -45,11 +45,11 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.AccessesForGroups)
+                @foreach (var item in Model.Where(ac => ac.ForGroup==true))
                 {
                     <tr>
-                        <td>@item.Test.Name</td>
-                        <td>@item.Group.Name</td>
+                        <td>@item.ExamName</td>
+                        <td>@item.TargetName</td>
                         <td><a asp-action="DeleteForGroup" asp-controller="Accesses" asp-route-id="@item.Id">Закрити доступ</a></td>
                     </tr>
                 }
@@ -57,9 +57,9 @@
         </table>
     }
 
-    @if (Model.AccessesForStudents.Count() > 0)
+    @if (Model.Where(ac => ac.ForPerson==true).Count() > 0)
     {
-        <h3>Для учнів</h3>
+        <h3>Персональні екзамени</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -69,11 +69,11 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.AccessesForStudents)
+                @foreach (var item in Model.Where(ac => ac.ForPerson==true))
                 {
                     <tr>
-                        <td>@item.Test.Name</td>
-                        <td>@item.Student.FullName</td>
+                        <td>@item.ExamName</td>
+                        <td>@item.TargetName</td>
                         <td><a asp-action="DeleteForStudent" asp-controller="Accesses" asp-route-id="@item.Id">Закрити доступ</a></td>
                     </tr>
                 }
@@ -83,5 +83,5 @@
 }
 else
 {
-    <p class="text-center text-secondary">Жодного доступу не відкрито</p>
+    <p class="text-center text-secondary">До жодного екзамену доступ не надано</p>
 }
