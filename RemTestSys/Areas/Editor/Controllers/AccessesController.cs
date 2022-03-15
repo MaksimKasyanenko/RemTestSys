@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RemTestSys.Areas.Editor.ViewModel;
-using RemTestSys.Domain;
 using RemTestSys.Domain.Interfaces;
-using RemTestSys.Domain.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.Controllers
@@ -16,50 +10,36 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles = "Editor")]
     public class AccessesController : Controller
     {
-        public AccessesController(IExamAccessService accessService, AppDbContext dbContext)
+        public AccessesController(IExamAccessService accessService, IGroupService groupService, IStudentService studentService)
         {
             this.accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
-            this.dbContext = dbContext;
+            this.groupService = groupService ?? throw new ArgumentNullException(nameof(groupService));
+            this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
         }
-        private readonly AppDbContext dbContext;
         private readonly IExamAccessService accessService;
+        private readonly IGroupService groupService;
+        private readonly IStudentService studentService;
         public async Task<IActionResult> Index()
         {
-            return View(await accessService.GetAllAccessesAsync());
+            return View(await accessService.GetAccessListAsync());
         }
         public async Task<IActionResult> OpenAccessToTestForAll(int id)
         {
-            Test test = await dbContext.Tests.FindAsync(id);
-            if (test != null && await dbContext.AccessesToTestForAll.AllAsync(a => a.TestId != test.Id))
-            {
-                dbContext.AccessesToTestForAll.Add(new AccessToTestForAll { Test = test });
-                await dbContext.SaveChangesAsync();
-            }
+            await accessService.OpenCommonAccessAsync(id);
             return RedirectToAction("Index");
         }
         [HttpGet]
         public async Task<IActionResult> OpenAccessToTestForGroup(int id)
         {
             ViewData["TestId"] = id;
-            var groups = await dbContext.Groups.ToListAsync();
+            var groups = await groupService.GetGroupListAsync();
             return View(groups);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OpenAccessToTestForGroup(int id, int testId)
         {
-            var group = await dbContext.Groups.FindAsync(id);
-            var test = await dbContext.Tests.FindAsync(testId);
-            if(test != null && group != null && await dbContext.AccessesToTestForGroup.AllAsync(a=>a.TestId != testId || a.GroupId != id))
-            {
-                AccessToTestForGroup access = new AccessToTestForGroup
-                {
-                    GroupId = id,
-                    TestId = testId
-                };
-                dbContext.AccessesToTestForGroup.Add(access);
-                await dbContext.SaveChangesAsync();
-            }
+            await accessService.OpenGroupAccessAsync(id, testId);
             return RedirectToAction("Index");
         }
 
@@ -67,52 +47,35 @@ namespace RemTestSys.Areas.Editor.Controllers
         public async Task<IActionResult> OpenAccessToTestForStudent(int id)
         {
             ViewData["TestId"] = id;
-            var students = await dbContext.Students.ToListAsync();
+            var students = await studentService.GetStudentsAsync();
             return View(students);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OpenAccessToTestForStudent(int id, int testId)
         {
-            var student = await dbContext.Students.FindAsync(id);
-            var test = await dbContext.Tests.FindAsync(testId);
-            if (test != null && student != null && await dbContext.AccessesToTestForStudent.AllAsync(a => a.TestId != testId || a.StudentId != id))
-            {
-                AccessToTestForStudent access = new AccessToTestForStudent
-                {
-                    StudentId = id,
-                    TestId = testId
-                };
-                dbContext.AccessesToTestForStudent.Add(access);
-                await dbContext.SaveChangesAsync();
-            }
+            await accessService.OpenPersonAccessAsync(id, testId);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> ClearAll()
         {
-            dbContext.AccessesToTestForAll.RemoveRange(dbContext.AccessesToTestForAll);
-            dbContext.AccessesToTestForGroup.RemoveRange(dbContext.AccessesToTestForGroup);
-            dbContext.AccessesToTestForStudent.RemoveRange(dbContext.AccessesToTestForStudent);
-            await dbContext.SaveChangesAsync();
+            await accessService.CloseAllAccessesAsync();
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DeleteForAll(int id)
         {
-            dbContext.AccessesToTestForAll.Remove(await dbContext.AccessesToTestForAll.FindAsync(id));
-            await dbContext.SaveChangesAsync();
+            await accessService.CloseCommonAccessAsync(id);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> DeleteForGroups(int id)
         {
-            dbContext.AccessesToTestForGroup.Remove(await dbContext.AccessesToTestForGroup.FindAsync(id));
-            await dbContext.SaveChangesAsync();
+            await accessService.CloseGroupAccessAsync(id);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> DeleteForStudent(int id)
         {
-            dbContext.AccessesToTestForStudent.Remove(await dbContext.AccessesToTestForStudent.FindAsync(id));
-            await dbContext.SaveChangesAsync();
+            await accessService.ClosePersonAccessAsync(id);
             return RedirectToAction("Index");
         }
     }

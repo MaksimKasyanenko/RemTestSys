@@ -1,5 +1,6 @@
 using RemTestSys.Domain.ViewModels;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace RemTestSys.Domain.Interfaces{
     public interface IStudentService
@@ -7,5 +8,6 @@ namespace RemTestSys.Domain.Interfaces{
         Task<string> RegisterNewStudentAsync(StudentViewModel studentData);
         Task<StudentViewModel> FindStudentAsync(string logId);
         Task<bool> DoesStudentExistAsync(string logId);
+        Task<List<StudentViewModel>> GetStudentsAsync();
     }
 }

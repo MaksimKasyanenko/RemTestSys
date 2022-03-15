@@ -1,10 +1,10 @@
-﻿@model IEnumerable<RemTestSys.Domain.Models.Student>
+﻿@model IEnumerable<RemTestSys.Domain.ViewModels.StudentViewModel>
 
 @{
-    ViewData["Title"] = "Відкрити доступ для учня";
+    ViewData["Title"] = "Відкрити персональний доступ для учня";
 }
 
-<h2>Відкрити доступ для учня</h2>
+<h2>Відкрити персональний доступ для учня</h2>
 
 @if (Model.Count() > 0)
 {
@@ -12,7 +12,7 @@
         <thead>
             <tr>
                 <th>
-                    Персональний ІД
+                    ІД учня
                 </th>
                 <th>
                     Учень
@@ -26,7 +26,7 @@
             {
                 <tr>
                     <td>
-                        @item.LogId
+                        @item.Id
                     </td>
                     <td>
                         @item.FullName

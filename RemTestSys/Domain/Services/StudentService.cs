@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain;
 using RemTestSys.Domain.Models;
@@ -48,6 +49,16 @@ namespace RemTestSys.Domain.Services{
         public async Task<bool> DoesStudentExistAsync(string logId)
         {
             return await dbContext.Students.AnyAsync(s => s.LogId == logId);
+        }
+        public async Task<List<StudentViewModel>> GetStudentsAsync(){
+            return await dbContext.Students.Include(s => s.Group).Select(s => new StudentViewModel{
+                Id = s.Id,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                GroupId = s.GroupId,
+                GroupName = s.Group.Name,
+                RegistrationDate = s.RegistrationDate
+            }).ToListAsync();
         }
         private async Task<string> RandomLogId()
         {
