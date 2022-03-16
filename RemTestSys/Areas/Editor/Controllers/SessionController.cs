@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RemTestSys.Domain;
-using RemTestSys.Domain.Models;
+using RemTestSys.Domain.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.Controllers
@@ -14,30 +10,23 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles="Editor")]
     public class SessionController : Controller
     {
-        public SessionController(AppDbContext dbContext)
+        public SessionController(ISessionService sessionService)
         {
-            this.dbContext = dbContext;
+            this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
         }
-        private readonly AppDbContext dbContext;
+        private readonly ISessionService sessionService;
         public async Task<IActionResult> Index()
         {
-            List<Session> sessions = await dbContext.Sessions.Include(s => s.Student).Include(s => s.Test).ToListAsync();
-            return View(sessions);
+            return View(await sessionService.GetSessionListAsync());
         }
         public async Task<IActionResult> Close(int id)
         {
-            Session session = await dbContext.Sessions.SingleOrDefaultAsync(s=>s.Id==id);
-            if (session != null)
-            {
-                dbContext.Sessions.Remove(session);
-                await dbContext.SaveChangesAsync();
-            }
+            await sessionService.CloseSessionAsync(id);
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> ClearAll()
+        public async Task<IActionResult> CloseAll()
         {
-            dbContext.Sessions.RemoveRange(dbContext.Sessions);
-            await dbContext.SaveChangesAsync();
+            await sessionService.CloseAllSessionsAsync();
             return RedirectToAction("Index");
         }
     }

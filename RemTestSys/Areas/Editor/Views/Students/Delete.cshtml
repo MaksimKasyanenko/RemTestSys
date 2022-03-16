@@ -1,4 +1,4 @@
-﻿@model RemTestSys.Domain.Models.Student
+﻿@model RemTestSys.Domain.ViewModels.StudentViewModel
 
 @{
     ViewData["Title"] = "Видалення учня";
@@ -20,7 +20,7 @@
             Група
         </dt>
         <dd class="col-sm-10">
-            @Model.Group.Name
+            @Model.GroupName
         </dd>
         <dt class="col-sm-2">
             Дата реєстрації
