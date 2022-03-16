@@ -30,7 +30,7 @@ namespace RemTestSys.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Registration(StudentViewModel studentData)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && studentData.GroupId>0)
             {
                 string logId = await studentService.RegisterNewStudentAsync(studentData);
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
