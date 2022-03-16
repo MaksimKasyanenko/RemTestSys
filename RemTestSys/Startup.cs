@@ -30,6 +30,8 @@ namespace RemTestSys
             services.AddTransient<ISessionBuilder, SessionBuilder>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IExamService, ExamService>();
+            services.AddScoped<IExamAccessService, ExamAccessService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(
