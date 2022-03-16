@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RemTestSys;
-using RemTestSys.Domain;
 using RemTestSys.Domain.Models;
+using RemTestSys.Domain.Interfaces;
 
 namespace RemTestSys.Areas.Editor.Controllers
 {
@@ -16,18 +14,14 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles="Editor")]
     public class TestsController : Controller
     {
-        private readonly AppDbContext _context;
-
-        public TestsController(AppDbContext context)
+        public TestsController(IExamService examService)
         {
-            _context = context;
+            this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
         }
-
-        // GET: Editor/Tests
+        private readonly IExamService examService;
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Test> tests = await _context.Tests.Include(t=>t.MapParts).ToListAsync();
-            return View(tests);
+            return View(await examService.GetExamsAsync());
         }
 
         // GET: Editor/Tests/Details/5
