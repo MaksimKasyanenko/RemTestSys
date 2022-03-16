@@ -54,5 +54,17 @@ namespace RemTestSys.Domain.Services{
         {
             return dbContext.Groups.Any(g => g.Id == id);
         }
+        public async Task<List<StudentViewModel>> GetStudentsForGroupAsync(int id)
+        {
+            var group = await dbContext.Groups.Where(g=>g.Id == id).Include(g=>g.Students).FirstAsync();
+            return group.Students.Select(s => new StudentViewModel{
+                                             Id = s.Id,
+                                             FirstName = s.FirstName,
+                                             LastName = s.LastName,
+                                             GroupId = s.GroupId,
+                                             GroupName = group.Name,
+                                             RegistrationDate = s.RegistrationDate
+                                         }).ToList();
+        }
     }
 }

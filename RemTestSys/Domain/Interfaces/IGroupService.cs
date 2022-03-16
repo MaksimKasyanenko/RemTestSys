@@ -10,5 +10,6 @@ namespace RemTestSys.Domain.Interfaces{
         Task UpdateAsync(GroupViewModel group);
         Task DeleteAsync(int id);
         bool Exists(int id);
+        Task<List<StudentViewModel>> GetStudentsForGroupAsync(int id);
     }
 }

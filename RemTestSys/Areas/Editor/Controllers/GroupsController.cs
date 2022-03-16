@@ -30,6 +30,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             if (id == null)return View("Error");
             var group = await groupService.FindAsync((int)id);
             if (group == null)return NotFound();
+            ViewBag.StudentsInGroup = await groupService.GetStudentsForGroupAsync((int)id);
             return View(group);
         }
         public IActionResult Create()
