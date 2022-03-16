@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RemTestSys.Domain.Models.Test>
+﻿@model IEnumerable<RemTestSys.Domain.ViewModels.ExamViewModel>
 
 @{
     ViewData["Title"] = "Всі тести";
@@ -43,13 +43,13 @@
                         @item.Description
                     </td>
                     <td>
-                        @item.QuestionsCount
+                        @item.QuestionCount
                     </td>
                     <td>
                         @item.Duration
                     </td>
                     <td>
-                        @item.ScoreSum
+                        @item.MaxMark
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |

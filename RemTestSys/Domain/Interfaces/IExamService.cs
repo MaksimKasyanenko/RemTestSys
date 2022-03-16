@@ -4,6 +4,8 @@ using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Domain.Interfaces{
     public interface IExamService{
+        Task<List<ExamViewModel>> GetExamsAsync();
+        Task<ExamViewModel> FindExamAsync(int id);
         Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId);
         Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId);
         Task<bool> HasAccessToAsync(int sudentId, int examId);

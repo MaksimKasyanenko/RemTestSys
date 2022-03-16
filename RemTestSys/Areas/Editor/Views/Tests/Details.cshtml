@@ -1,4 +1,4 @@
-﻿@model RemTestSys.Domain.Models.Test
+﻿@model RemTestSys.Domain.ViewModels.ExamViewModel
 
 @{
     ViewData["Title"] = "Деталі";
@@ -23,13 +23,13 @@
             Кількість питань
         </dt>
         <dd class="col-sm-10">
-            @Model.QuestionsCount
+            @Model.QuestionCount
         </dd>
         <dt class="col-sm-2">
             Максимальна оцінка
         </dt>
         <dd class="col-sm-10">
-            @Model.ScoreSum
+            @Model.MaxMark
         </dd>
     </dl>
     <h4>Розподіл питань</h4>

@@ -23,26 +23,11 @@ namespace RemTestSys.Areas.Editor.Controllers
         {
             return View(await examService.GetExamsAsync());
         }
-
-        // GET: Editor/Tests/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var test = await _context.Tests
-                .Include(t=>t.Questions)
-                .ThenInclude(q=>q.Answer)
-                .Include(t=>t.MapParts)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (test == null)
-            {
-                return NotFound();
-            }
-
-            return View(test);
+            var exam = await examService.FindExamAsync(id);
+            if (exam == null)return NotFound();
+            return View(exam);
         }
 
         [HttpGet]

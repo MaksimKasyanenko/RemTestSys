@@ -17,22 +17,22 @@ else
     {
         <div class="test-info-block">
             <header class="between-panel">
-                <h3>Тест: @testInfo.TestName</h3>
-                <span>Остання оцінка: @testInfo.LastMark</span>
+                <h3>Тест: @testInfo.Name</h3>
+                <span>Максимальна оцінка: @testInfo.MaxMark</span>
             </header>
             <dl>
                 <dt>Опис:</dt>
-                <dd>@testInfo.TestDescription</dd>
+                <dd>@testInfo.Description</dd>
             </dl>
             <dl>
                 <dt>Питань в тесті:</dt>
-                <dd>@testInfo.CountOfQuestions</dd>
+                <dd>@testInfo.QuestionCount</dd>
             </dl>
             <dl>
                 <dt>Часу на проходження:</dt>
                 <dd>@($"{(int)(testInfo.Duration/60)}хв. {testInfo.Duration%60}сек.")</dd>
             </dl>
-            <div class="right-panel"><a asp-action="Testing" asp-controller="Student" asp-route-id="@testInfo.TestId" class="primary-button">Пройти</a></div>
+            <div class="right-panel"><a asp-action="Testing" asp-controller="Student" asp-route-id="@testInfo.Id" class="primary-button">Пройти</a></div>
         </div>
     }
 }

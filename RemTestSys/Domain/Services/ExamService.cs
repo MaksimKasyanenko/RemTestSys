@@ -18,7 +18,37 @@ namespace RemTestSys.Domain.Services
         }
         private readonly AppDbContext dbContext;
         private readonly ISessionBuilder sessionBuilder;
-
+        public async Task<List<ExamViewModel>> GetExamsAsync()
+        {
+            return await dbContext.Tests
+                            .Select(e => new ExamViewModel{
+                                Id = e.Id,
+                                Name = e.Name,
+                                Description = e.Description,
+                                QuestionCount = e.QuestionsCount,
+                                Duration = e.Duration,
+                                MaxMark = GetMaxMarkOfExam(e.Id).ToString()
+                            }).ToListAsync();
+        }
+        public async Task<ExamViewModel> FindExamAsync(int id)
+        {
+            var exam = await dbContext.Tests.FirstAsync(e => e.Id == id);
+            if(exam == null)return null;
+            return new ExamViewModel{
+                Id = exam.Id,
+                Name = exam.Name,
+                Description = exam.Description,
+                QuestionCount = exam.QuestionsCount,
+                Duration = exam.Duration,
+                MaxMark = GetMaxMarkOfExam(exam.Id).ToString()
+            };
+        }
+        private double GetMaxMarkOfExam(int id)
+        {
+            return dbContext.ResultsOfTesting
+                            .Where(r => r.Id == id)
+                            .Max(r => r.Mark);
+        }
         public async Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId)
         {
             var tests = await dbContext.AccessesToTestForAll
@@ -40,23 +70,23 @@ namespace RemTestSys.Domain.Services
             var vmList = new List<ExamViewModel>();
             foreach (var tst in tests)
             {
-                string lastMark = "-";
-                ResultOfTesting lastRes = await dbContext.ResultsOfTesting
+                string maxMark = "-";
+                ResultOfTesting maxRes = await dbContext.ResultsOfTesting
                                                          .Where(r => r.Student.Id == studentId && r.Test.Id == tst.Id)
-                                                         .OrderByDescending(r => r.PassedAt)
+                                                         .OrderByDescending(r => r.Mark)
                                                          .FirstOrDefaultAsync();
-                if (lastRes != null)
+                if (maxRes != null)
                 {
-                    lastMark = lastRes.Mark.ToString();
+                    maxMark = maxRes.Mark.ToString();
                 }
                 var tstInfo = new ExamViewModel
                 {
-                    TestId = tst.Id,
-                    TestName = tst.Name,
-                    TestDescription = tst.Description,
-                    CountOfQuestions = tst.QuestionsCount,
+                    Id = tst.Id,
+                    Name = tst.Name,
+                    Description = tst.Description,
+                    QuestionCount = tst.QuestionsCount,
                     Duration = tst.Duration,
-                    LastMark = lastMark
+                    MaxMark = maxMark
                 };
                 vmList.Add(tstInfo);
             }
