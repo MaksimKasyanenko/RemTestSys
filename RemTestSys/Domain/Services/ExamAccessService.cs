@@ -23,9 +23,7 @@ public class ExamAccessService : IExamAccessService
                                      .Select(acc => new AccessToExamViewModel{
                                          Id = acc.Id,
                                          ExamName = acc.Test.Name,
-                                         ForAll = true,
-                                         ForGroup = false,
-                                         ForPerson = false
+                                         AccessType = AccessToExamViewModel.AccessTypes.ForAll
                                      }).ToListAsync());
         accs.AddRange(await dbContext.AccessesToTestForGroup
                                      .Include(acc => acc.Test)
@@ -34,9 +32,7 @@ public class ExamAccessService : IExamAccessService
                                          Id = acc.Id,
                                          ExamName = acc.Test.Name,
                                          TargetName = acc.Group.Name,
-                                         ForAll = false,
-                                         ForGroup = true,
-                                         ForPerson = false
+                                         AccessType = AccessToExamViewModel.AccessTypes.ForGroup
                                      }).ToListAsync());
         accs.AddRange(await dbContext.AccessesToTestForStudent
                                      .Include(acc => acc.Test)
@@ -45,9 +41,7 @@ public class ExamAccessService : IExamAccessService
                                          Id = acc.Id,
                                          ExamName = acc.Test.Name,
                                          TargetName = acc.Student.FullName,
-                                         ForAll = false,
-                                         ForGroup = false,
-                                         ForPerson = true
+                                         AccessType = AccessToExamViewModel.AccessTypes.ForPerson
                                      }).ToListAsync());
         return accs;
     }

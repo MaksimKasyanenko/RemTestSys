@@ -1,4 +1,5 @@
-﻿@model List<RemTestSys.Domain.ViewModels.AccessToExamViewModel>
+﻿@using RemTestSys.Domain.ViewModels;
+@model List<RemTestSys.Domain.ViewModels.AccessToExamViewModel>
 
 @{
     ViewData["Title"] = "Доступ до тестів";
@@ -11,7 +12,7 @@
     <div class="text-end">
         <a asp-action="ClearAll" class="btn btn-danger">Закрити всі доступи</a>
     </div>
-    @if (Model.Where(ac => ac.ForAll==true).Count() > 0)
+    @if (Model.Where(ac => ac.AccessType==AccessToExamViewModel.AccessTypes.ForAll).Count() > 0)
     {
         <h3>Екзамени для всіх</h3>
         <table class="table table-striped">
@@ -22,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Where(ac => ac.ForAll==true))
+                @foreach (var item in Model.Where(ac => ac.AccessType==AccessToExamViewModel.AccessTypes.ForAll))
                 {
                     <tr>
                         <td>@item.ExamName</td>
@@ -33,7 +34,7 @@
         </table>
     }
 
-    @if (Model.Where(ac => ac.ForGroup).Count() > 0)
+    @if (Model.Where(ac => ac.AccessType == AccessToExamViewModel.AccessTypes.ForGroup).Count() > 0)
     {
         <h3>Екзамени для груп</h3>
         <table class="table table-striped">
@@ -45,7 +46,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Where(ac => ac.ForGroup==true))
+                @foreach (var item in Model.Where(ac => ac.AccessType == AccessToExamViewModel.AccessTypes.ForGroup))
                 {
                     <tr>
                         <td>@item.ExamName</td>
@@ -57,7 +58,7 @@
         </table>
     }
 
-    @if (Model.Where(ac => ac.ForPerson==true).Count() > 0)
+    @if (Model.Where(ac => ac.AccessType==AccessToExamViewModel.AccessTypes.ForPerson).Count() > 0)
     {
         <h3>Персональні екзамени</h3>
         <table class="table table-striped">
@@ -69,7 +70,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Where(ac => ac.ForPerson==true))
+                @foreach (var item in Model.Where(ac => ac.AccessType==AccessToExamViewModel.AccessTypes.ForPerson))
                 {
                     <tr>
                         <td>@item.ExamName</td>
