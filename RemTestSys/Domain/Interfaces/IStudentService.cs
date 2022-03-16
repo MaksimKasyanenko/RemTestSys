@@ -7,7 +7,9 @@ namespace RemTestSys.Domain.Interfaces{
     {
         Task<string> RegisterNewStudentAsync(StudentViewModel studentData);
         Task<StudentViewModel> FindStudentAsync(string logId);
+        Task<StudentViewModel> FindStudentAsync(int id);
         Task<bool> DoesStudentExistAsync(string logId);
         Task<List<StudentViewModel>> GetStudentsAsync();
+        Task DeleteStudentAsync(int id);
     }
 }

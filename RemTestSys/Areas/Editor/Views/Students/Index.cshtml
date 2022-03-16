@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RemTestSys.Domain.Models.Student>
+﻿@model IEnumerable<RemTestSys.Domain.ViewModels.StudentViewModel>
 
 @{
     ViewData["Title"] = "Учні";
@@ -30,7 +30,7 @@
                         @item.FullName
                     </td>
                     <td>
-                        @item.Group.Name
+                        @item.GroupName
                     </td>
                     <td>
                         @item.RegistrationDate

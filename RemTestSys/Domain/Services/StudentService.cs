@@ -46,6 +46,20 @@ namespace RemTestSys.Domain.Services{
                                   })
                                   .SingleOrDefaultAsync();
         }
+        public async Task<StudentViewModel> FindStudentAsync(int id)
+        {
+            return await dbContext.Students
+                                  .Where(s => s.Id == id)
+                                  .Include(s => s.Group)
+                                  .Select(s => new StudentViewModel{
+                                      Id = s.Id,
+                                      FirstName = s.FirstName,
+                                      LastName = s.LastName,
+                                      GroupId = s.Group.Id,
+                                      GroupName = s.Group.Name,
+                                      RegistrationDate = s.RegistrationDate
+                                  }).SingleOrDefaultAsync();
+        }
         public async Task<bool> DoesStudentExistAsync(string logId)
         {
             return await dbContext.Students.AnyAsync(s => s.LogId == logId);
@@ -59,6 +73,12 @@ namespace RemTestSys.Domain.Services{
                 GroupName = s.Group.Name,
                 RegistrationDate = s.RegistrationDate
             }).ToListAsync();
+        }
+        public async Task DeleteStudentAsync(int id)
+        {
+            var student = await dbContext.Students.SingleAsync(s => s.Id==id);
+            dbContext.Students.Remove(student);
+            await dbContext.SaveChangesAsync();
         }
         private async Task<string> RandomLogId()
         {
