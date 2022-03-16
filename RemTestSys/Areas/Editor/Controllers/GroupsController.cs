@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Interfaces;
-using RemTestSys.Domain;
 using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Areas.Editor.Controllers
