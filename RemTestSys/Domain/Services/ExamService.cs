@@ -51,6 +51,20 @@ namespace RemTestSys.Domain.Services
                 })
             };
         }
+        public async Task CreateExamAsync(ExamViewModel examViewModel)
+        {
+            Test exam = new Test{
+                Name = examViewModel.Name,
+                Description = examViewModel.Description,
+                Duration = examViewModel.Duration,
+                MapParts = examViewModel.MapParts.Select(mp => new Test.MapPart{
+                    QuestionCount = mp.QuestionCount,
+                    QuestionCast = mp.QuestionCost
+                })
+            };
+            dbContext.Tests.Add(exam);
+            await dbContext.SaveChangesAsync();
+        }
         public async Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId)
         {
             var tests = await dbContext.AccessesToTestForAll

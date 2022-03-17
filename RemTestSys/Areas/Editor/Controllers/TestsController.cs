@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Models;
 using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.ViewModels;
 
 namespace RemTestSys.Areas.Editor.Controllers
 {
@@ -41,20 +42,14 @@ namespace RemTestSys.Areas.Editor.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TestViewModel testViewModel)
+        public async Task<IActionResult> Create(ExamViewModel exam)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(new Test {
-                    Name = testViewModel.Name,
-                    Description = testViewModel.Description,
-                    Duration = testViewModel.Duration,
-                    MapParts = testViewModel.MapParts
-                });
-                await _context.SaveChangesAsync();
+                await examService.CreateExamAsync(exam);
                 return RedirectToAction(nameof(Index));
             }
-            return View(testViewModel);
+            return View(exam);
         }
 
         public async Task<IActionResult> Edit(int id)
