@@ -14,11 +14,13 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles="Editor")]
     public class TestsController : Controller
     {
-        public TestsController(IExamService examService)
+        public TestsController(IExamService examService, IQuestionService questionService)
         {
             this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
+            this.questionService = questionService ?? throw new ArgumentNullException(nameof(questionService));
         }
         private readonly IExamService examService;
+        private readonly IQuestionService questionService;
         public async Task<IActionResult> Index()
         {
             return View(await examService.GetExamsAsync());
@@ -27,6 +29,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         {
             var exam = await examService.FindExamAsync(id);
             if (exam == null)return NotFound();
+            ViewBag.QuestionsInExam = await questionService.GetQuestionsFromExamAsync(id);
             return View(exam);
         }
 

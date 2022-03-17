@@ -37,7 +37,7 @@
     <div class="mb-4">
         @foreach(var part in Model.MapParts)
         {
-            <p>@($"{part.QuestionCount} питань по {part.QuestionCast} балів")</p>
+            <p>@($"{part.QuestionCount} питань по {part.QuestionCost} балів")</p>
         }
     </div>
     <h4>Доступ</h4>
@@ -49,7 +49,7 @@
         </div>
     <h4>Питання тесту</h4>
     <hr />
-            @if (Model.Questions.Count() > 0)
+            @if (ViewBag.QuestionsInExam.Count() > 0)
             {
                 <table class="table table-bordered table-striped table-success">
                     <thead>
@@ -65,16 +65,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var question in Model.Questions)
+                        @foreach (var question in ViewBag.QuestionsInExam)
                         {
                             <tr>
                                 <td>
                                     @question.Text
                                 </td>
                                 <td>
-                                    @question.Answer.RightText
+                                    @question.RightAnswer
                                 </td>
-                                <td>@question.Cast</td>
+                                <td>@question.Cost</td>
                                 <td>
                                     <a asp-action="Edit" asp-controller="Questions" asp-route-id="@question.Id">Редагувати</a> | 
                                     <a asp-action="Delete" asp-controller="Questions" asp-route-id="@question.Id">Видалити</a>

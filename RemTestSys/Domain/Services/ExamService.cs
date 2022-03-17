@@ -27,7 +27,11 @@ namespace RemTestSys.Domain.Services
                                 Description = e.Description,
                                 QuestionCount = e.QuestionsCount,
                                 Duration = e.Duration,
-                                MaxMark = GetMaxMarkOfExam(e.Id).ToString()
+                                MaxMark = e.ScoreSum.ToString(),
+                                MapParts = e.MapParts.Select(mp => new ExamViewModel.MapPart{
+                                    QuestionCount = mp.QuestionCount,
+                                    QuestionCost = mp.QuestionCast
+                                })
                             }).ToListAsync();
         }
         public async Task<ExamViewModel> FindExamAsync(int id)
@@ -40,14 +44,12 @@ namespace RemTestSys.Domain.Services
                 Description = exam.Description,
                 QuestionCount = exam.QuestionsCount,
                 Duration = exam.Duration,
-                MaxMark = GetMaxMarkOfExam(exam.Id).ToString()
+                MaxMark = exam.ScoreSum.ToString(),
+                MapParts = exam.MapParts.Select(mp => new ExamViewModel.MapPart{
+                    QuestionCount = mp.QuestionCount,
+                    QuestionCost = mp.QuestionCast
+                })
             };
-        }
-        private double GetMaxMarkOfExam(int id)
-        {
-            return dbContext.ResultsOfTesting
-                            .Where(r => r.Id == id)
-                            .Max(r => r.Mark);
         }
         public async Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId)
         {
