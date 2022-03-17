@@ -67,7 +67,7 @@ namespace RemTestSys.Domain.Services
         }
         public async Task UpdateExamAsync(ExamViewModel examViewModel)
         {
-            var exam = await dbContext.Tests.FirstAsync(e => e.Id == examViewModel.Id);
+            var exam = await dbContext.Tests.FirstOrDefaultAsync(e => e.Id == examViewModel.Id);
             if(exam == null)throw new DbUpdateException("Attempt of updating unexisting exam");
             exam.Name = examViewModel.Name;
             exam.Description = examViewModel.Description;
@@ -76,6 +76,13 @@ namespace RemTestSys.Domain.Services
                 QuestionCount = mp.QuestionCount,
                 QuestionCast = mp.QuestionCost
             });
+            await dbContext.SaveChangesAsync();
+        }
+        public async Task DeleteExamAsync(int id)
+        {
+            var exam = await dbContext.Tests.FirstOrDefaultAsync(e => e.Id == id);
+            if(exam == null)throw new DbUpdateException("Attempt of deleting unexisting exam");
+            dbContext.Tests.Remove(exam);
             await dbContext.SaveChangesAsync();
         }
         public async Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId)

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RemTestSys.Domain.Models;
 using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.ViewModels;
 
@@ -68,14 +64,8 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
-            var test = await _context.Tests
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (test == null)
-            {
-                return NotFound();
-            }
-
-            return View(test);
+            var exam = await examService.FindExamAsync(id);
+            return View(exam);
         }
 
         // POST: Editor/Tests/Delete/5
@@ -83,15 +73,8 @@ namespace RemTestSys.Areas.Editor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var test = await _context.Tests.FindAsync(id);
-            _context.Tests.Remove(test);
-            await _context.SaveChangesAsync();
+            await examService.DeleteExamAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TestExists(int id)
-        {
-            return _context.Tests.Any(e => e.Id == id);
         }
     }
 }
