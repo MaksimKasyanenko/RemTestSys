@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RemTestSys.Areas.Editor.ViewModel;
-using RemTestSys.Domain;
+using RemTestSys.Domain.Interfaces;
 using RemTestSys.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -16,15 +15,15 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles="Editor")]
     public class ResultsController : Controller
     {
-        public ResultsController(AppDbContext dbContext)
+        public ResultsController(IExamService examService)
         {
-            this.dbContext=dbContext??throw new ArgumentNullException(nameof(dbContext));
+            this.examService=examService??throw new ArgumentNullException(nameof(examService));
         }
-        private readonly AppDbContext dbContext;
+        private readonly IExamService examService;
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await GetResults(r=>true));
+            return View(await examService.GetResultsForAllAsync());
         }
         [HttpGet]
         public async Task<IActionResult> Student(int id)

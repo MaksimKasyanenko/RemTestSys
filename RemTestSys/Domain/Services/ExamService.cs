@@ -128,7 +128,6 @@ namespace RemTestSys.Domain.Services
             }
             return vmList;
         }
-
         public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId)
         {
             var results = await dbContext.ResultsOfTesting
@@ -151,7 +150,20 @@ namespace RemTestSys.Domain.Services
             }
             return resViewList;
         }
-
+        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAllAsync()
+        {
+            return await dbContext.ResultsOfTesting.Select(r => new ExamResultViewModel{
+                Id = r.Id,
+                StudentId = r.StudentId,
+                StudentName = r.Student.FullName,
+                StudentGroupId = r.Student.GroupId,
+                StudentGroupName = r.Student.Group.Name,
+                TestId = r.TestId,
+                TestName = r.Test.Name,
+                Mark = r.Mark.ToString(),
+                PassedAt = r.PassedAt
+            }).ToListAsync();
+        }
         public async Task<bool> HasAccessToAsync(int studentId, int examId)
         {
             Student student = await dbContext.Students.SingleAsync(s => s.Id == studentId);

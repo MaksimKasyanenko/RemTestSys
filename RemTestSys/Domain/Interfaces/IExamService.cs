@@ -11,6 +11,7 @@ namespace RemTestSys.Domain.Interfaces{
         Task DeleteExamAsync(int id);
         Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId);
         Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId);
+        Task<IEnumerable<ExamResultViewModel>> GetResultsForAllAsync();
         Task<bool> HasAccessToAsync(int sudentId, int examId);
         Task<ExamSessionViewModel> ExamineAsync(int studentId, int examId);
         Task<ExamSessionViewModel> GetSessionStateForAsync(int sessionId, int studentId);
