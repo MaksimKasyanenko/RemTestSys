@@ -1,4 +1,4 @@
-﻿@model TestViewModel
+﻿@model RemTestSys.Domain.ViewModels.ExamViewModel
 
 @{
     ViewData["Title"] = "Редагувати тест";
@@ -10,7 +10,7 @@
     <div class="col-md-6 mx-auto">
         <form asp-action="Edit">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <input type="hidden" asp-for="TestId" />
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label">Назва</label>
                 <input asp-for="Name" class="form-control" />
@@ -37,13 +37,13 @@
                         </tr>
                     </thead>
                     <tbody id="testMap">
-                        @if (Model.MapParts != null && Model.MapParts.Length > 0)
+                        @if (Model.MapParts != null && Model.MapParts.Count() > 0)
                         {
-                            @for(int i=0;i<Model.MapParts.Length;i++)
+                            @for(int i=0;i<Model.MapParts.Count();i++)
                             {
                                 <tr>
-                                    <td><input name="MapParts[@i].QuestionCount" class="form-control" value="@Model.MapParts[i].QuestionCount" /></td>
-                                    <td><input name="MapParts[@i].QuestionCast" class="form-control" value="@Model.MapParts[i].QuestionCast" /></td>
+                                    <td><input name="MapParts[@i].QuestionCount" class="form-control" value="@Model.MapParts.ToArray()[i].QuestionCount" /></td>
+                                    <td><input name="MapParts[@i].QuestionCost" class="form-control" value="@Model.MapParts.ToArray()[i].QuestionCost" /></td>
                                 </tr>
                             }
                         }
@@ -54,12 +54,12 @@
                     <button type="button" onclick="removeMapPart();" class="btn btn-danger">-</button>
                 </div>
                 <script>
-                    let mapPartCounter = @(Model.MapParts.Length-1);
+                    let mapPartCounter = @(Model.MapParts.Count()-1);
                     function addMapPart() {
                         mapPartCounter++;
                         let row = `<tr>
                                                                     <td><input name="MapParts[${mapPartCounter}].QuestionCount" class="form-control" /></td>
-                                                                    <td><input name="MapParts[${mapPartCounter}].QuestionCast" class="form-control" /></td>
+                                                                    <td><input name="MapParts[${mapPartCounter}].QuestionCost" class="form-control" /></td>
                                                                </tr>`;
                         document.getElementById("testMap").insertAdjacentHTML("beforeEnd", row);
                     }

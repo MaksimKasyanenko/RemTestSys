@@ -1,4 +1,4 @@
-﻿@model TestViewModel
+﻿@model RemTestSys.Domain.ViewModels.ExamViewModel
 
 @{
     ViewData["Title"] = "Новий тест";
@@ -37,7 +37,7 @@
                     <tbody id="testMap">
                         <tr>
                             <td><input name="MapParts[0].QuestionCount" class="form-control" /></td>
-                            <td><input name="MapParts[0].QuestionCast" class="form-control" /></td>
+                            <td><input name="MapParts[0].QuestionCost" class="form-control" /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -51,7 +51,7 @@
                         mapPartCounter++;
                         let row = `<tr>
                                                                     <td><input name="MapParts[${mapPartCounter}].QuestionCount" class="form-control" /></td>
-                                                                    <td><input name="MapParts[${mapPartCounter}].QuestionCast" class="form-control" /></td>
+                                                                    <td><input name="MapParts[${mapPartCounter}].QuestionCost" class="form-control" /></td>
                                                                </tr>`;
                         document.getElementById("testMap").insertAdjacentHTML("beforeEnd", row);
                     }

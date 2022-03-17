@@ -7,6 +7,7 @@ namespace RemTestSys.Domain.Interfaces{
         Task<List<ExamViewModel>> GetExamsAsync();
         Task<ExamViewModel> FindExamAsync(int id);
         Task CreateExamAsync(ExamViewModel exam);
+        Task UpdateExamAsync(ExamViewModel exam);
         Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId);
         Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId);
         Task<bool> HasAccessToAsync(int sudentId, int examId);

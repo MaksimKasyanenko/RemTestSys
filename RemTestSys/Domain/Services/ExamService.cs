@@ -65,6 +65,19 @@ namespace RemTestSys.Domain.Services
             dbContext.Tests.Add(exam);
             await dbContext.SaveChangesAsync();
         }
+        public async Task UpdateExamAsync(ExamViewModel examViewModel)
+        {
+            var exam = await dbContext.Tests.FirstAsync(e => e.Id == examViewModel.Id);
+            if(exam == null)throw new DbUpdateException("Attempt of updating unexisting exam");
+            exam.Name = examViewModel.Name;
+            exam.Description = examViewModel.Description;
+            exam.Duration = examViewModel.Duration;
+            exam.MapParts = examViewModel.MapParts.Select(mp => new Test.MapPart{
+                QuestionCount = mp.QuestionCount,
+                QuestionCast = mp.QuestionCost
+            });
+            await dbContext.SaveChangesAsync();
+        }
         public async Task<IEnumerable<ExamViewModel>> GetAvailableExamsForAsync(int studentId)
         {
             var tests = await dbContext.AccessesToTestForAll

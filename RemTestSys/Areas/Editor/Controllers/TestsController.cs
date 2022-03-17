@@ -33,13 +33,11 @@ namespace RemTestSys.Areas.Editor.Controllers
             ViewBag.QuestionsInExam = await questionService.GetQuestionsFromExamAsync(id);
             return View(exam);
         }
-
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ExamViewModel exam)
@@ -51,51 +49,25 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             return View(exam);
         }
-
         public async Task<IActionResult> Edit(int id)
         {
-            var test = await _context.Tests.Where(t => t.Id == id).Include(t => t.MapParts).SingleOrDefaultAsync();
-            if (test == null)
-            {
-                return NotFound();
-            }
-            return View(new TestViewModel {
-                TestId=test.Id,
-                Name=test.Name,
-                Description=test.Description,
-                Duration=test.Duration,
-                MapParts=test.MapParts.ToArray()
-            });
+            var exam = await examService.FindExamAsync(id);
+            if(exam == null)return NotFound();
+            return View(exam);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(TestViewModel testViewModel)
+        public async Task<IActionResult> Edit(ExamViewModel examViewModel)
         {
             if (ModelState.IsValid)
             {
-                Test test = await _context.Tests.Where(t=>t.Id == testViewModel.TestId).Include(t=>t.MapParts).SingleOrDefaultAsync();
-                if (test == null) return NotFound();
-                _context.MapParts.RemoveRange(test.MapParts.ToArray());
-                await _context.SaveChangesAsync();
-                test.Name = testViewModel.Name;
-                test.Description = testViewModel.Description;
-                test.Duration = testViewModel.Duration;
-                test.MapParts = testViewModel.MapParts;
-                await _context.SaveChangesAsync();
+                await examService.UpdateExamAsync(examViewModel);
                 return RedirectToAction(nameof(Index));
             }
-            return View(testViewModel);
+            return View(examViewModel);
         }
-
-        // GET: Editor/Tests/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var test = await _context.Tests
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (test == null)
