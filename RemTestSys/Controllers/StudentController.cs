@@ -31,7 +31,7 @@ namespace RemTestSys.Controllers
         {
             StudentViewModel student = await this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
-            return View(await examService.GetResultsForAsync(student.Id));
+            return View(await examService.GetResultsForStudentAsync(student.Id));
         }
 
         public async Task<IActionResult> Testing(int id)

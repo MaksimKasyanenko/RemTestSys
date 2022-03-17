@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
@@ -152,7 +153,24 @@ namespace RemTestSys.Domain.Services
         }
         public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAllAsync()
         {
-            return await dbContext.ResultsOfTesting.Select(r => new ExamResultViewModel{
+            return await GetResultsAsync(r => true);
+        }
+        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForStudentAsync(int studentId)
+        {
+            return await GetResultsAsync(r => r.Student.Id == studentId);
+        }
+        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForGroupAsync(int groupId)
+        {
+            return await GetResultsAsync(r => r.Student.Group.Id == groupId);
+        }
+        public async Task<IEnumerable<ExamResultViewModel>> GetResultsOfExamAsync(int examId)
+        {
+            return await GetResultsAsync(r => r.TestId == examId);
+        }
+        private async Task<IEnumerable<ExamResultViewModel>> GetResultsAsync(Expression<Func<ResultOfTesting, bool>> filter)
+        {
+            return await dbContext.ResultsOfTesting.Where(filter)
+                                                   .Select(r => new ExamResultViewModel{
                 Id = r.Id,
                 StudentId = r.StudentId,
                 StudentName = r.Student.FullName,
@@ -163,6 +181,15 @@ namespace RemTestSys.Domain.Services
                 Mark = r.Mark.ToString(),
                 PassedAt = r.PassedAt
             }).ToListAsync();
+        }
+        public async Task RemoveAllResultsAsync() => await RemoveResultsAsync(r => true);
+        public async Task RemoveResultsForStudentAsync(int studentId) => await RemoveResultsAsync(r => r.StudentId == studentId);
+        public async Task RemoveResultsForGroupAsync(int groupId) => await RemoveResultsAsync(r => r.Student.GroupId == groupId);
+        public async Task RemoveResultsOfExamAsync(int examId) => await RemoveResultsAsync(r => r.TestId == examId);
+        private async Task RemoveResultsAsync(Expression<Func<ResultOfTesting, bool>> filter)
+        {
+            dbContext.ResultsOfTesting.RemoveRange(dbContext.ResultsOfTesting.Where(filter));
+            await dbContext.SaveChangesAsync();
         }
         public async Task<bool> HasAccessToAsync(int studentId, int examId)
         {
