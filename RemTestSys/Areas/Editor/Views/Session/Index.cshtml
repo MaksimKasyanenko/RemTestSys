@@ -1,4 +1,4 @@
-﻿@model List<RemTestSys.Domain.Models.Session>
+﻿@model List<RemTestSys.Domain.ViewModels.SessionViewModel>
 @{
     ViewData["Title"] = "Незакриті сессії";
 }
@@ -23,8 +23,8 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Student.FullName</td>
-                    <td>@item.Test.Name</td>
+                    <td>@item.StudentName</td>
+                    <td>@item.TestName</td>
                     <td>@item.StartTime.ToString()</td>
                     <td>@(item.Finished?"Тест завершено":"Тест не завершено")</td>
                     <td><a asp-action="Close" asp-route-id="@item.Id" class="link-danger">Закрити</a></td>
