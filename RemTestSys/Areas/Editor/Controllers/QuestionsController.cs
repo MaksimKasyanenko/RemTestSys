@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Areas.Editor.ViewModel;
 using RemTestSys.Domain;
-using RemTestSys.Domain.Models;
+using RemTestSys.Domain.Interfaces;
+using RemTestSys.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,20 +17,14 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles = "Editor")]
     public class QuestionsController : Controller
     {
-        public QuestionsController(AppDbContext context)
+        public QuestionsController(IExamService examService)
         {
-            dbContext = context;
+            this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
         }
-        private readonly AppDbContext dbContext;
+        private readonly IExamService examService;
 
         [HttpGet]
-        public async Task<IActionResult> CreateTextAnswer(int id)
-        {
-            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
-            if (test == null) return NotFound();
-            ViewData["TestId"] = test.Id;
-            return View();
-        }
+        public async Task<IActionResult> CreateTextAnswer(int id) => await GetViewToCreateAnswer(nameof(CreateTextAnswer), id);
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTextAnswer(QuestionWithTextAnswerViewModel question)
@@ -43,13 +38,7 @@ namespace RemTestSys.Areas.Editor.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> CreateOneOfFourAnswer(int id)
-        {
-            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
-            if (test == null) return NotFound();
-            ViewData["TestId"] = test.Id;
-            return View();
-        }
+        public async Task<IActionResult> CreateOneOfFourAnswer(int id) => await GetViewToCreateAnswer(nameof(CreateOneOfFourAnswer), id);
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel question)
@@ -62,13 +51,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateSomeAnswer(int id)
-        {
-            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
-            if (test == null) return NotFound();
-            ViewData["TestId"] = test.Id;
-            return View();
-        }
+        public async Task<IActionResult> CreateSomeAnswer(int id) => await GetViewToCreateAnswer(nameof(CreateSomeAnswer), id);
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateSomeAnswer(QuestionWithSomeVariantsAnswerViewModel question)
@@ -81,13 +64,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateSequenceAnswer(int id)
-        {
-            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
-            if (test == null) return NotFound();
-            ViewData["TestId"] = test.Id;
-            return View();
-        }
+        public async Task<IActionResult> CreateSequenceAnswer(int id) => await GetViewToCreateAnswer(nameof(CreateSequenceAnswer), id);
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateSequenceAnswer(QuestionWithSequenceAnswerViewModel question)
@@ -100,13 +77,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateConnectedPairsAnswer(int id)
-        {
-            Test test = await dbContext.Tests.SingleOrDefaultAsync(t => t.Id == id);
-            if (test == null) return NotFound();
-            ViewData["TestId"] = test.Id;
-            return View();
-        }
+        public async Task<IActionResult> CreateConnectedPairsAnswer(int id) => await GetViewToCreateAnswer(nameof(CreateConnectedPairsAnswer), id);
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateConnectedPairsAnswer(QuestionWithConnectedPairsAnswerViewModel question)
@@ -117,7 +88,13 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             return View(question);
         }
-
+        private async Task<IActionResult> GetViewToCreateAnswer(string actionName, int examId)
+        {
+            var exam = await examService.FindExamAsync(examId);
+            if (exam == null) return NotFound();
+            ViewData["TestId"] = exam.Id;
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
