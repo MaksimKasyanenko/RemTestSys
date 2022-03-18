@@ -17,84 +17,47 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles = "Editor")]
     public class QuestionsController : Controller
     {
-        public QuestionsController(IExamService examService, AppDbContext dbContext)
+        public QuestionsController(IQuestionService questionService, IExamService examService, AppDbContext dbContext)
         {
             this.dbContext = dbContext;
             this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
+            this.questionService = questionService ?? throw new ArgumentNullException(nameof(questionService));
         }
         private readonly IExamService examService;
+        private readonly IQuestionService questionService;
         private readonly AppDbContext dbContext;
         [HttpGet]
         public async Task<IActionResult> CreateTextAnswer(int id) => await GetViewToCreateQuestion(nameof(CreateTextAnswer), id);
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTextAnswer(QuestionWithTextAnswerViewModel question)
-        {
-            if (await TryCreateAnswer(question, () => Answer.CreateTextAnswer(question.RightText, question.CaseMatters)))
-            {
-                return RedirectToAction("Details", "Tests", new { id = question.ExamId });
-            }
-            return View(question);
-        }
-
-
         [HttpGet]
         public async Task<IActionResult> CreateOneOfFourAnswer(int id) => await GetViewToCreateQuestion(nameof(CreateOneOfFourAnswer), id);
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel question)
-        {
-            if (await TryCreateAnswer(question, () => Answer.CreateOneOfFourVariantsAnswer(question.RightVariant, question.Fake1, question.Fake2, question.Fake3)))
-            {
-                return RedirectToAction("Details", "Tests", new { id = question.ExamId });
-            }
-            return View(question);
-        }
-
         [HttpGet]
         public async Task<IActionResult> CreateSomeAnswer(int id) => await GetViewToCreateQuestion(nameof(CreateSomeAnswer), id);
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateSomeAnswer(QuestionWithSomeVariantsAnswerViewModel question)
-        {
-            if (await TryCreateAnswer(question, () => Answer.CreateSomeVariantsAnswer(question.RightVariants, question.FakeVariants)))
-            {
-                return RedirectToAction("Details", "Tests", new { id = question.ExamId });
-            }
-            return View(question);
-        }
-
         [HttpGet]
         public async Task<IActionResult> CreateSequenceAnswer(int id) => await GetViewToCreateQuestion(nameof(CreateSequenceAnswer), id);
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateSequenceAnswer(QuestionWithSequenceAnswerViewModel question)
-        {
-            if (await TryCreateAnswer(question, () => Answer.CreateSequenceAnswer(question.Sequence)))
-            {
-                return RedirectToAction("Details", "Tests", new { id = question.ExamId });
-            }
-            return View(question);
-        }
-
         [HttpGet]
         public async Task<IActionResult> CreateConnectedPairsAnswer(int id) => await GetViewToCreateQuestion(nameof(CreateConnectedPairsAnswer), id);
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateConnectedPairsAnswer(QuestionWithConnectedPairsAnswerViewModel question)
-        {
-            if (await TryCreateAnswer(question, () => Answer.CreateConnectedPairsAnswer(question.LeftList,question.RightList)))
-            {
-                return RedirectToAction("Details", "Tests", new { id = question.ExamId });
-            }
-            return View(question);
-        }
         private async Task<IActionResult> GetViewToCreateQuestion(string actionName, int examId)
         {
             var exam = await examService.FindExamAsync(examId);
             if (exam == null) return NotFound();
             ViewData["TestId"] = exam.Id;
             return View(actionName);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateQuestionWithAnswer(QuestionWithAnswerViewModel question)
+        {
+            if(ModelState.IsValid)
+            {
+                await questionService.AddQuestionWithAnswerToAsync(question);
+                return RedirectToAction("Details", "Tests", new { id = question.ExamId });
+            }
+            else
+            {
+                ModelState.AddModelError("", "Присутні невірні данні");
+                ViewData["TestId"] = question.ExamId;
+                return View(question);
+            }
         }
 
         [HttpGet]
@@ -231,27 +194,6 @@ namespace RemTestSys.Areas.Editor.Controllers
             dbContext.Questions.Remove(question);
             await dbContext.SaveChangesAsync();
             return RedirectToAction("Details", "Tests", new { id = confirmedDelete.TestId });
-        }
-        private async Task<bool> TryCreateAnswer(QuestionViewModel question, Func<Answer> getAnswerModel)
-        {
-            Question ques;
-            Answer answ;
-            try
-            {
-                ques = Question.Create(question.Text, question.SubText, question.ExamId, question.Cost);
-                answ = getAnswerModel();
-            }
-            catch (InvalidOperationException)
-            {
-                ModelState.AddModelError("", "Присутні невірні данні");
-                ViewData["TestId"] = question.ExamId;
-                return false;
-            }
-            dbContext.Questions.Add(ques);
-            answ.Question = ques;
-            dbContext.Add(answ);
-            await dbContext.SaveChangesAsync();
-            return true;
         }
     }
 }

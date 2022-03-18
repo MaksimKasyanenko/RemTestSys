@@ -1,6 +1,6 @@
 ﻿namespace RemTestSys.Domain.ViewModels.QuestionsWithAnswers
 {
-    public class QuestionWithSequenceAnswerViewModel:QuestionViewModel
+    public class QuestionWithSequenceAnswerViewModel:QuestionWithAnswerViewModel
     {
         public string[] Sequence { get; set; }
     }
