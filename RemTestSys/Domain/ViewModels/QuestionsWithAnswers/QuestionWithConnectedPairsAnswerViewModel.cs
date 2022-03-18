@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RemTestSys.Areas.Editor.ViewModel
+﻿namespace RemTestSys.Domain.ViewModels.QuestionsWithAnswers
 {
     public class QuestionWithConnectedPairsAnswerViewModel:QuestionViewModel
     {
