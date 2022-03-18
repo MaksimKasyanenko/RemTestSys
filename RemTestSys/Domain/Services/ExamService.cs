@@ -61,7 +61,7 @@ namespace RemTestSys.Domain.Services
                 MapParts = examViewModel.MapParts.Select(mp => new Test.MapPart{
                     QuestionCount = mp.QuestionCount,
                     QuestionCast = mp.QuestionCost
-                })
+                }).ToArray()
             };
             dbContext.Tests.Add(exam);
             await dbContext.SaveChangesAsync();
@@ -76,7 +76,7 @@ namespace RemTestSys.Domain.Services
             exam.MapParts = examViewModel.MapParts.Select(mp => new Test.MapPart{
                 QuestionCount = mp.QuestionCount,
                 QuestionCast = mp.QuestionCost
-            });
+            }).ToArray();
             await dbContext.SaveChangesAsync();
         }
         public async Task DeleteExamAsync(int id)
