@@ -1,12 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Interfaces;
-using RemTestSys.Domain.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace RemTestSys.Areas.Editor.Controllers
@@ -15,19 +10,21 @@ namespace RemTestSys.Areas.Editor.Controllers
     [Authorize(Roles="Editor")]
     public class ResultsController : Controller
     {
-        public ResultsController(IExamService examService, IStudentService studentService, IGroupService groupService)
+        public ResultsController(IExamResultService resultService, IStudentService studentService, IGroupService groupService, IExamService examService)
         {
-            this.examService=examService??throw new ArgumentNullException(nameof(examService));
+            this.resultService = resultService ?? throw new ArgumentNullException(nameof(resultService));
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
             this.groupService = groupService ?? throw new ArgumentNullException(nameof(groupService));
+            this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
         }
-        private readonly IExamService examService;
+        private readonly IExamResultService resultService;
         private readonly IStudentService studentService;
         private readonly IGroupService groupService;
+        private readonly IExamService examService;
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await examService.GetResultsForAllAsync());
+            return View(await resultService.GetResultsAsync());
         }
         [HttpGet]
         public async Task<IActionResult> Student(int id)
@@ -36,7 +33,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             if(student == null)return NotFound();
             ViewData["StudentFullName"]=student.FullName;
             ViewData["StudentId"]=student.Id;
-            return View(await examService.GetResultsForStudentAsync(id));
+            return View(await resultService.GetResultsOfStudentAsync(id));
         }
         [HttpGet]
         public async Task<IActionResult> Group(int id)
@@ -45,7 +42,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             if(group == null)return NotFound();
             ViewData["GroupName"] = group.Name;
             ViewData["GroupId"] = group.Id;
-            return View(await examService.GetResultsForGroupAsync(id));
+            return View(await resultService.GetResultsOfGroupAsync(id));
         }
         [HttpGet]
         public async Task<IActionResult> Test(int id)
@@ -54,31 +51,31 @@ namespace RemTestSys.Areas.Editor.Controllers
             if(exam == null)return NotFound();
             ViewData["TestName"]=exam.Name;
             ViewData["TestId"]=exam.Id;
-            return View(await examService.GetResultsOfExamAsync(id));
+            return View(await resultService.GetResultsOfExamAsync(id));
         }
 
         [HttpGet]
         public async Task<IActionResult> ClearAll()
         {
-            await examService.RemoveAllResultsAsync();
+            await resultService.ClearResultsAsync();
             return View(nameof(Index));
         }
         [HttpGet]
         public async Task<IActionResult> ClearForGroup(int id)
         {
-            await examService.RemoveResultsForGroupAsync(id);
+            await resultService.ClearResultsOfGroupAsync(id);
             return View(nameof(Index));
         }
         [HttpGet]
         public async Task<IActionResult> ClearForStudent(int id)
         {
-            await examService.RemoveResultsForStudentAsync(id);
+            await resultService.ClearResultsOfStudentAsync(id);
             return View(nameof(Index));
         }
         [HttpGet]
         public async Task<IActionResult> ClearForTest(int id)
         {
-            await examService.RemoveResultsOfExamAsync(id);
+            await resultService.ClearResultsOfExamAsync(id);
             return View(nameof(Index));
         }
         

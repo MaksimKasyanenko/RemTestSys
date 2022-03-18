@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using System;
 using System.Threading.Tasks;
 using RemTestSys.Domain;
@@ -12,13 +11,15 @@ namespace RemTestSys.Controllers
     [Authorize]
     public class StudentController : Controller
     {
-        public StudentController(IExamService examService, IStudentService studentService)
+        public StudentController(IExamService examService, IStudentService studentService, IExamResultService resultService)
         {
             this.examService = examService ?? throw new ArgumentNullException(nameof(examService));
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
+            this.resultService = resultService ?? throw new ArgumentNullException(nameof(resultService));
         }
         private readonly IExamService examService;
         private readonly IStudentService studentService;
+        private readonly IExamResultService resultService;
 
         public async Task<IActionResult> AvailableTests()
         {
@@ -31,7 +32,7 @@ namespace RemTestSys.Controllers
         {
             StudentViewModel student = await this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
-            return View(await examService.GetResultsForStudentAsync(student.Id));
+            return View(await resultService.GetResultsOfStudentAsync(student.Id));
         }
 
         public async Task<IActionResult> Testing(int id)
@@ -52,13 +53,8 @@ namespace RemTestSys.Controllers
             if (id == null) return RedirectToAction("AvailableTests");
             StudentViewModel student = await this.InitStudent(studentService);
             if (student == null) return RedirectToAction("Registration", "Account");
-            ExamResultViewModel result;
-            try{
-                result = await examService.GetResultForAsync((int)id, student.Id);
-            }catch(AccessToResultException ex){
-                return View("Error");
-            }
-            if(result == null)
+            var result = await resultService.FindResultAsync((int)id);
+            if(result == null || result.StudentId != student.Id)
                 return View("AvailableTests");
             return View(result);
         }

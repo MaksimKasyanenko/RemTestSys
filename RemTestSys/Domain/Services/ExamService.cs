@@ -129,68 +129,6 @@ namespace RemTestSys.Domain.Services
             }
             return vmList;
         }
-        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAsync(int studentId)
-        {
-            var results = await dbContext.ResultsOfTesting
-                                         .Where(r => r.Student.Id == studentId)
-                                         .OrderByDescending(r => r.PassedAt)
-                                         .Take(20)
-                                         .Include(r => r.Test)
-                                         .ToArrayAsync();
-            var resViewList = new List<ExamResultViewModel>(results.Length);
-            foreach (var res in results)
-            {
-                resViewList.Add(
-                        new ExamResultViewModel
-                        {
-                            TestName = res.Test.Name,
-                            Mark = res.Mark.ToString(),
-                            PassedAt = res.PassedAt
-                        }
-                    );
-            }
-            return resViewList;
-        }
-        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForAllAsync()
-        {
-            return await GetResultsAsync(r => true);
-        }
-        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForStudentAsync(int studentId)
-        {
-            return await GetResultsAsync(r => r.Student.Id == studentId);
-        }
-        public async Task<IEnumerable<ExamResultViewModel>> GetResultsForGroupAsync(int groupId)
-        {
-            return await GetResultsAsync(r => r.Student.Group.Id == groupId);
-        }
-        public async Task<IEnumerable<ExamResultViewModel>> GetResultsOfExamAsync(int examId)
-        {
-            return await GetResultsAsync(r => r.TestId == examId);
-        }
-        private async Task<IEnumerable<ExamResultViewModel>> GetResultsAsync(Expression<Func<ResultOfTesting, bool>> filter)
-        {
-            return await dbContext.ResultsOfTesting.Where(filter)
-                                                   .Select(r => new ExamResultViewModel{
-                Id = r.Id,
-                StudentId = r.StudentId,
-                StudentName = r.Student.FullName,
-                StudentGroupId = r.Student.GroupId,
-                StudentGroupName = r.Student.Group.Name,
-                TestId = r.TestId,
-                TestName = r.Test.Name,
-                Mark = r.Mark.ToString(),
-                PassedAt = r.PassedAt
-            }).ToListAsync();
-        }
-        public async Task RemoveAllResultsAsync() => await RemoveResultsAsync(r => true);
-        public async Task RemoveResultsForStudentAsync(int studentId) => await RemoveResultsAsync(r => r.StudentId == studentId);
-        public async Task RemoveResultsForGroupAsync(int groupId) => await RemoveResultsAsync(r => r.Student.GroupId == groupId);
-        public async Task RemoveResultsOfExamAsync(int examId) => await RemoveResultsAsync(r => r.TestId == examId);
-        private async Task RemoveResultsAsync(Expression<Func<ResultOfTesting, bool>> filter)
-        {
-            dbContext.ResultsOfTesting.RemoveRange(dbContext.ResultsOfTesting.Where(filter));
-            await dbContext.SaveChangesAsync();
-        }
         public async Task<bool> HasAccessToAsync(int studentId, int examId)
         {
             Student student = await dbContext.Students.SingleAsync(s => s.Id == studentId);
@@ -234,32 +172,6 @@ namespace RemTestSys.Domain.Services
                 TestName = session.Test.Name
             };
         }
-
-        public async Task<ExamResultViewModel> GetResultForAsync(int resultId, int studentId)
-        {
-            ResultOfTesting result = await dbContext.ResultsOfTesting
-                                                    .Where(r => r.Id == resultId)
-                                                    .Include(r => r.Test)
-                                                    .SingleOrDefaultAsync();
-            if (result != null)
-            {
-                if (result.StudentId != studentId)
-                    throw new AccessToResultException($"Student {studentId} don't have access to result {resultId} as one isn't owner of it");
-                ExamResultViewModel resVM = new ExamResultViewModel
-                {
-                    TestName = result.Test.Name,
-                    Mark = result.Mark.ToString(),
-                    PassedAt = result.PassedAt,
-                    Id = result.Id
-                };
-                return resVM;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         public async Task<ExamSessionViewModel> GetSessionStateForAsync(int sessionId, int studentId)
         {
             Session session = await dbContext.Sessions
@@ -298,7 +210,6 @@ namespace RemTestSys.Domain.Services
             }
             return state;
         }
-
         public async Task<AnswerResultViewModel> AnswerQuestionAsync(int sessionId, int answererId, AnswerViewModel answer)
         {
             Session session = await dbContext.Sessions.Where(s => s.Id == sessionId)
