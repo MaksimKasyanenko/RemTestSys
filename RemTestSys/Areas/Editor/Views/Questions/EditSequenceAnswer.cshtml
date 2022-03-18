@@ -1,4 +1,4 @@
-﻿@model QuestionWithSequenceAnswerViewModel
+﻿@model RemTestSys.Domain.ViewModels.QuestionsWithAnswers.QuestionWithSequenceAnswerViewModel
 @{
     ViewData["Title"] = "Редагування";
 }
@@ -9,7 +9,7 @@
     <div class="col-md-6 mx-auto">
         <form asp-action="EditSequenceAnswer">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="QuestionId" />
+            <input type="hidden" asp-for="Id" />
             @await Html.PartialAsync("_QuestionForm", Model)
             <h4>Відповідь</h4>
             <hr />
@@ -58,5 +58,5 @@
     </div>
 </div>
 <div>
-    <a asp-action="Details" asp-controller="Tests" asp-route-id="@Model.TestId">Назад</a>
+    <a asp-action="Details" asp-controller="Tests" asp-route-id="@Model.ExamId">Назад</a>
 </div>

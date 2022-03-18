@@ -1,4 +1,5 @@
-﻿@model QuestionWithOneOfFourVariantsAnswerViewModel
+﻿@using RemTestSys.Domain.ViewModels
+@model RemTestSys.Domain.ViewModels.QuestionsWithAnswers.QuestionWithOneOfFourVariantsAnswerViewModel
 @{
     ViewData["Title"] = "Нове питання";
 }
@@ -9,7 +10,7 @@
     <div class="col-md-6 mx-auto">
         <form asp-action="CreateOneOfFourAnswer">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @await Html.PartialAsync("_QuestionForm", new QuestionViewModel { TestId = (int)ViewData["TestId"] })
+            @await Html.PartialAsync("_QuestionForm", new QuestionViewModel { ExamId = (int)ViewData["TestId"] })
             <h4>Відповідь</h4>
             <hr />
             <div class="mb-4">

@@ -1,5 +1,5 @@
-﻿@model QuestionViewModel
-<input type="hidden" asp-for="TestId" />
+﻿@model RemTestSys.Domain.ViewModels.QuestionViewModel
+<input type="hidden" asp-for="ExamId" />
 <div class="form-group">
     <label class="control-label">Питання</label>
     <textarea class="form-control" rows="3" asp-for="Text"></textarea>
@@ -10,5 +10,5 @@
 </div>
 <div class="form-group mb-4">
     <label class="control-label">Балів за відповідь</label>
-    <input class="form-control" asp-for="Cast" />
+    <input class="form-control" asp-for="Cost" />
 </div>
