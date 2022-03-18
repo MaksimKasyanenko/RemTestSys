@@ -34,6 +34,7 @@ namespace RemTestSys
             services.AddScoped<IExamAccessService, ExamAccessService>();
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IExamResultService, ExamResultService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(
