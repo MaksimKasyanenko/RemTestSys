@@ -65,10 +65,9 @@ namespace RemTestSys.Areas.Editor.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var exam = await examService.FindExamAsync(id);
+            if(exam == null)return NotFound();
             return View(exam);
         }
-
-        // POST: Editor/Tests/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -139,7 +139,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         
         public async Task<IActionResult> Delete(int id)
         {
-            var q = questionService.FindQuestionWithAnswerAsync(id)
+            var q = await questionService.FindQuestionWithAnswerAsync(id);
             if(q == null)return NotFound();
             return View(q);
         }

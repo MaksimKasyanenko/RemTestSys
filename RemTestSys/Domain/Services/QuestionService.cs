@@ -96,66 +96,69 @@ public class QuestionService : IQuestionService
         dbContext.Add(answ);
         await dbContext.SaveChangesAsync();
     }
-    public async Task UpdateQuestionWithAnswerAsync(QuestionWithAnswerViewModel question)
+    public async Task UpdateQuestionWithAnswerAsync(QuestionWithAnswerViewModel questionViewModel)
     {
         Question question = await dbContext.Questions
-                                         .Where(q=>q.Id==vm.Id)
+                                         .Where(q=>q.Id==questionViewModel.Id)
                                          .Include(q=>q.Answer)
                                          .SingleOrDefaultAsync();
         if(question == null)throw new InvalidOperationException("Attept of updating unexisting question");
         Type answerType = question.Answer.GetType();
         if(answerType == typeof(TextAnswer))
         {
-            question.Text=vm.Text;
-            question.SubText=vm.SubText;
-            question.Cast=vm.Cost;
-            question.Answer.RightText=vm.RightText;
-            ((TextAnswer)question.Answer).CaseMatters=vm.CaseMatters;
+            question.Text=questionViewModel.Text;
+            question.SubText=questionViewModel.SubText;
+            question.Cast=questionViewModel.Cost;
+            question.Answer.RightText=((QuestionWithTextAnswerViewModel)questionViewModel).RightText;
+            ((TextAnswer)question.Answer).CaseMatters=((QuestionWithTextAnswerViewModel)questionViewModel).CaseMatters;
         }
         else if(answerType == typeof(OneOfFourVariantsAnswer))
         {
-            ((OneOfFourVariantsAnswer)question.Answer).SetFakes(vm.Fake1, vm.Fake2, vm.Fake3);
-            question.Text=vm.Text;
-            question.SubText=vm.SubText;
-            question.Cast=vm.Cost;
-            question.Answer.RightText = vm.RightVariant;
+            ((OneOfFourVariantsAnswer)question.Answer).SetFakes(((QuestionWithOneOfFourVariantsAnswerViewModel)questionViewModel).Fake1,
+                                                                ((QuestionWithOneOfFourVariantsAnswerViewModel)questionViewModel).Fake2,
+                                                                ((QuestionWithOneOfFourVariantsAnswerViewModel)questionViewModel).Fake3);
+            question.Text=questionViewModel.Text;
+            question.SubText=questionViewModel.SubText;
+            question.Cast=questionViewModel.Cost;
+            question.Answer.RightText = ((QuestionWithOneOfFourVariantsAnswerViewModel)questionViewModel).RightVariant;
         }
         else if(answerType == typeof(SomeVariantsAnswer))
         {
-            question.Text = vm.Text;
-            question.SubText = vm.SubText;
-            question.Cast = vm.Cost;
-            ((SomeVariantsAnswer)question.Answer).SetRightAnswers(vm.RightVariants);
-            ((SomeVariantsAnswer)question.Answer).SetFakes(vm.FakeVariants);
+            question.Text = questionViewModel.Text;
+            question.SubText = questionViewModel.SubText;
+            question.Cast = questionViewModel.Cost;
+            ((SomeVariantsAnswer)question.Answer).SetRightAnswers(((QuestionWithSomeVariantsAnswerViewModel)questionViewModel).RightVariants);
+            ((SomeVariantsAnswer)question.Answer).SetFakes(((QuestionWithSomeVariantsAnswerViewModel)questionViewModel).FakeVariants);
         }
         else if(answerType == typeof(SequenceAnswer))
         {
-            question.Text = vm.Text;
-            question.SubText = vm.SubText;
-            question.Cast = vm.Cost;
-            ((SequenceAnswer)question.Answer).SetSequence(vm.Sequence);
+            question.Text = questionViewModel.Text;
+            question.SubText = questionViewModel.SubText;
+            question.Cast = questionViewModel.Cost;
+            ((SequenceAnswer)question.Answer).SetSequence(((QuestionWithSequenceAnswerViewModel)questionViewModel).Sequence);
         }
         else if(answerType == typeof(ConnectedPairsAnswer))
         {
-            question.Text = vm.Text;
-            question.SubText = vm.SubText;
-            question.Cast = vm.Cost;
-            ConnectedPairsAnswer.Pair[] pairs = new ConnectedPairsAnswer.Pair[vm.LeftList.Length];
+            question.Text = questionViewModel.Text;
+            question.SubText = questionViewModel.SubText;
+            question.Cast = questionViewModel.Cost;
+            ConnectedPairsAnswer.Pair[] pairs = new ConnectedPairsAnswer.Pair[((QuestionWithConnectedPairsAnswerViewModel)questionViewModel).LeftList.Length];
             for(int i =0; i < pairs.Length; i++)
             {
-                pairs[i] = new ConnectedPairsAnswer.Pair { Value1 = vm.LeftList[i], Value2 = vm.RightList[i] };
+                pairs[i] = new ConnectedPairsAnswer.Pair { Value1 = ((QuestionWithConnectedPairsAnswerViewModel)questionViewModel).LeftList[i],
+                                                           Value2 = ((QuestionWithConnectedPairsAnswerViewModel)questionViewModel).RightList[i] };
             }
             ((ConnectedPairsAnswer)question.Answer).SetPairs(pairs);
         }
         else
         {
-            throw new NotSupportedException($"Type {answerType.Full} isn't supported");
+            throw new NotSupportedException($"Type {answerType.FullName} isn't supported");
         }
         await dbContext.SaveChangesAsync();
     }
     public async Task DeleteAsync(int id)
     {
-        Question q = dbContext.Questions.SingleOrDefaultAsync(q => q.Id == id);
+        Question q = await dbContext.Questions.SingleOrDefaultAsync(q => q.Id == id);
         if(q == null)return;
         dbContext.Questions.Remove(q);
         await dbContext.SaveChangesAsync();
