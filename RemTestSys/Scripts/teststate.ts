@@ -2,7 +2,7 @@
     questionNum: number;
     questionSubText: string;
     questionText: string;
-    questionCast: number;
+    questionCost: number;
     finished: boolean;
     timeLeft: number;
     answerType: string;

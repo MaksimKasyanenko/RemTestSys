@@ -58,25 +58,25 @@ namespace RemTestSys.Areas.Editor.Controllers
         public async Task<IActionResult> ClearAll()
         {
             await resultService.ClearResultsAsync();
-            return View(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
         [HttpGet]
         public async Task<IActionResult> ClearForGroup(int id)
         {
             await resultService.ClearResultsOfGroupAsync(id);
-            return View(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
         [HttpGet]
         public async Task<IActionResult> ClearForStudent(int id)
         {
             await resultService.ClearResultsOfStudentAsync(id);
-            return View(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
         [HttpGet]
         public async Task<IActionResult> ClearForTest(int id)
         {
             await resultService.ClearResultsOfExamAsync(id);
-            return View(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
         
     }

@@ -22,12 +22,12 @@ namespace RemTestSys.Areas.Editor.Controllers
         public async Task<IActionResult> Close(int id)
         {
             await sessionService.CloseSessionAsync(id);
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
         public async Task<IActionResult> CloseAll()
         {
             await sessionService.CloseAllSessionsAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }
