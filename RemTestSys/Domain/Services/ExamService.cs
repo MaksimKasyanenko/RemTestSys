@@ -21,6 +21,7 @@ namespace RemTestSys.Domain.Services
         public async Task<List<ExamViewModel>> GetExamsAsync()
         {
             return await dbContext.Tests
+                            .Include(e => e.MapParts)
                             .Select(e => new ExamViewModel{
                                 Id = e.Id,
                                 Name = e.Name,
@@ -31,12 +32,12 @@ namespace RemTestSys.Domain.Services
                                 MapParts = e.MapParts.Select(mp => new ExamViewModel.MapPart{
                                     QuestionCount = mp.QuestionCount,
                                     QuestionCost = mp.QuestionCast
-                                })
+                                }).ToArray()
                             }).ToListAsync();
         }
         public async Task<ExamViewModel> FindExamAsync(int id)
         {
-            var exam = await dbContext.Tests.FirstAsync(e => e.Id == id);
+            var exam = await dbContext.Tests.Include(e => e.MapParts).FirstAsync(e => e.Id == id);
             if(exam == null)return null;
             return new ExamViewModel{
                 Id = exam.Id,
@@ -48,7 +49,7 @@ namespace RemTestSys.Domain.Services
                 MapParts = exam.MapParts.Select(mp => new ExamViewModel.MapPart{
                     QuestionCount = mp.QuestionCount,
                     QuestionCost = mp.QuestionCast
-                })
+                }).ToArray()
             };
         }
         public async Task CreateExamAsync(ExamViewModel examViewModel)

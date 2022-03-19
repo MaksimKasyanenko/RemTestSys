@@ -49,7 +49,7 @@
         </div>
     <h4>Питання тесту</h4>
     <hr />
-            @if (ViewBag.QuestionsInExam.Count() > 0)
+            @if (((IEnumerable<object>)ViewBag.QuestionsInExam).Count() > 0)
             {
                 <table class="table table-bordered table-striped table-success">
                     <thead>

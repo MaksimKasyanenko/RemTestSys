@@ -84,21 +84,21 @@ namespace RemTestSys.Areas.Editor.Controllers
             Type questionType = question.GetType();
             if(questionType == typeof(QuestionWithTextAnswerViewModel))
             {
-                return View("EditTextAnswer");
+                return View("EditTextAnswer", question);
             }
             else if(questionType == typeof(QuestionWithOneOfFourVariantsAnswerViewModel))
             {
-                return View("EditOneOfFourAnswer");
+                return View("EditOneOfFourAnswer", question);
             }else if(questionType == typeof(QuestionWithSomeVariantsAnswerViewModel))
             {
-                return View("EditSomeVariantsAnswer");
+                return View("EditSomeVariantsAnswer", question);
             }else if(questionType == typeof(QuestionWithSequenceAnswerViewModel))
             {
-                return View("EditSequenceAnswer");
+                return View("EditSequenceAnswer", question);
             }
             else if(questionType == typeof(QuestionWithConnectedPairsAnswerViewModel))
             {
-                return View("EditConnectedPairAnswer");
+                return View("EditConnectedPairAnswer", question);
             }
             return View("Error");
         }
