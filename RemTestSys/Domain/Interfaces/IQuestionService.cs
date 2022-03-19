@@ -9,5 +9,7 @@ public interface IQuestionService
 {
     Task<IEnumerable<QuestionViewModel>> GetQuestionsFromExamAsync(int examId);
     Task<QuestionWithAnswerViewModel> FindQuestionWithAnswerAsync(int id);
-    Task AddQuestionWithAnswerToAsync(QuestionWithAnswerViewModel questionViewModel);
+    Task AddQuestionWithAnswerAsync(QuestionWithAnswerViewModel questionViewModel);
+    Task UpdateQuestionWithAnswerAsync(QuestionWithAnswerViewModel question);
+    Task DeleteAsync(int id);
 }

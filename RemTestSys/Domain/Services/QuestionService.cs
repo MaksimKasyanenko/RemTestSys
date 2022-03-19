@@ -54,7 +54,7 @@ public class QuestionService : IQuestionService
             }
             throw new NotImplementedException(answerType.FullName);
     }
-    public async Task AddQuestionWithAnswerToAsync(QuestionWithAnswerViewModel questionViewModel)
+    public async Task AddQuestionWithAnswerAsync(QuestionWithAnswerViewModel questionViewModel)
     {
         Type questionType = questionViewModel.GetType();
         if(questionType == typeof(QuestionWithTextAnswerViewModel))
@@ -88,12 +88,76 @@ public class QuestionService : IQuestionService
         }
     }
     private async Task Create(QuestionViewModel question, Func<Answer> getAnswerModel)
+    {
+        Question ques = Question.Create(question.Text, question.SubText, question.ExamId, question.Cost);
+        Answer answ  = getAnswerModel();
+        dbContext.Questions.Add(ques);
+        answ.Question = ques;
+        dbContext.Add(answ);
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task UpdateQuestionWithAnswerAsync(QuestionWithAnswerViewModel question)
+    {
+        Question question = await dbContext.Questions
+                                         .Where(q=>q.Id==vm.Id)
+                                         .Include(q=>q.Answer)
+                                         .SingleOrDefaultAsync();
+        if(question == null)throw new InvalidOperationException("Attept of updating unexisting question");
+        Type answerType = question.Answer.GetType();
+        if(answerType == typeof(TextAnswer))
         {
-            Question ques = Question.Create(question.Text, question.SubText, question.ExamId, question.Cost);
-            Answer answ  = getAnswerModel();
-            dbContext.Questions.Add(ques);
-            answ.Question = ques;
-            dbContext.Add(answ);
-            await dbContext.SaveChangesAsync();
+            question.Text=vm.Text;
+            question.SubText=vm.SubText;
+            question.Cast=vm.Cost;
+            question.Answer.RightText=vm.RightText;
+            ((TextAnswer)question.Answer).CaseMatters=vm.CaseMatters;
         }
+        else if(answerType == typeof(OneOfFourVariantsAnswer))
+        {
+            ((OneOfFourVariantsAnswer)question.Answer).SetFakes(vm.Fake1, vm.Fake2, vm.Fake3);
+            question.Text=vm.Text;
+            question.SubText=vm.SubText;
+            question.Cast=vm.Cost;
+            question.Answer.RightText = vm.RightVariant;
+        }
+        else if(answerType == typeof(SomeVariantsAnswer))
+        {
+            question.Text = vm.Text;
+            question.SubText = vm.SubText;
+            question.Cast = vm.Cost;
+            ((SomeVariantsAnswer)question.Answer).SetRightAnswers(vm.RightVariants);
+            ((SomeVariantsAnswer)question.Answer).SetFakes(vm.FakeVariants);
+        }
+        else if(answerType == typeof(SequenceAnswer))
+        {
+            question.Text = vm.Text;
+            question.SubText = vm.SubText;
+            question.Cast = vm.Cost;
+            ((SequenceAnswer)question.Answer).SetSequence(vm.Sequence);
+        }
+        else if(answerType == typeof(ConnectedPairsAnswer))
+        {
+            question.Text = vm.Text;
+            question.SubText = vm.SubText;
+            question.Cast = vm.Cost;
+            ConnectedPairsAnswer.Pair[] pairs = new ConnectedPairsAnswer.Pair[vm.LeftList.Length];
+            for(int i =0; i < pairs.Length; i++)
+            {
+                pairs[i] = new ConnectedPairsAnswer.Pair { Value1 = vm.LeftList[i], Value2 = vm.RightList[i] };
+            }
+            ((ConnectedPairsAnswer)question.Answer).SetPairs(pairs);
+        }
+        else
+        {
+            throw new NotSupportedException($"Type {answerType.Full} isn't supported");
+        }
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task DeleteAsync(int id)
+    {
+        Question q = dbContext.Questions.SingleOrDefaultAsync(q => q.Id == id);
+        if(q == null)return;
+        dbContext.Questions.Remove(q);
+        await dbContext.SaveChangesAsync();
+    }
 }

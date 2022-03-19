@@ -64,7 +64,7 @@ namespace RemTestSys.Areas.Editor.Controllers
         {
             if(ModelState.IsValid)
             {
-                await questionService.AddQuestionWithAnswerToAsync(question);
+                await questionService.AddQuestionWithAnswerAsync(question);
                 return RedirectToAction("Details", "Tests", new { id = question.ExamId });
             }
             else
@@ -106,112 +106,48 @@ namespace RemTestSys.Areas.Editor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTextAnswer(QuestionWithTextAnswerViewModel vm){
-            Question question = await dbContext.Questions
-                                         .Where(q=>q.Id==vm.Id)
-                                         .Include(q=>q.Answer)
-                                         .SingleOrDefaultAsync();
-            if(question!=null){
-                question.Text=vm.Text;
-                question.SubText=vm.SubText;
-                question.Cast=vm.Cost;
-                question.Answer.RightText=vm.RightText;
-                ((TextAnswer)question.Answer).CaseMatters=vm.CaseMatters;
-                await dbContext.SaveChangesAsync();
-            }
+            await questionService.UpdateQuestionWithAnswerAsync(vm);
             return RedirectToAction("Details","Tests",new {id=vm.ExamId});
-            
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel vm){
-            Question question = await dbContext.Questions
-                                         .Where(q=>q.Id==vm.Id)
-                                         .Include(q=>q.Answer)
-                                         .SingleOrDefaultAsync();
-            if(question!=null){
-                ((OneOfFourVariantsAnswer)question.Answer).SetFakes(vm.Fake1, vm.Fake2, vm.Fake3);
-                question.Text=vm.Text;
-                question.SubText=vm.SubText;
-                question.Cast=vm.Cost;
-                question.Answer.RightText = vm.RightVariant;
-                await dbContext.SaveChangesAsync();
-            }
+            await questionService.UpdateQuestionWithAnswerAsync(vm);
             return RedirectToAction("Details","Tests",new {id=vm.ExamId});
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSomeVariantsAnswer(QuestionWithSomeVariantsAnswerViewModel vm)
         {
-            Question question = await dbContext.Questions
-                                         .Where(q => q.Id == vm.Id)
-                                         .Include(q => q.Answer)
-                                         .SingleOrDefaultAsync();
-            if (question != null)
-            {
-                question.Text = vm.Text;
-                question.SubText = vm.SubText;
-                question.Cast = vm.Cost;
-                ((SomeVariantsAnswer)question.Answer).SetRightAnswers(vm.RightVariants);
-                ((SomeVariantsAnswer)question.Answer).SetFakes(vm.FakeVariants);
-                await dbContext.SaveChangesAsync();
-            }
-            return RedirectToAction("Details", "Tests", new { id = vm.ExamId });
-
+            await questionService.UpdateQuestionWithAnswerAsync(vm);
+            return RedirectToAction("Details","Tests",new {id=vm.ExamId});
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSequenceAnswer(QuestionWithSequenceAnswerViewModel vm)
         {
-            Question question = await dbContext.Questions
-                                         .Where(q => q.Id == vm.Id)
-                                         .Include(q => q.Answer)
-                                         .SingleOrDefaultAsync();
-            if (question != null)
-            {
-                question.Text = vm.Text;
-                question.SubText = vm.SubText;
-                question.Cast = vm.Cost;
-                ((SequenceAnswer)question.Answer).SetSequence(vm.Sequence);
-                await dbContext.SaveChangesAsync();
-            }
-            return RedirectToAction("Details", "Tests", new { id = vm.ExamId });
+            await questionService.UpdateQuestionWithAnswerAsync(vm);
+            return RedirectToAction("Details","Tests",new {id=vm.ExamId});
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditConnectedPairAnswer(QuestionWithConnectedPairsAnswerViewModel vm)
         {
-            Question question = await dbContext.Questions
-                                         .Where(q => q.Id == vm.Id)
-                                         .Include(q => q.Answer)
-                                         .SingleOrDefaultAsync();
-            if (question != null)
-            {
-                question.Text = vm.Text;
-                question.SubText = vm.SubText;
-                question.Cast = vm.Cost;
-                ConnectedPairsAnswer.Pair[] pairs = new ConnectedPairsAnswer.Pair[vm.LeftList.Length];
-                for(int i =0; i < pairs.Length; i++)
-                {
-                    pairs[i] = new ConnectedPairsAnswer.Pair { Value1 = vm.LeftList[i], Value2 = vm.RightList[i] };
-                }
-                ((ConnectedPairsAnswer)question.Answer).SetPairs(pairs);
-                await dbContext.SaveChangesAsync();
-            }
-            return RedirectToAction("Details", "Tests", new { id = vm.ExamId });
+            await questionService.UpdateQuestionWithAnswerAsync(vm);
+            return RedirectToAction("Details","Tests",new {id=vm.ExamId});
         }
         
         public async Task<IActionResult> Delete(int id)
         {
-            Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q => q.Answer).SingleAsync();
+            var q = questionService.FindQuestionWithAnswerAsync(id)
+            if(q == null)return NotFound();
             return View(q);
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(ConfirmedDeleteForQuestionViewModel confirmedDelete)
         {
-            var question = await dbContext.Questions.FindAsync(confirmedDelete.Id);
-            dbContext.Questions.Remove(question);
-            await dbContext.SaveChangesAsync();
+            await questionService.DeleteAsync(confirmedDelete.Id);
             return RedirectToAction("Details", "Tests", new { id = confirmedDelete.TestId });
         }
     }
