@@ -29,12 +29,62 @@ public class QuestionService : IQuestionService
                                   Cost = q.Cast
                               }).ToArrayAsync();
     }
+    public async Task<QuestionWithAnswerViewModel> FindQuestionWithAnswerAsync(int id)
+    {
+        Question question = await dbContext.Questions.Include(q=>q.Answer).Include(q=>q.Test).FirstOrDefaultAsync(q=>q.Id == id);
+        if(question == null)return null;
+        Type answerType = question.Answer.GetType();
+            if(answerType == typeof(TextAnswer))
+            {
+                return QuestionViewModel.CreateForTextAnswer(question);
+            }
+            else if(answerType == typeof(OneOfFourVariantsAnswer))
+            {
+                return QuestionViewModel.CreateForOneOfFourAnswer(question);
+            }else if(answerType == typeof(SomeVariantsAnswer))
+            {
+                return QuestionViewModel.CreateForSomeVariantsAnswer(question);
+            }else if(answerType == typeof(SequenceAnswer))
+            {
+                return QuestionViewModel.CreateForSequenceAnswer(question);
+            }
+            else if(answerType == typeof(ConnectedPairsAnswer))
+            {
+                return QuestionViewModel.CreateForConnectedPairAnswer(question);
+            }
+            throw new NotImplementedException(answerType.FullName);
+    }
     public async Task AddQuestionWithAnswerToAsync(QuestionWithAnswerViewModel questionViewModel)
     {
-        if(questionViewModel.GetType() == typeof(QuestionWithTextAnswerViewModel))
+        Type questionType = questionViewModel.GetType();
+        if(questionType == typeof(QuestionWithTextAnswerViewModel))
         {
             var q = questionViewModel as QuestionWithTextAnswerViewModel;
             await Create(q, () => Answer.CreateTextAnswer(q.RightText, q.CaseMatters));
+        }
+        else if(questionType == typeof(QuestionWithOneOfFourVariantsAnswerViewModel))
+        {
+            var q = questionViewModel as QuestionWithOneOfFourVariantsAnswerViewModel;
+            await Create(q, () => Answer.CreateOneOfFourVariantsAnswer(q.RightVariant, q.Fake1, q.Fake2,q.Fake3));
+        }
+        else if(questionType == typeof(QuestionWithSomeVariantsAnswerViewModel))
+        {
+            var q = questionViewModel as QuestionWithSomeVariantsAnswerViewModel;
+            await Create(q, () => Answer.CreateSomeVariantsAnswer(q.RightVariants, q.FakeVariants));
+        }
+        else if(questionType == typeof(QuestionWithSequenceAnswerViewModel))
+        {
+            var q = questionViewModel as QuestionWithSequenceAnswerViewModel;
+            await Create(q, () => Answer.CreateSequenceAnswer(q.Sequence));
+        }
+        else if(questionType == typeof(QuestionWithConnectedPairsAnswerViewModel))
+        {
+            var q = questionViewModel as QuestionWithConnectedPairsAnswerViewModel;
+            await Create(q, () => Answer.CreateConnectedPairsAnswer(q.LeftList, q.RightList));
+        }
+        else
+        {
+            throw new NotSupportedException($"{questionType.FullName} type is not supported");
         }
     }
     private async Task Create(QuestionViewModel question, Func<Answer> getAnswerModel)

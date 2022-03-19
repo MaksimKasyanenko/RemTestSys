@@ -26,6 +26,8 @@ namespace RemTestSys.Areas.Editor.Controllers
         private readonly IExamService examService;
         private readonly IQuestionService questionService;
         private readonly AppDbContext dbContext;
+
+
         [HttpGet]
         public async Task<IActionResult> CreateTextAnswer(int id) => await GetViewToCreateQuestion(nameof(CreateTextAnswer), id);
         [HttpGet]
@@ -45,7 +47,20 @@ namespace RemTestSys.Areas.Editor.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateQuestionWithAnswer(QuestionWithAnswerViewModel question)
+        public async Task<IActionResult> CreateTextAnswer(QuestionWithTextAnswerViewModel question) => await CreateQuestionWithAnswer(question);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel question) => await CreateQuestionWithAnswer(question);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSomeAnswer(QuestionWithSomeVariantsAnswerViewModel question) => await CreateQuestionWithAnswer(question);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSequenceAnswer(QuestionWithSequenceAnswerViewModel question) => await CreateQuestionWithAnswer(question);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateConnectedPairsAnswer(QuestionWithConnectedPairsAnswerViewModel question) => await CreateQuestionWithAnswer(question);
+        private async Task<IActionResult> CreateQuestionWithAnswer(QuestionWithAnswerViewModel question)
         {
             if(ModelState.IsValid)
             {
@@ -60,37 +75,36 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            Question question = await dbContext.Questions
-                                               .Include(q=>q.Answer)
-                                               .Include(q=>q.Test)
-                                               .SingleOrDefaultAsync(q=>q.Id==id);
+            var question = await questionService.FindQuestionWithAnswerAsync(id);
             if (question == null) return RedirectToAction("Index", "Tests");
-            Type answerType = question.Answer.GetType();
-            if(answerType == typeof(TextAnswer))
+            Type questionType = question.GetType();
+            if(questionType == typeof(QuestionWithTextAnswerViewModel))
             {
-                return View("EditTextAnswer", QuestionViewModel.CreateForTextAnswer(question));
+                return View("EditTextAnswer");
             }
-            else if(answerType == typeof(OneOfFourVariantsAnswer))
+            else if(questionType == typeof(QuestionWithOneOfFourVariantsAnswerViewModel))
             {
-                return View("EditOneOfFourAnswer", QuestionViewModel.CreateForOneOfFourAnswer(question));
-            }else if(answerType == typeof(SomeVariantsAnswer))
+                return View("EditOneOfFourAnswer");
+            }else if(questionType == typeof(QuestionWithSomeVariantsAnswerViewModel))
             {
-                return View("EditSomeVariantsAnswer", QuestionViewModel.CreateForSomeVariantsAnswer(question));
-            }else if(answerType == typeof(SequenceAnswer))
+                return View("EditSomeVariantsAnswer");
+            }else if(questionType == typeof(QuestionWithSequenceAnswerViewModel))
             {
-                return View("EditSequenceAnswer", QuestionViewModel.CreateForSequenceAnswer(question));
+                return View("EditSequenceAnswer");
             }
-            else if(answerType == typeof(ConnectedPairsAnswer))
+            else if(questionType == typeof(QuestionWithConnectedPairsAnswerViewModel))
             {
-                return View("EditConnectedPairAnswer", QuestionViewModel.CreateForConnectedPairAnswer(question));
+                return View("EditConnectedPairAnswer");
             }
-            throw new NotImplementedException(answerType.FullName);
+            return View("Error");
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTextAnswer(QuestionWithTextAnswerViewModel vm){
             Question question = await dbContext.Questions
                                          .Where(q=>q.Id==vm.Id)
@@ -108,6 +122,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditOneOfFourAnswer(QuestionWithOneOfFourVariantsAnswerViewModel vm){
             Question question = await dbContext.Questions
                                          .Where(q=>q.Id==vm.Id)
@@ -124,6 +139,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             return RedirectToAction("Details","Tests",new {id=vm.ExamId});
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSomeVariantsAnswer(QuestionWithSomeVariantsAnswerViewModel vm)
         {
             Question question = await dbContext.Questions
@@ -143,6 +159,7 @@ namespace RemTestSys.Areas.Editor.Controllers
 
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSequenceAnswer(QuestionWithSequenceAnswerViewModel vm)
         {
             Question question = await dbContext.Questions
@@ -160,6 +177,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             return RedirectToAction("Details", "Tests", new { id = vm.ExamId });
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditConnectedPairAnswer(QuestionWithConnectedPairsAnswerViewModel vm)
         {
             Question question = await dbContext.Questions
@@ -181,6 +199,7 @@ namespace RemTestSys.Areas.Editor.Controllers
             }
             return RedirectToAction("Details", "Tests", new { id = vm.ExamId });
         }
+        
         public async Task<IActionResult> Delete(int id)
         {
             Question q = await dbContext.Questions.Where(q => q.Id == id).Include(q => q.Answer).SingleAsync();

@@ -8,5 +8,6 @@ namespace RemTestSys.Domain.Interfaces;
 public interface IQuestionService
 {
     Task<IEnumerable<QuestionViewModel>> GetQuestionsFromExamAsync(int examId);
+    Task<QuestionWithAnswerViewModel> FindQuestionWithAnswerAsync(int id);
     Task AddQuestionWithAnswerToAsync(QuestionWithAnswerViewModel questionViewModel);
 }
