@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.AnswerModelTests
 {
     public class SequenceAnswerTests
     {

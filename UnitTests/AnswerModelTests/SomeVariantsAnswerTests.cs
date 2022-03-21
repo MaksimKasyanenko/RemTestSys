@@ -3,7 +3,7 @@ using System;
 using System.Text.Json;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.AnswerModelTests
 {
     public class SomeVariantsAnswerTests
     {
