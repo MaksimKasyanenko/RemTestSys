@@ -1,30 +1,20 @@
 using System.Collections.Generic;
 using Xunit;
-using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain.Services;
-using RemTestSys.Domain.Models;
 using RemTestSys.Domain.ViewModels;
 
 namespace UnitTests.ServicesTests;
 
 public class GroupServiceTests
 {
-    public class GetGroupListMethodTests:IClassFixture<TestDatabaseFixture>
+    public class GetGroupListMethodTests
     {
-        public GetGroupListMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
+        public GetGroupListMethodTests() => this.fixture = new TestDatabaseFixture();
         private readonly TestDatabaseFixture fixture;
         [Fact]
         public async void GettingAllGroupsFromDatabase()
         {
-            using var context = fixture.CreateContext();
-            context.Groups.AddRange(
-                new Group{Name = "group1"},
-                new Group{Name = "group2"},
-                new Group{Name = "group3"}
-            );
-            context.SaveChanges();
-            context.ChangeTracker.Clear();
-            var groupService = new GroupService(context);
+            var groupService = new GroupService(fixture.CreateContext());
 
             List<GroupViewModel> groups = await groupService.GetGroupListAsync();
 

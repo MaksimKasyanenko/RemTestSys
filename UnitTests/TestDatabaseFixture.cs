@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain;
+using RemTestSys.Domain.Models;
 
 namespace UnitTests;
 public class TestDatabaseFixture
@@ -17,7 +18,7 @@ public class TestDatabaseFixture
                 using (var context = CreateContext())
                 {
                     context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
+                    context.Database.Migrate();
                     FillDb();
                 }
 
@@ -29,11 +30,22 @@ public class TestDatabaseFixture
     public AppDbContext CreateContext()
     {
         var context = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(ConnectionString).Options);
+        return context;
+    }
+    public AppDbContext CreateTransactionalContext()
+    {
+        var context = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(ConnectionString).Options);
         context.Database.BeginTransaction();
         return context;
     }
     public void FillDb()
     {
-
+        using var context = CreateContext();
+        context.Groups.AddRange(
+                new Group{Name = "group1"},
+                new Group{Name = "group2"},
+                new Group{Name = "group3"}
+            );
+        context.SaveChanges();
     }
 }
