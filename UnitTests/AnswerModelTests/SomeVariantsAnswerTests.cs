@@ -3,6 +3,8 @@ using System;
 using System.Text.Json;
 using Xunit;
 
+#pragma warning disable
+
 namespace UnitTests.AnswerModelTests
 {
     public class SomeVariantsAnswerTests

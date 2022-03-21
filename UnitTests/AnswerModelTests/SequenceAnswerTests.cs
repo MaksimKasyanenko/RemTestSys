@@ -1,10 +1,9 @@
 ﻿using RemTestSys.Domain.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Xunit;
+
+#pragma warning disable
 
 namespace UnitTests.AnswerModelTests
 {
