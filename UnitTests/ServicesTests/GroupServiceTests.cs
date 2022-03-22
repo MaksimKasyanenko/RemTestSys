@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 using RemTestSys.Domain.Services;
 using RemTestSys.Domain.ViewModels;
@@ -10,6 +11,9 @@ namespace UnitTests.ServicesTests;
 #pragma warning disable
 public class GroupServiceTests
 {
+
+
+
     public class GetGroupListMethodTests:IClassFixture<TestDatabaseFixture>
     {
         public GetGroupListMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
@@ -45,6 +49,10 @@ public class GroupServiceTests
         }
     }
 
+
+
+
+
     public class FindMethodTests:IClassFixture<TestDatabaseFixture>
     {
         public FindMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
@@ -75,6 +83,10 @@ public class GroupServiceTests
             Assert.Null(group);
         }
     }
+
+
+
+
     public class CreateMethodTests:IClassFixture<TestDatabaseFixture>
     {
         public CreateMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
@@ -105,7 +117,7 @@ public class GroupServiceTests
             Assert.Equal("Value cannot be null.", exception.Message);
         }
         [Fact]
-        public async void ThrowsOperationException_WhenGroupNameIsNullOrEmpty()
+        public async void ThrowsInvalidOperationException_WhenGroupNameIsNullOrEmpty()
         {
             using var context = fixture.CreateTransactionalContext();
             GroupService service = new GroupService(context);
@@ -114,12 +126,79 @@ public class GroupServiceTests
 
             InvalidOperationException exception1 = await Assert.ThrowsAsync<InvalidOperationException>(createAction1);
             InvalidOperationException exception2 = await Assert.ThrowsAsync<InvalidOperationException>(createAction2);
+
+            Assert.Equal("The group must have name", exception1.Message);
+            Assert.Equal("The group must have name", exception2.Message);
         }
     }
-    public class UpdateMetthodTests:IClassFixture<TestDatabaseFixture>
+
+
+
+
+    public class UpdateMethodTests:IClassFixture<TestDatabaseFixture>
     {
-        public UpdateMetthodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
+        public UpdateMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
         private readonly TestDatabaseFixture fixture;
-        
+        [Fact]
+        public async void UpdateNameOfGroupInDatabase()
+        {
+            using var context = fixture.CreateTransactionalContext();
+            GroupService service = new GroupService(context);
+            Group group = context.Groups.Take(1).ToList()[0];
+
+            await service.UpdateAsync(new GroupViewModel{
+                Id=group.Id,
+                Name="UpdatedName"
+            });
+            context.ChangeTracker.Clear();
+
+            Assert.Equal("UpdatedName", (context.Groups.First(g=>g.Id==group.Id)).Name);
+        }
+        [Fact]
+        public async void ThrowsArgumentNullException_WhenArgumentIsNull()
+        {
+            using var context = fixture.CreateTransactionalContext();
+            GroupService service = new GroupService(context);
+            
+            var updateAction = async () => await service.UpdateAsync(null);
+
+            ArgumentNullException exception = await Assert.ThrowsAsync<ArgumentNullException>(updateAction);
+        }
+        [Fact]
+        public async void ThrowsInvalidOperationException_WhenNameIsNullOrEmpty()
+        {
+            using var context = fixture.CreateTransactionalContext();
+            GroupService service = new GroupService(context);
+            Group group = context.Groups.Take(1).ToArray()[0];
+
+            var updateAction1 = async () => await service.UpdateAsync(new GroupViewModel{
+                Id = group.Id,
+                Name = ""
+            });
+            var updateAction2 = async () => await service.UpdateAsync(new GroupViewModel{
+                Id = group.Id
+            });
+
+            InvalidOperationException exception1 = await Assert.ThrowsAsync<InvalidOperationException>(updateAction1);
+            InvalidOperationException exception2 = await Assert.ThrowsAsync<InvalidOperationException>(updateAction2);
+
+            Assert.Equal("The group must have name", exception1.Message);
+            Assert.Equal("The group must have name", exception2.Message);
+        }
+        [Fact]
+        public async void ThrowsDbUpdateException_WhenGroupDoesNotExist()
+        {
+            using var context = fixture.CreateTransactionalContext();
+            context.Groups.RemoveRange(context.Groups);
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+            GroupService service = new GroupService(context);
+
+            var updateAction = async () => await service.UpdateAsync(new GroupViewModel{Id=1, Name="unexistingGroup"});
+
+            DbUpdateException exception = await Assert.ThrowsAsync<DbUpdateException>(updateAction);
+
+            Assert.Equal("Specified group doesn't exist in database", exception.Message);
+        }
     }
 }

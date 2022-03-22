@@ -33,16 +33,18 @@ namespace RemTestSys.Domain.Services{
         public async Task CreateAsync(GroupViewModel group)
         {
             if(group == null)throw new ArgumentNullException();
+            if(group.Name==null || group.Name=="")throw new InvalidOperationException("The group must have name");
             dbContext.Groups.Add(new Group{Name = group.Name});
             await dbContext.SaveChangesAsync();
         }
         public async Task UpdateAsync(GroupViewModel group)
         {
-            if(!Exists(group.Id))throw new DbUpdateException("It's impossible to update entity that doesn't exist");
-            dbContext.Groups.Update(new Group{
-                Id = group.Id,
-                Name = group.Name
-            });
+            if(group == null)throw new ArgumentNullException("The group cannot be null");
+            if(group.Name == null || group.Name == "")throw new InvalidOperationException("The group must have name");
+            Group groupInDb = await dbContext.Groups.FirstOrDefaultAsync(g => g.Id == group.Id);
+            if(groupInDb == null)throw new DbUpdateException("Specified group doesn't exist in database");
+            groupInDb.Name = group.Name;
+            dbContext.Groups.Update(groupInDb);
             await dbContext.SaveChangesAsync();
         }
         public async Task DeleteAsync(int id)
