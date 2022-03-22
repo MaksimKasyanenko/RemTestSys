@@ -94,7 +94,7 @@ public class GroupServiceTests
             Assert.Equal("newGroup", groupInDb.Name);
         }
         [Fact]
-        public async void ThrowsException_WhenArgumentIsNull()
+        public async void ThrowsArgumentNullException_WhenArgumentIsNull()
         {
             using var context = fixture.CreateContext();
             GroupService service = new GroupService(context);
@@ -104,6 +104,22 @@ public class GroupServiceTests
 
             Assert.Equal("Value cannot be null.", exception.Message);
         }
+        [Fact]
+        public async void ThrowsOperationException_WhenGroupNameIsNullOrEmpty()
+        {
+            using var context = fixture.CreateTransactionalContext();
+            GroupService service = new GroupService(context);
+            var createAction1 = async ()=>await service.CreateAsync(new GroupViewModel{Name=""});
+            var createAction2 = async ()=>await service.CreateAsync(new GroupViewModel());
+
+            InvalidOperationException exception1 = await Assert.ThrowsAsync<InvalidOperationException>(createAction1);
+            InvalidOperationException exception2 = await Assert.ThrowsAsync<InvalidOperationException>(createAction2);
+        }
+    }
+    public class UpdateMetthodTests:IClassFixture<TestDatabaseFixture>
+    {
+        public UpdateMetthodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
+        private readonly TestDatabaseFixture fixture;
         
     }
 }
