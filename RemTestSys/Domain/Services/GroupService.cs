@@ -23,7 +23,7 @@ namespace RemTestSys.Domain.Services{
         }
         public async Task<GroupViewModel> FindAsync(int id)
         {
-            var group = await dbContext.Groups.SingleAsync(g => g.Id == id);
+            var group = await dbContext.Groups.SingleOrDefaultAsync(g => g.Id == id);
             if(group == null)return null;
             return new GroupViewModel{
                 Id = group.Id,
@@ -32,6 +32,7 @@ namespace RemTestSys.Domain.Services{
         }
         public async Task CreateAsync(GroupViewModel group)
         {
+            if(group == null)throw new ArgumentNullException();
             dbContext.Groups.Add(new Group{Name = group.Name});
             await dbContext.SaveChangesAsync();
         }

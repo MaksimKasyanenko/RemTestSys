@@ -1,10 +1,13 @@
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using Xunit;
 using RemTestSys.Domain.Services;
 using RemTestSys.Domain.ViewModels;
+using RemTestSys.Domain.Models;
 
 namespace UnitTests.ServicesTests;
-
+#pragma warning disable
 public class GroupServiceTests
 {
     public class GetGroupListMethodTests:IClassFixture<TestDatabaseFixture>
@@ -14,7 +17,8 @@ public class GroupServiceTests
         [Fact]
         public async void ReturnsAllGroupsFromDatabase()
         {
-            var groupService = new GroupService(fixture.CreateContext());
+            using var context = fixture.CreateContext();
+            var groupService = new GroupService(context);
 
             List<GroupViewModel> groups = await groupService.GetGroupListAsync();
 
@@ -28,7 +32,7 @@ public class GroupServiceTests
         [Fact]
         public async void ReturnsEmptyList_WhenCountOfGroupsInDatabaseEquals0()
         {
-            var context = fixture.CreateTransactionalContext();
+            using var context = fixture.CreateTransactionalContext();
             context.Groups.RemoveRange(context.Groups);
             context.SaveChanges();
             context.ChangeTracker.Clear();
@@ -43,6 +47,63 @@ public class GroupServiceTests
 
     public class FindMethodTests:IClassFixture<TestDatabaseFixture>
     {
+        public FindMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
+        private readonly TestDatabaseFixture fixture;
+        [Fact]
+        public async void FindsGroupById()
+        {
+            using var context = fixture.CreateContext();
+            var groupService = new GroupService(context);
+            Group someGroup = context.Groups.FirstOrDefault(g=>true);
+
+            GroupViewModel group = await groupService.FindAsync(someGroup.Id);
+
+            Assert.NotNull(group);
+            Assert.IsType<GroupViewModel>(group);
+        }
+        [Fact]
+        public async void ReturnsNull_WhenGroupDoesNotExistInDatabase()
+        {
+            using var context = fixture.CreateTransactionalContext();
+            context.Groups.RemoveRange(context.Groups);
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+            GroupService service = new GroupService(context);
+
+            GroupViewModel group = await service.FindAsync(2);
+
+            Assert.Null(group);
+        }
+    }
+    public class CreateMethodTests:IClassFixture<TestDatabaseFixture>
+    {
+        public CreateMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
+        private readonly TestDatabaseFixture fixture;
+        [Fact]
+        public async void RecordsGroupInDatabase()
+        {
+            using var context = fixture.CreateTransactionalContext();
+            GroupService service = new GroupService(context);
+            GroupViewModel newGroup = new GroupViewModel{Name="newGroup"};
+
+            await service.CreateAsync(newGroup);
+            context.ChangeTracker.Clear();
+            Group groupInDb = context.Groups.SingleOrDefault(g=>g.Name == "newGroup");
+
+            Assert.NotNull(groupInDb);
+            Assert.Equal("newGroup", groupInDb.Name);
+        }
+        [Fact]
+        public async void ThrowsException_WhenArgumentIsNull()
+        {
+            using var context = fixture.CreateContext();
+            GroupService service = new GroupService(context);
+            var createAction = async ()=>await service.CreateAsync(null);
+
+            ArgumentNullException exception = await Assert.ThrowsAsync<ArgumentNullException>(createAction);
+
+            Assert.Equal("Value cannot be null.", exception.Message);
+        }
         
     }
 }
