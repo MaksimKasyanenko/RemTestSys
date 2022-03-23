@@ -197,4 +197,37 @@ public class GroupServiceTests
             Assert.Equal("Specified group doesn't exist in database", exception.Message);
         }
     }
+
+
+
+    public class DeleteMethodTests:TestBase
+    {
+        public DeleteMethodTests(TestDatabaseFixture fixture):base(fixture){}
+        [Fact]
+        public async void DeletesGroupFromDatabase()
+        {
+            using var context = CreateTransactionalContext();
+            GroupService service = new GroupService(context);
+            int someGroupId = context.Groups.First(g=>true).Id;
+
+            await service.DeleteAsync(someGroupId);
+            context.ChangeTracker.Clear();
+
+            Assert.False(context.Groups.Any(g=>g.Id == someGroupId));
+        }
+        [Fact]
+        public async void ThrowsDbUpdateException_WhenGroupDoesNotExist()
+        {
+            using var context = CreateTransactionalContext();
+            context.Groups.RemoveRange(context.Groups);
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+            GroupService service = new GroupService(context);
+
+            var deleteAction = async () => await service.DeleteAsync(5);
+
+            DbUpdateException exception = await Assert.ThrowsAsync<DbUpdateException>(deleteAction);
+            Assert.Equal("It's impossible to delete entity that doesn't exist", exception.Message);
+        }
+    }
 }
