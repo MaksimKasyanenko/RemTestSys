@@ -14,14 +14,13 @@ public class GroupServiceTests
 
 
 
-    public class GetGroupListMethodTests:IClassFixture<TestDatabaseFixture>
+    public class GetGroupListMethodTests:TestBase
     {
-        public GetGroupListMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
-        private readonly TestDatabaseFixture fixture;
+        public GetGroupListMethodTests(TestDatabaseFixture fixture):base(fixture){}
         [Fact]
         public async void ReturnsAllGroupsFromDatabase()
         {
-            using var context = fixture.CreateContext();
+            using var context = CreateContext();
             var groupService = new GroupService(context);
 
             List<GroupViewModel> groups = await groupService.GetGroupListAsync();
@@ -36,7 +35,7 @@ public class GroupServiceTests
         [Fact]
         public async void ReturnsEmptyList_WhenCountOfGroupsInDatabaseEquals0()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             context.Groups.RemoveRange(context.Groups);
             context.SaveChanges();
             context.ChangeTracker.Clear();
@@ -53,14 +52,13 @@ public class GroupServiceTests
 
 
 
-    public class FindMethodTests:IClassFixture<TestDatabaseFixture>
+    public class FindMethodTests:TestBase
     {
-        public FindMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
-        private readonly TestDatabaseFixture fixture;
+        public FindMethodTests(TestDatabaseFixture fixture):base(fixture){}
         [Fact]
         public async void FindsGroupById()
         {
-            using var context = fixture.CreateContext();
+            using var context = CreateContext();
             var groupService = new GroupService(context);
             Group someGroup = context.Groups.FirstOrDefault(g=>true);
 
@@ -72,7 +70,7 @@ public class GroupServiceTests
         [Fact]
         public async void ReturnsNull_WhenGroupDoesNotExistInDatabase()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             context.Groups.RemoveRange(context.Groups);
             context.SaveChanges();
             context.ChangeTracker.Clear();
@@ -87,14 +85,13 @@ public class GroupServiceTests
 
 
 
-    public class CreateMethodTests:IClassFixture<TestDatabaseFixture>
+    public class CreateMethodTests:TestBase
     {
-        public CreateMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
-        private readonly TestDatabaseFixture fixture;
+        public CreateMethodTests(TestDatabaseFixture fixture):base(fixture){}
         [Fact]
         public async void RecordsGroupInDatabase()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             GroupService service = new GroupService(context);
             GroupViewModel newGroup = new GroupViewModel{Name="newGroup"};
 
@@ -108,7 +105,7 @@ public class GroupServiceTests
         [Fact]
         public async void ThrowsArgumentNullException_WhenArgumentIsNull()
         {
-            using var context = fixture.CreateContext();
+            using var context = CreateContext();
             GroupService service = new GroupService(context);
             var createAction = async ()=>await service.CreateAsync(null);
 
@@ -119,7 +116,7 @@ public class GroupServiceTests
         [Fact]
         public async void ThrowsInvalidOperationException_WhenGroupNameIsNullOrEmpty()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             GroupService service = new GroupService(context);
             var createAction1 = async ()=>await service.CreateAsync(new GroupViewModel{Name=""});
             var createAction2 = async ()=>await service.CreateAsync(new GroupViewModel());
@@ -135,14 +132,13 @@ public class GroupServiceTests
 
 
 
-    public class UpdateMethodTests:IClassFixture<TestDatabaseFixture>
+    public class UpdateMethodTests:TestBase
     {
-        public UpdateMethodTests(TestDatabaseFixture fixture) => this.fixture = fixture;
-        private readonly TestDatabaseFixture fixture;
+        public UpdateMethodTests(TestDatabaseFixture fixture):base(fixture){}
         [Fact]
         public async void UpdateNameOfGroupInDatabase()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             GroupService service = new GroupService(context);
             Group group = context.Groups.Take(1).ToList()[0];
 
@@ -157,7 +153,7 @@ public class GroupServiceTests
         [Fact]
         public async void ThrowsArgumentNullException_WhenArgumentIsNull()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             GroupService service = new GroupService(context);
             
             var updateAction = async () => await service.UpdateAsync(null);
@@ -167,7 +163,7 @@ public class GroupServiceTests
         [Fact]
         public async void ThrowsInvalidOperationException_WhenNameIsNullOrEmpty()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             GroupService service = new GroupService(context);
             Group group = context.Groups.Take(1).ToArray()[0];
 
@@ -188,7 +184,7 @@ public class GroupServiceTests
         [Fact]
         public async void ThrowsDbUpdateException_WhenGroupDoesNotExist()
         {
-            using var context = fixture.CreateTransactionalContext();
+            using var context = CreateTransactionalContext();
             context.Groups.RemoveRange(context.Groups);
             context.SaveChanges();
             context.ChangeTracker.Clear();

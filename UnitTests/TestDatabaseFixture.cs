@@ -38,7 +38,7 @@ public class TestDatabaseFixture
         context.Database.BeginTransaction();
         return context;
     }
-    public void FillDb()
+    private void FillDb()
     {
         using var context = CreateContext();
         context.Groups.AddRange(
