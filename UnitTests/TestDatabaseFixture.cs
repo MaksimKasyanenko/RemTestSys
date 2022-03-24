@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RemTestSys.Domain;
 using RemTestSys.Domain.Models;
@@ -46,6 +47,13 @@ public class TestDatabaseFixture
                 new Group{Name = "group2"},
                 new Group{Name = "group3"}
             );
+        context.SaveChanges();
+
+        Group group = context.Groups.First(g=>g.Name=="group3");
+        context.Students.AddRange(
+            new Student{FirstName = "student1", Group = group},
+            new Student{FirstName = "student2", Group = group}
+        );
         context.SaveChanges();
     }
 }

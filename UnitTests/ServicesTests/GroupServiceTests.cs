@@ -13,7 +13,7 @@ public class GroupServiceTests
 {
 
 
-
+/******************************************************************************************************/
     public class GetGroupListMethodTests:TestBase
     {
         public GetGroupListMethodTests(TestDatabaseFixture fixture):base(fixture){}
@@ -44,14 +44,14 @@ public class GroupServiceTests
             List<GroupViewModel> groups = await groupService.GetGroupListAsync();
 
             Assert.NotNull(groups);
-            Assert.Equal(0, groups.Count);
+            Assert.Empty(groups);
         }
     }
+/*****************************************************************************************************/
 
 
 
-
-
+/*****************************************************************************************************/
     public class FindMethodTests:TestBase
     {
         public FindMethodTests(TestDatabaseFixture fixture):base(fixture){}
@@ -70,21 +70,19 @@ public class GroupServiceTests
         [Fact]
         public async void ReturnsNull_WhenGroupDoesNotExistInDatabase()
         {
-            using var context = CreateTransactionalContext();
-            context.Groups.RemoveRange(context.Groups);
-            context.SaveChanges();
-            context.ChangeTracker.Clear();
+            using var context = CreateContext();
             GroupService service = new GroupService(context);
 
-            GroupViewModel group = await service.FindAsync(2);
+            GroupViewModel group = await service.FindAsync(145);
 
             Assert.Null(group);
         }
     }
+/*****************************************************************************************************/
 
 
 
-
+/*****************************************************************************************************/
     public class CreateMethodTests:TestBase
     {
         public CreateMethodTests(TestDatabaseFixture fixture):base(fixture){}
@@ -128,10 +126,10 @@ public class GroupServiceTests
             Assert.Equal("The group must have name", exception2.Message);
         }
     }
+/********************************************************************************************************/
 
 
-
-
+/********************************************************************************************************/
     public class UpdateMethodTests:TestBase
     {
         public UpdateMethodTests(TestDatabaseFixture fixture):base(fixture){}
@@ -185,21 +183,20 @@ public class GroupServiceTests
         public async void ThrowsDbUpdateException_WhenGroupDoesNotExist()
         {
             using var context = CreateTransactionalContext();
-            context.Groups.RemoveRange(context.Groups);
-            context.SaveChanges();
-            context.ChangeTracker.Clear();
             GroupService service = new GroupService(context);
 
-            var updateAction = async () => await service.UpdateAsync(new GroupViewModel{Id=1, Name="unexistingGroup"});
+            var updateAction = async () => await service.UpdateAsync(new GroupViewModel{Id=145, Name="unexistingGroup"});
 
             DbUpdateException exception = await Assert.ThrowsAsync<DbUpdateException>(updateAction);
 
             Assert.Equal("Specified group doesn't exist in database", exception.Message);
         }
     }
+/********************************************************************************************************/
 
 
 
+/********************************************************************************************************/
     public class DeleteMethodTests:TestBase
     {
         public DeleteMethodTests(TestDatabaseFixture fixture):base(fixture){}
@@ -218,16 +215,76 @@ public class GroupServiceTests
         [Fact]
         public async void ThrowsDbUpdateException_WhenGroupDoesNotExist()
         {
-            using var context = CreateTransactionalContext();
-            context.Groups.RemoveRange(context.Groups);
-            context.SaveChanges();
-            context.ChangeTracker.Clear();
+            using var context = CreateContext();
             GroupService service = new GroupService(context);
 
-            var deleteAction = async () => await service.DeleteAsync(5);
+            var deleteAction = async () => await service.DeleteAsync(145);
 
             DbUpdateException exception = await Assert.ThrowsAsync<DbUpdateException>(deleteAction);
             Assert.Equal("It's impossible to delete entity that doesn't exist", exception.Message);
+        }
+    }
+/******************************************************************************************************/
+
+
+/******************************************************************************************************/
+    public class ExistsMethodTests:TestBase
+    {
+        public ExistsMethodTests(TestDatabaseFixture fixture):base(fixture){}
+        [Fact]
+        public void ReturnsTrue_WhenSpecifiedGroupExists()
+        {
+            using var context = CreateContext();
+            GroupService service = new GroupService(context);
+            int someGroupId = context.Groups.First(g=>true).Id;
+
+            bool result = service.Exists(someGroupId);
+
+            Assert.True(result);
+        }
+        [Fact]
+        public void ReturnsFalse_WhenSpecifiedGroupDoesNotExist()
+        {
+            using var context = CreateContext();
+            GroupService service = new GroupService(context);
+
+            bool result = service.Exists(145);
+
+            Assert.False(result);
+        }
+    }
+/*******************************************************************************************************/
+
+
+/*******************************************************************************************************/
+    public class GetStudentMethodTests:TestBase
+    {
+        public GetStudentMethodTests(TestDatabaseFixture fixture):base(fixture){}
+        [Fact]
+        public async void ReturnsAllStudents()
+        {
+            using var context = CreateContext();
+            GroupService service = new GroupService(context);
+            int groupId = context.Groups.First(g=>g.Name == "group3").Id;
+
+            List<StudentViewModel> students = await service.GetStudentsForGroupAsync(groupId);
+
+            Assert.Equal(2, students.Count);
+            Assert.Collection(students.OrderBy(s=>s.FirstName), 
+                s => Assert.Equal("student1", s.FirstName),
+                s => Assert.Equal("student2", s.FirstName)
+            );
+        }
+        [Fact]
+        public async void ReturnsEmptyList_IfGroupDoesNotContainAnyStudent()
+        {
+            using var context = CreateContext();
+            GroupService service = new GroupService(context);
+            int groupId = context.Groups.First(g=>g.Name=="group2").Id;
+
+            List<StudentViewModel> students = await service.GetStudentsForGroupAsync(groupId);
+
+            Assert.Empty(students);
         }
     }
 }
