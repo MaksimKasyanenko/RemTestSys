@@ -18,14 +18,14 @@ namespace RemTestSys.Domain.Services{
 
         private readonly AppDbContext dbContext;
 
-        public async Task<string> RegisterNewStudentAsync(StudentViewModel studentData){
+        public async Task<string> RegisterNewStudentAndGenerateLogIdAsync(StudentViewModel studentData){
             Student student = new Student {
                     FirstName = studentData.FirstName,
                     LastName = studentData.LastName,
                     RegistrationDate = DateTime.Now
                 };
             Group group = await dbContext.Groups.FirstOrDefaultAsync(g=>g.Id == studentData.GroupId);
-            student.Group = group ?? throw new InvalidOperationException($"The group with specified id({studentData.GroupId}) doesn't exist");
+            student.Group = group ?? throw new InvalidOperationException($"The group with specified id doesn't exist");
             student.LogId = await RandomLogId();
             dbContext.Students.Add(student);
             await dbContext.SaveChangesAsync();

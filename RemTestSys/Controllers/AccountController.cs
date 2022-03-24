@@ -32,7 +32,7 @@ namespace RemTestSys.Controllers
         {
             if (ModelState.IsValid && studentData.GroupId>0)
             {
-                string logId = await studentService.RegisterNewStudentAsync(studentData);
+                string logId = await studentService.RegisterNewStudentAndGenerateLogIdAsync(studentData);
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 claimsIdentity.AddClaim(new Claim("StudentLogId", logId));
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
