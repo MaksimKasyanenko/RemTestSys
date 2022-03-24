@@ -3,6 +3,7 @@ using System.Linq;
 using Xunit;
 using RemTestSys.Domain.Services;
 using RemTestSys.Domain.ViewModels;
+using RemTestSys.Domain.Models;
 
 namespace UnitTests.ServicesTests;
 
@@ -50,4 +51,30 @@ public class StudentServiceTests
 
 
     /***************************************************************************************************/
+    public class FindStudentByLogIdTests:TestBase
+    {
+        public FindStudentByLogIdTests(TestDatabaseFixture fixture):base(fixture){}
+        [Fact]
+        public async void RenurnsStudentWithSpecifiedLogId()
+        {
+            using var context = CreateContext();
+            StudentService service = new StudentService(context);
+            Student studentInDb = context.Students.First(s=>s.LogId=="87654321");
+
+            StudentViewModel student = await service.FindStudentAsync("87654321");
+
+            Assert.NotNull(student);
+            Assert.Equal(studentInDb.Id, student.Id);
+        }
+        [Fact]
+        public async void ReturnsNull_WhenStudentNotFound()
+        {
+            using var context = CreateContext();
+            StudentService service = new StudentService(context);
+
+            StudentViewModel student = await service.FindStudentAsync("222222222");
+
+            Assert.Null(student);
+        }
+    }
 }

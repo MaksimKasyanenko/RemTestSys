@@ -51,8 +51,8 @@ public class TestDatabaseFixture
 
         Group group = context.Groups.First(g=>g.Name=="group3");
         context.Students.AddRange(
-            new Student{FirstName = "student1", Group = group},
-            new Student{FirstName = "student2", Group = group}
+            new Student{FirstName = "student1", Group = group, LogId="12345678"},
+            new Student{FirstName = "student2", Group = group, LogId="87654321"}
         );
         context.SaveChanges();
     }
